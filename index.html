@@ -1,73 +1,293 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Portafolio</title>
-    <link rel="stylesheet" href="style.css"> <!-- Enlace al archivo CSS -->
-    <script defer src="script.js"></script> <!-- Enlace al archivo JS -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Victor Moreno | Proyectos</title>
+
+<style>
+
+    :root{
+        --bg:#0F1923;
+        --panel:#162433;
+        --panel-hover:#1d2f42;
+        --border:#25384a;
+        --text:#ffffff;
+        --muted:#9fb0bf;
+        --accent:#ff6b35;
+    }
+
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+    }
+
+    html{
+        scroll-behavior:smooth;
+    }
+
+    body{
+        background:var(--bg);
+        color:var(--text);
+        font-family:Segoe UI,Arial,sans-serif;
+    }
+
+    .container{
+        width:min(1200px,92%);
+        margin:auto;
+    }
+
+    nav{
+        position:sticky;
+        top:0;
+        z-index:1000;
+        backdrop-filter:blur(12px);
+        background:rgba(15,25,35,0.95);
+        border-bottom:1px solid var(--border);
+    }
+
+    .nav-content{
+        height:70px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+    }
+
+    .logo{
+        font-size:1.4rem;
+        font-weight:700;
+    }
+
+    .logo span{
+        color:var(--accent);
+    }
+
+    .menu{
+        display:flex;
+        gap:25px;
+    }
+
+    .menu a{
+        text-decoration:none;
+        color:white;
+        font-weight:600;
+    }
+
+    .menu a:hover{
+        color:var(--accent);
+    }
+
+    .hero{
+        padding:90px 0 70px 0;
+        text-align:center;
+    }
+
+    .hero h1{
+        font-size:4rem;
+        margin-bottom:15px;
+    }
+
+    .hero p{
+        color:var(--muted);
+        max-width:700px;
+        margin:auto;
+        font-size:1.15rem;
+    }
+
+    .projects-section{
+        padding-bottom:80px;
+    }
+
+    .projects-section h2{
+        margin-bottom:35px;
+        font-size:2rem;
+    }
+
+    .projects-grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+        gap:25px;
+    }
+
+    .project-card{
+        background:var(--panel);
+        border:1px solid var(--border);
+        border-radius:20px;
+        padding:30px;
+        min-height:260px;
+
+        display:flex;
+        flex-direction:column;
+        justify-content:space-between;
+
+        transition:0.25s;
+    }
+
+    .project-card:hover{
+        background:var(--panel-hover);
+        transform:translateY(-4px);
+        border-color:var(--accent);
+    }
+
+    .project-icon{
+        font-size:2.5rem;
+        margin-bottom:15px;
+    }
+
+    .project-card h3{
+        margin-bottom:12px;
+    }
+
+    .project-card p{
+        color:var(--muted);
+        margin-bottom:20px;
+        line-height:1.5;
+    }
+
+    .project-card a{
+        text-decoration:none;
+        color:white;
+        background:var(--accent);
+        padding:12px 18px;
+        border-radius:10px;
+        font-weight:700;
+        display:inline-block;
+    }
+
+    .project-card a:hover{
+        opacity:0.9;
+    }
+
+    footer{
+        border-top:1px solid var(--border);
+        padding:25px;
+        text-align:center;
+        color:var(--muted);
+    }
+
+    @media(max-width:768px){
+
+        .hero h1{
+            font-size:2.5rem;
+        }
+
+        .menu{
+            gap:15px;
+            font-size:0.9rem;
+        }
+
+    }
+
+</style>
+
 </head>
-<body>
-
-    <!-- Header para escritorio -->
-    <header class="desktop-header">
-        <h1>Bienvenido a mi Portafolio</h1>
+    <body>
         <nav>
-            <ul>
-                <li><a href="#about">Acerca de mí</a></li>
-                <li><a href="#projects">Proyectos</a></li>
-                <li><a href="#contact">Contacto</a></li>
-            </ul>
+            <div class="container nav-content">
+                <!-- Victor logo -->
+                <div class="logo">Victor<span>.</span></div>
+                
+                <!-- Navegation bar -->
+                <div class="menu">
+                    <a>🏠 Inicio</a>
+                    <a href='https://github.com/basketmoreno'>🐙 GitHub</a>
+                </div>
+            </div>
         </nav>
-    </header>
 
-    <!-- Botón de menú para dispositivos móviles -->
-    <div class="mobile-menu-icon">
-        <span>&#9776;</span>
-    </div>
+        <header class="hero" id="inicio">
+            <div class="container">
+                <h1>Victor Moreno</h1>
+                <p>Open Data Analyst</p>
+            </div>
+        </header>
 
-    <!-- Barra lateral para dispositivos móviles -->
-    <nav class="mobile-sidebar">
-        <div class="close-btn">&times;</div>
-        <ul>
-            <li><a href="#about">Acerca de mí</a></li>
-            <li><a href="#projects">Proyectos</a></li>
-            <li><a href="#contact">Contacto</a></li>
-        </ul>
-    </nav>
+        <section class="projects-section" id="proyectos">
+            <div class="container">
+                <h2>🚀 Proyectos</h2>
+                <div class="projects-grid">
+                    <!-- Proyecto Precios Standby-->
+                    <div class="project-card">
+                        <div>
+                            <div class="project-icon">🛩️</div>
+                            <h3>Precios Standby</h3>
 
-    <!-- Contenido principal -->
-    <div class="content">
-        <section id="about">
-            <h2>Acerca de mí</h2>
-            <p>Hola, soy Victor, un desarrollador apasionado por la tecnología y la programación. Este sitio muestra algunos de mis proyectos más destacados.</p>
-        </section>
-        
-        <section id="projects">
-            <h2>Proyectos</h2>
-            <div class="projects-grid">
-                <div class="project-card">
-                    <h3>Proyecto Vlak</h3>
-                    <p>Proyecto de desarrollo de un mapa de España con los destinos ofrecidos en el programa de Abonos Recurrentes con origen en las 6 estaciones más importantes.</p>
-                    <a href="/Proyecto Renfe/index.html" class="btn">Ver Proyecto</a>
+                            <p>
+                            Mapa interactivo que visualiza los precios de standby para Iberia Express y resto del Grupo Iberia.
+                            </p>
+
+                        </div>
+                        <a href='proyectos/standby.html'>Abrir proyecto</a>
+                    </div>
+
+                    <!-- Proyecto Mapa Renfe-->
+                    <div class="project-card">
+                        <div>
+                            <div class="project-icon">🚆</div>
+                            <h3>Mapa Renfe</h3>
+
+                            <p>
+                            Mapa interactivo que visualiza las conexiones ferroviarias y estaciones
+                            incluidas en el programa de abonos recurrentes de Renfe.
+                            </p>
+
+                        </div>
+                        <a href='proyectos/mapa-renfe.html'>Abrir proyecto</a>
+                    </div>
+
+                    <!-- Proyecto Zonas Tensionadas en España-->
+                    <div class="project-card">
+                        <div>
+                            <div class="project-icon">🏠</div>
+                            <h3>Zonas tensionadas en España</h3>
+
+                            <p>
+                            Mapa interactivo de municipios declarados zona de mercado residencial
+                            tensionado y análisis de su vigencia.
+                            </p>
+
+                        </div>
+                        <a href='proyectos/zonas-tensionadas.html'>Abrir proyecto</a>
+                    </div>
+
+                    <!-- Proyecto Guia Fiscal 2025-->
+                    <div class="project-card">
+                        <div>
+                            <div class="project-icon">⚖️</div>
+                            <h3>Guía Fiscal 2025</h3>
+
+                            <p>
+                            Asistente fiscal interactivo con más de 200 reglas sobre IRPF, IVA,
+                            Sociedades y Patrimonio.
+                            </p>
+
+                        </div>
+                        <a href='proyectos/guia-fiscal-2025.html'>Abrir proyecto</a>
+                    </div>
+
+                    <!-- Proyecto Gasto Hacienda-->
+                    <div class="project-card">
+                        <div>
+                            <div class="project-icon">💰</div>
+                            <h3>Gasto Hacienda</h3>
+
+                            <p>
+                            Analisis del gasto publico mediante licitaciones (empresas externas) para el Ministerio de Hacienda.
+                            </p>
+
+                        </div>
+                        <a href='proyectos/dashboard_placsp.html'>Abrir proyecto</a>
+                    </div>
+
+
+                    </div>
                 </div>
-                <div class="project-card">
-                    <h3>Proyecto 2</h3>
-                    <p>Descripción breve del Proyecto 2.</p>
-                    <a href="test.html" class="btn">Ver Proyecto</a>
-                </div>
-                <!-- Añade más tarjetas de proyectos aquí -->
             </div>
         </section>
-        
-        <section id="contact">
-            <h2>Contacto</h2>
-            <p>Puedes contactarme a través de mi correo electrónico: <a href="mailto:tucorreo@example.com">tucorreo@example.com</a></p>
-        </section>
-    </div>
 
-    <footer>
-        <p>&copy; 2024 Victor. Todos los derechos reservados.</p>
-    </footer>
-</body>
+        <footer>© 2026 Victor Moreno</footer>
+
+    </body>
 </html>
