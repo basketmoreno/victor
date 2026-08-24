@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>Zonas de mercado residencial tensionado · España</title>
+<meta name="description" content="Mapa interactivo de los municipios declarados zona de mercado residencial tensionado en España (Ley 12/2023), con sus periodos de vigencia y resoluciones del BOE.">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --ink:#0D141B;
+  --ink-2:#151F29;
+  --ink-3:#1E2B37;
+  --line:#2A3A48;
+  --text:#E7EDF2;
+  --muted:#8DA2B4;
+  --muted-2:#5D7183;
+
+  --cat:#E4572E;
+  --pvs:#2E9E6B;
+  --nav:#4C8BD6;
+  --gal:#9B6BC4;
+  --ast:#D9A227;
+
+  --panel-w: 372px;
+
+  --display:'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --body:'IBM Plex Sans', system-ui, -apple-system, sans-serif;
+  --mono:'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{
+  font-family:var(--body);
+  background:var(--ink);
+  color:var(--text);
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ---------- Layout ---------- */
+#app{display:flex;height:100vh;height:100dvh;width:100%}
+#panel{
+  width:var(--panel-w);
+  flex:0 0 var(--panel-w);
+  background:var(--ink);
+  border-right:1px solid var(--line);
+  display:flex;flex-direction:column;
+  z-index:1200;
+}
+#map{flex:1;min-width:0;background:#0A1016}
+
+/* ---------- Cabecera ---------- */
+.head{padding:20px 20px 16px;border-bottom:1px solid var(--line)}
+.eyebrow{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--muted-2);margin:0 0 10px;
+}
+h1{
+  font-family:var(--display);font-weight:700;
+  font-size:23px;line-height:1.08;letter-spacing:-.021em;
+  margin:0 0 10px;
+}
+h1 em{font-style:normal;color:var(--cat)}
+.sub{font-size:12.5px;line-height:1.5;color:var(--muted);margin:0}
+.sub a{color:var(--muted);text-underline-offset:2px}
+.sub a:hover{color:var(--text)}
+
+.counts{display:flex;gap:22px;margin-top:16px;align-items:baseline}
+.count-n{font-family:var(--display);font-weight:700;font-size:27px;line-height:1;letter-spacing:-.03em}
+.count-l{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted-2);display:block;margin-top:5px}
+
+/* ---------- Vigencias (elemento distintivo) ---------- */
+.section{padding:16px 20px;border-bottom:1px solid var(--line)}
+.section-title{
+  font-family:var(--mono);font-size:10px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--muted-2);margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;
+}
+.section-title button{
+  background:none;border:0;color:var(--muted-2);font:inherit;letter-spacing:.1em;
+  cursor:pointer;padding:2px 4px;border-radius:3px;
+}
+.section-title button:hover{color:var(--text)}
+
+#vigencias{position:relative}
+.vg-scale{position:relative;height:13px;margin-bottom:6px}
+.vg-scale span{
+  position:absolute;top:0;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9px;color:var(--muted-2);
+}
+.vg-row{
+  display:grid;grid-template-columns:1fr;gap:4px;
+  padding:6px 4px;margin:0 -4px;border-radius:5px;cursor:pointer;
+  border:1px solid transparent;
+}
+.vg-row:hover{background:var(--ink-2)}
+.vg-row.off{opacity:.32}
+.vg-row:focus-visible{outline:2px solid var(--nav);outline-offset:1px}
+.vg-meta{display:flex;justify-content:space-between;gap:8px;font-size:11px;line-height:1.2}
+.vg-name{display:flex;align-items:center;gap:6px;min-width:0}
+.vg-dot{width:7px;height:7px;border-radius:2px;flex:0 0 7px}
+.vg-name b{font-weight:600;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vg-num{font-family:var(--mono);font-size:10.5px;color:var(--muted);flex:0 0 auto}
+.vg-track{position:relative;height:7px;background:var(--ink-3);border-radius:2px;overflow:hidden}
+.vg-bar{position:absolute;top:0;bottom:0;border-radius:2px;opacity:.85}
+.vg-today{
+  position:absolute;top:-2px;bottom:-2px;width:1px;background:var(--text);
+  opacity:.6;pointer-events:none;
+}
+.vg-today::after{
+  content:'hoy';position:absolute;top:-13px;left:2px;
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--text);opacity:.75;
+}
+
+/* ---------- Buscador + lista ---------- */
+.search-wrap{padding:14px 20px 10px}
+#q{
+  width:100%;background:var(--ink-2);border:1px solid var(--line);
+  color:var(--text);font-family:var(--body);font-size:13px;
+  padding:9px 11px;border-radius:6px;
+}
+#q::placeholder{color:var(--muted-2)}
+#q:focus{outline:none;border-color:var(--nav)}
+
+#list{flex:1;overflow-y:auto;padding:0 12px 24px;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+#list::-webkit-scrollbar{width:8px}
+#list::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+
+.grp{
+  position:sticky;top:0;background:var(--ink);z-index:2;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted-2);padding:14px 8px 7px;display:flex;justify-content:space-between;
+}
+.item{
+  display:flex;align-items:center;gap:9px;width:100%;
+  background:none;border:0;text-align:left;cursor:pointer;
+  color:var(--text);font-family:var(--body);font-size:13px;
+  padding:6px 8px;border-radius:5px;
+}
+.item:hover{background:var(--ink-2)}
+.item:focus-visible{outline:2px solid var(--nav);outline-offset:-2px}
+.item.miss{color:var(--muted-2);cursor:default}
+.item.miss:hover{background:none}
+.item .sw{width:6px;height:6px;border-radius:50%;flex:0 0 6px}
+.item .nm{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{
+  font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--muted-2);border:1px solid var(--line);border-radius:3px;padding:1px 4px;flex:0 0 auto;
+}
+.empty{padding:26px 10px;color:var(--muted-2);font-size:12.5px;line-height:1.55}
+
+/* ---------- Estado de carga ---------- */
+#status{
+  padding:11px 20px;font-family:var(--mono);font-size:10.5px;
+  color:var(--muted-2);border-bottom:1px solid var(--line);line-height:1.5;
+}
+#status.err{color:#F08C7A}
+.spin{
+  display:inline-block;width:9px;height:9px;margin-right:7px;vertical-align:-1px;
+  border:1.5px solid var(--line);border-top-color:var(--cat);border-radius:50%;
+  animation:sp .7s linear infinite;
+}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+/* ---------- Pie ---------- */
+.foot{
+  padding:12px 20px;border-top:1px solid var(--line);
+  font-size:11px;line-height:1.5;color:var(--muted-2);
+}
+.foot a{color:var(--muted)}
+
+/* ---------- Popup Leaflet ---------- */
+.leaflet-popup-content-wrapper{
+  background:var(--ink);color:var(--text);border-radius:8px;
+  border:1px solid var(--line);box-shadow:0 12px 34px rgba(0,0,0,.5);
+}
+.leaflet-popup-tip{background:var(--ink);border:1px solid var(--line)}
+.leaflet-popup-content{margin:14px 16px;font-family:var(--body);font-size:13px;line-height:1.5;width:262px!important}
+.leaflet-popup-close-button{color:var(--muted-2)!important}
+.pop-ccaa{font-family:var(--mono);font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;margin-bottom:5px}
+.pop-name{font-family:var(--display);font-weight:700;font-size:18px;letter-spacing:-.02em;line-height:1.15;margin-bottom:9px}
+.pop-nota{
+  font-size:11.5px;line-height:1.45;color:var(--text);background:var(--ink-3);
+  border-left:2px solid var(--muted-2);padding:6px 9px;border-radius:0 4px 4px 0;margin-bottom:10px;
+}
+.pop-rows{border-top:1px solid var(--line);padding-top:9px;display:grid;gap:5px}
+.pop-row{display:flex;justify-content:space-between;gap:10px;font-size:11.5px}
+.pop-row span:first-child{color:var(--muted-2);font-family:var(--mono);font-size:10px;letter-spacing:.07em;text-transform:uppercase;flex:0 0 auto}
+.pop-row span:last-child{text-align:right;font-family:var(--mono);font-size:11px}
+.pop-boe{display:block;margin-top:10px;font-size:11.5px;color:var(--cat);text-underline-offset:2px}
+
+/* ---------- Leyenda sobre el mapa ---------- */
+.legend{
+  background:rgba(13,20,27,.93);border:1px solid var(--line);border-radius:7px;
+  padding:10px 12px;backdrop-filter:blur(7px);color:var(--text);
+}
+.legend h4{
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--muted-2);margin:0 0 8px;font-weight:400;
+}
+.legend .lg{display:flex;align-items:center;gap:7px;font-size:11.5px;margin-bottom:4px}
+.legend .lg i{width:13px;height:9px;border-radius:2px;display:block;flex:0 0 13px}
+.legend .lg.dashed i{background:transparent;border:1px dashed var(--muted);}
+.legend .note{font-size:10.5px;color:var(--muted-2);margin:7px 0 0;line-height:1.4;max-width:170px}
+
+.leaflet-control-attribution{background:rgba(13,20,27,.85)!important;color:var(--muted-2)!important;font-size:10px!important}
+.leaflet-control-attribution a{color:var(--muted)!important}
+.leaflet-bar a{background:var(--ink)!important;color:var(--text)!important;border-color:var(--line)!important}
+.leaflet-bar a:hover{background:var(--ink-3)!important}
+.leaflet-control-layers{background:rgba(13,20,27,.93)!important;border:1px solid var(--line)!important;color:var(--text);backdrop-filter:blur(7px)}
+.leaflet-control-layers-expanded{padding:9px 11px 8px!important;font-family:var(--body);font-size:12.5px}
+.leaflet-control-layers-separator{border-color:var(--line)!important}
+.leaflet-control-scale-line{background:rgba(13,20,27,.85)!important;border-color:var(--line)!important;color:var(--muted)!important;font-family:var(--mono);font-size:9.5px}
+
+/* ---------- Móvil ---------- */
+#toggle{
+  display:none;position:fixed;left:12px;bottom:12px;z-index:1400;
+  background:var(--ink);color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:11px 15px;font-family:var(--display);font-weight:600;font-size:13px;
+  cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.45);
+}
+@media (max-width: 880px){
+  :root{--panel-w:100%}
+  #app{flex-direction:column}
+  #panel{
+    position:fixed;inset:0;top:auto;height:78dvh;border-right:0;border-top:1px solid var(--line);
+    border-radius:14px 14px 0 0;transform:translateY(101%);transition:transform .26s ease;
+  }
+  #panel.open{transform:translateY(0)}
+  #map{position:fixed;inset:0}
+  #toggle{display:block}
+  h1{font-size:20px}
+  .legend{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+  <aside id="panel">
+    <div class="head">
+      <p class="eyebrow">Ley 12/2023 · art. 18</p>
+      <h1>Zonas de mercado residencial <em>tensionado</em></h1>
+      <p class="sub">Municipios declarados por las comunidades autónomas y publicados por el Ministerio de Vivienda y Agenda Urbana. Datos actualizados a la resolución de 24 de julio de 2026.</p>
+      <div class="counts">
+        <div><span class="count-n" id="c-mun">—</span><span class="count-l">Municipios</span></div>
+        <div><span class="count-n" id="c-ccaa">—</span><span class="count-l">Comunidades</span></div>
+        <div><span class="count-n" id="c-res">—</span><span class="count-l">Resoluciones</span></div>
+      </div>
+    </div>
+
+    <div id="status"><span class="spin"></span>Cargando límites municipales del IGN…</div>
+
+    <div class="section">
+      <p class="section-title">
+        Vigencia de cada declaración
+        <button id="all-on" type="button">Ver todas</button>
+      </p>
+      <div id="vigencias"></div>
+    </div>
+
+    <div class="search-wrap">
+      <input id="q" type="search" placeholder="Buscar municipio…" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div id="list"></div>
+
+    <div class="foot">
+      Fuente: <a href="https://www.mivau.gob.es/vivienda/alquila-bien-es-tu-derecho/serpavi/consultar-zonas-de-mercado-residencial-tensionado" target="_blank" rel="noopener">MIVAU</a> ·
+      Límites: <a href="https://www.ign.es" target="_blank" rel="noopener">IGN</a>.
+      Los límites dibujados son los del término municipal completo; consulta la ficha para ver si la declaración es parcial.
+    </div>
+  </aside>
+
+  <div id="map"></div>
+</div>
+
+<button id="toggle" type="button">Ver listado</button>
+
+<script>
+/* ---------------------------------------------------------------------------
+   Cargador de librerías con reserva.
+   Leaflet y topojson-client se sirven desde unpkg; si no responde (sin
+   conexión, o unpkg bloqueado), se reintenta con jsDelivr. El código del
+   mapa no arranca hasta que 'L' y 'topojson' existen.
+   --------------------------------------------------------------------------- */
+(function(){
+  const RECURSOS = [
+    { global:'L', urls:[
+        'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+        'https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js'
+      ]},
+    { global:'topojson', urls:[
+        'https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js',
+        'https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js'
+      ]}
+  ];
+
+  function cargarUno(urls, i){
+    return new Promise((res, rej) => {
+      if(i >= urls.length) return rej(new Error('sin fuentes'));
+      const s = document.createElement('script');
+      s.src = urls[i];
+      s.onload = () => res();
+      s.onerror = () => cargarUno(urls, i+1).then(res, rej);
+      document.head.appendChild(s);
+    });
+  }
+
+  Promise.all(RECURSOS.map(r =>
+    (window[r.global] ? Promise.resolve() : cargarUno(r.urls, 0))
+  ))
+  .then(() => {
+    if(typeof L === 'undefined' || typeof topojson === 'undefined') throw new Error('librerías no disponibles');
+    iniciarMapa();
+  })
+  .catch(err => {
+    console.error(err);
+    const el = document.getElementById('status');
+    if(el){
+      el.classList.add('err');
+      el.innerHTML = 'No se ha podido cargar la librería del mapa. Este visor necesita conexión a internet la primera vez (descarga Leaflet y la cartografía del IGN). Comprueba tu conexión, o que ninguna extensión bloquee <code>unpkg.com</code> / <code>jsdelivr.net</code>, y recarga la página.';
+    }
+  });
+})();
+
+function iniciarMapa(){
+/* =========================================================================
+   1. DATOS OFICIALES
+   Relación de zonas de mercado residencial tensionado publicada por el
+   Ministerio de Vivienda y Agenda Urbana (resoluciones 2024-2026).
+   ========================================================================= */
+
+const COLORES = {
+  'Cataluña'  : getComputedStyle(document.documentElement).getPropertyValue('--cat').trim(),
+  'País Vasco': getComputedStyle(document.documentElement).getPropertyValue('--pvs').trim(),
+  'Navarra'   : getComputedStyle(document.documentElement).getPropertyValue('--nav').trim(),
+  'Galicia'   : getComputedStyle(document.documentElement).getPropertyValue('--gal').trim(),
+  'Asturias'  : getComputedStyle(document.documentElement).getPropertyValue('--ast').trim()
+};
+
+/* Prefijos de provincia (código INE) por comunidad, para desambiguar nombres */
+const PROV = {
+  'Cataluña'  : ['08','17','25','43'],
+  'País Vasco': ['01','20','48'],
+  'Navarra'   : ['31'],
+  'Galicia'   : ['15'],
+  'Asturias'  : ['33']
+};
+
+const GRUPOS = [
+  {
+    id:'cat-2024-03', ccaa:'Cataluña',
+    res:'Resolución de 14 de marzo de 2024',
+    boe:'BOE núm. 66, de 15 de marzo de 2024',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2024-5214',
+    desde:'2024-03-16', hasta:'2027-03-16',
+    mun:['Abrera','Alella','Amposta','Arenys de Mar','Arenys de Munt','Argentona','Badalona','Badia del Vallès','Balaguer','Banyoles','Barberà del Vallès','Barcelona','Berga',"la Bisbal d'Empordà",'Blanes','Cabrera de Mar','Cabrils','Caldes de Montbui',"Caldes d'Estrac",'Calella','Calldetenes','Cambrils','Canet de Mar','la Canonja','Canovelles','Cardedeu','Castellar del Vallès','Castellbisbal','Castelldefels','Cerdanyola del Vallès','Cervelló','Cervera','Corbera de Llobregat','Cornellà de Llobregat','Cubelles','Esparreguera','Esplugues de Llobregat','Falset','Figueres','les Franqueses del Vallès','la Garriga','Gavà','Girona','Granollers','Guissona',"l'Hospitalet de Llobregat",'Igualada','la Llagosta','Lleida','Llinars del Vallès','Lloret de Mar','Malgrat de Mar','Manlleu','Manresa','el Masnou','Matadepera','Mataró','Molins de Rei','Mollerussa','Mollet del Vallès','Montcada i Reixac','Montgat','Montmeló','Montornès del Vallès','Móra la Nova','Olesa de Montserrat','Olot','Palafolls','Palafrugell','Palamós','Palau-solità i Plegamans','el Papiol','Parets del Vallès','Pineda de Mar','Polinyà','Porqueres','el Prat de Llobregat','Premià de Dalt','Premià de Mar','Puigcerdà','Reus','Ripoll','Ripollet','la Roca del Vallès','Roquetes','Rubí','Sabadell','Salou','Salt','Sant Adrià de Besòs','Sant Andreu de Llavaneres','Sant Boi de Llobregat','Sant Celoni','Sant Climent de Llobregat','Sant Cugat del Vallès','Sant Esteve Sesrovires','Sant Feliu de Guíxols','Sant Feliu de Llobregat','Sant Fost de Campsentelles','Sant Fruitós de Bages','Sant Joan Despí','Sant Just Desvern','Sant Pere de Ribes','Sant Pol de Mar','Sant Quirze del Vallès',"Sant Sadurní d'Anoia",'Sant Vicenç de Montalt','Sant Vicenç dels Horts','Santa Coloma de Cervelló','Santa Coloma de Farners','Santa Coloma de Gramenet','Santa Margarida de Montbui','Santa Perpètua de Mogoda','Santa Susanna','Sarrià de Ter',"la Seu d'Urgell",'Sitges','Solsona','Sort','Tarragona','Tàrrega','Teià','Terrassa','Tiana','Tona','Torelló','Torredembarra','Torrelles de Llobregat','Tortosa','Tremp','Vallirana','Valls','el Vendrell','Vic','Viladecans','Vilafranca del Penedès','Vilanova del Camí','Vilanova i la Geltrú','Vilassar de Dalt','Vilassar de Mar']
+  },
+  {
+    id:'cat-2024-10', ccaa:'Cataluña',
+    res:'Resolución de 8 de octubre de 2024',
+    boe:'BOE núm. 244, de 9 de octubre de 2024',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2024-20576',
+    desde:'2024-10-10', hasta:'2027-10-10',
+    mun:['Aiguafreda','Albinyana','Alcanar','Alcarràs','Alcover',"l'Aldea",'Almacelles','Alpicat','Altafulla',"l'Ametlla de Mar","l'Ametlla del Vallès","l'Ampolla",'Anglès',"l'Arboç",'Arbúcies','Artés','Artesa de Segre','Bagà','Begues','Begur','Bellpuig','Bellver de Cerdanya','Besalú','Bigues i Riells del Fai','la Bisbal del Penedès','les Borges Blanques','Breda','Cadaqués','Calaf','Calafell','Caldes de Malavella','Calonge i Sant Antoni','Canyelles','Cassà de la Selva','Castellet i la Gornal','Castellgalí',"Castelló d'Empúries",{n:"Castell d'Aro, Platja d'Aro i S'Agaró"},'Castellterçol','Celrà','Centelles','Creixell','Cunit','Deltebre','Dosrius',"l'Escala","l'Esquirol",'Folgueroles','Fornells de la Selva','Gelida','Gironella','Hostalric','Linyola','Llançà',"Lliçà d'Amunt",'Lliçà de Vall','Maçanet de la Selva','Masquefa','Moià','Monistrol de Montserrat','Montblanc','Montbrió del Camp','Mont-roig del Camp',"Móra d'Ebre",'el Morell','Navàs','Òdena','Olèrdola','Olesa de Bonesvalls','Olivella','Pallejà','la Palma de Cervelló','Pals','Peralada','Piera','la Pobla de Montornès','el Pont de Suert','Ponts','Prats de Lluçanès','Puig-reig','la Ràpita','Riells i Viabrea','Riudarenes','Riudoms','Roda de Berà','Roda de Ter','Roses','Sant Antoni de Vilamajor','Sant Cebrià de Vallalta','Sant Esteve de Palautordera','Sant Feliu de Codines','Sant Hipòlit de Voltregà','Sant Jaume dels Domenys',"Sant Jaume d'Enveja",'Sant Joan de Vilatorrada','Sant Julià de Ramis',"Sant Llorenç d'Hortons",'Sant Llorenç Savall','Sant Martí Sarroca','Sant Pere de Riudebitlles','Sant Pere de Torelló','Sant Pere de Vilamajor','Sant Pere Pescador','Sant Quirze de Besora','Santa Bàrbara','Santa Coloma de Queralt',"Santa Cristina d'Aro",'Santa Eulàlia de Ronçana','Santa Maria de Palautordera','Santa Oliva','Santpedor','la Selva del Camp','la Sénia','Sentmenat','Seva','Sils','Súria','Taradell','Torrelles de Foix','Torroella de Montgrí','Tossa de Mar','Ulldecona','Vacarisses','Vallgorguina','Vidreres','Vielha e Mijaran','Viladecavalls','Vilafant','Vilanova del Vallès',"Vilobí d'Onyar",'Vinyols i els Arcs']
+  },
+  {
+    id:'pv-2025-01', ccaa:'País Vasco',
+    res:'Resolución de 28 de enero de 2025',
+    boe:'BOE núm. 26, de 30 de enero de 2025',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2025-1721',
+    desde:'2025-01-31', hasta:'2028-01-31',
+    mun:['Errenteria']
+  },
+  {
+    id:'pv-2025-04', ccaa:'País Vasco',
+    res:'Resolución de 29 de abril de 2025',
+    boe:'BOE núm. 104, de 30 de abril de 2025',
+    url:'https://www.boe.es/diario_boe/txt.php?id=BOE-A-2025-8636',
+    desde:'2025-05-01', hasta:'2028-05-01',
+    mun:['Lasarte-Oria','Zumaia','Barakaldo','Irun']
+  },
+  {
+    id:'nav-2025-07', ccaa:'Navarra',
+    res:'Resolución de 28 de julio de 2025',
+    boe:'BOE núm. 181, de 29 de julio de 2025',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2025-15728',
+    desde:'2025-07-30', hasta:'2028-07-30',
+    mun:['Pamplona/Iruña','Tudela','Valle de Egüés/Eguesibar','Burlada/Burlata','Barañáin/Barañain','Zizur Mayor','Estella-Lizarra','Aranguren','Berriozar','Tafalla','Ansoáin/Antsoain','Villava/Atarrabia','Corella','Valle de Elorz/Elortzibar','Cintruénigo','Baztan','Altsasu/Alsasua','Huarte/Uharte','Berrioplano/Berriobeiti','San Adrián','Peralta/Azkoien']
+  },
+  {
+    id:'gal-2025-07', ccaa:'Galicia',
+    res:'Resolución de 28 de julio de 2025',
+    boe:'BOE núm. 181, de 29 de julio de 2025',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2025-15728',
+    desde:'2025-07-30', hasta:'2028-07-30',
+    mun:['A Coruña']
+  },
+  {
+    id:'pv-2025-07', ccaa:'País Vasco',
+    res:'Resolución de 28 de julio de 2025',
+    boe:'BOE núm. 181, de 29 de julio de 2025',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2025-15728',
+    desde:'2025-07-30', hasta:'2028-07-30',
+    mun:[{n:'Galdakao', nota:'Solo el Distrito 2.'},'Donostia/San Sebastián']
+  },
+  {
+    id:'pv-2025-10', ccaa:'País Vasco',
+    res:'Resolución de 29 de octubre de 2025',
+    boe:'BOE núm. 261, de 30 de octubre de 2025',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2025-21901',
+    desde:'2025-10-31', hasta:'2028-10-31',
+    mun:['Astigarraga','Bilbao','Usurbil',{n:'Vitoria-Gasteiz', nota:'Excepto la zona rural constituida por entidades locales menores no incluida en la trama urbana.'}]
+  },
+  {
+    id:'pv-2026-01', ccaa:'País Vasco',
+    res:'Resolución de 30 de enero de 2026',
+    boe:'BOE núm. 29, de 2 de febrero de 2026',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2026-2448',
+    desde:'2026-02-03', hasta:'2029-02-03',
+    mun:['Hernani','Lezo','Tolosa']
+  },
+  {
+    id:'pv-2026-04', ccaa:'País Vasco',
+    res:'Resolución de 23 de abril de 2026',
+    boe:'BOE núm. 102, de 27 de abril de 2026',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2026-9175',
+    desde:'2026-04-28', hasta:'2029-04-28',
+    mun:['Pasaia','Zestoa','Arrasate/Mondragón']
+  },
+  {
+    id:'ast-2026-07', ccaa:'Asturias',
+    res:'Resolución de 24 de julio de 2026',
+    boe:'BOE núm. 184, de 29 de julio de 2026',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2026-16532',
+    desde:'2026-07-30', hasta:'2029-07-30',
+    mun:[
+      {n:'Llanes', nota:'Núcleo urbano de Llanes y núcleo de Posada de Llanes; y núcleos de Nueva, Poo, Barro y Celorio.'},
+      {n:'Cabrales', nota:'Núcleo de Arenas y núcleo de Poo.'},
+      {n:'Gijón', nota:'Barrio de La Arena y barrio de Cimadevilla.'},
+      {n:'Avilés', nota:'Barrio de La Magdalena.'},
+      {n:'Gozón', nota:'Luanco.'}
+    ]
+  },
+  {
+    id:'pv-2026-07', ccaa:'País Vasco',
+    res:'Resolución de 24 de julio de 2026',
+    boe:'BOE núm. 184, de 29 de julio de 2026',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2026-16532',
+    desde:'2026-07-30', hasta:'2029-07-30',
+    mun:['Basauri']
+  },
+  {
+    id:'gal-2026-07', ccaa:'Galicia',
+    res:'Resolución de 24 de julio de 2026',
+    boe:'BOE núm. 184, de 29 de julio de 2026',
+    url:'https://boe.es/diario_boe/txt.php?id=BOE-A-2026-16532',
+    desde:'2026-07-30', hasta:'2029-07-30',
+    mun:['Santiago de Compostela']
+  }
+];
+
+/* Nombres alternativos: cambios de denominación oficial y formas bilingües
+   que pueden diferir entre el BOE y la cartografía del IGN. */
+const ALIAS = {
+  "Calonge i Sant Antoni"            : ['Calonge'],
+  "la Ràpita"                        : ['Sant Carles de la Ràpita'],
+  "Bigues i Riells del Fai"          : ['Bigues i Riells'],
+  "Castell d'Aro, Platja d'Aro i S'Agaró": ["Castell-Platja d'Aro","Castell d'Aro, Platja d'Aro i s'Agaró"],
+  "l'Esquirol"                       : ['Santa Maria de Corcó'],
+  "Roda de Berà"                     : ['Roda de Barà','Roda de Bará'],
+  "Vielha e Mijaran"                 : ['Viella y Mijaran','Vielha-Mijaran'],
+  "la Canonja"                       : ['Canonja'],
+  "Estella-Lizarra"                  : ['Estella','Lizarra','Estella/Lizarra'],
+  "Valle de Egüés/Eguesibar"         : ['Egüés','Valle de Egüés','Eguesibar'],
+  "Valle de Elorz/Elortzibar"        : ['Elorz','Valle de Elorz','Elortzibar'],
+  "Zizur Mayor"                      : ['Zizur Mayor/Zizur Nagusia','Zizur Nagusia'],
+  "Peralta/Azkoien"                  : ['Peralta'],
+  "Altsasu/Alsasua"                  : ['Alsasua','Altsasu'],
+  "Huarte/Uharte"                    : ['Huarte','Uharte'],
+  "Villava/Atarrabia"                : ['Villava','Atarrabia'],
+  "Ansoáin/Antsoain"                 : ['Ansoáin','Antsoain'],
+  "Berrioplano/Berriobeiti"          : ['Berrioplano','Berriobeiti'],
+  "Burlada/Burlata"                  : ['Burlada','Burlata'],
+  "Barañáin/Barañain"                : ['Barañáin','Barañain'],
+  "Pamplona/Iruña"                   : ['Pamplona','Iruña'],
+  "Baztan"                           : ['Baztán'],
+  "A Coruña"                         : ['Coruña, A','Coruña','A Coruña'],
+  "Gijón"                            : ['Gijón/Xixón','Xixón'],
+  "Donostia/San Sebastián"           : ['San Sebastián','Donostia','Donostia-San Sebastián'],
+  "Arrasate/Mondragón"               : ['Mondragón','Arrasate','Arrasate o Mondragón'],
+  "Errenteria"                       : ['Rentería','Errenteria'],
+  "Pasaia"                           : ['Pasajes'],
+  "Zestoa"                           : ['Cestona'],
+  "Irun"                             : ['Irún'],
+  "Basauri"                          : ['Basauri']
+};
+
+/* =========================================================================
+   2. NORMALIZACIÓN Y EMPAREJAMIENTO DE NOMBRES
+   ========================================================================= */
+
+const ARTS = /^(el|la|els|les|los|las|lo|l|s|es|sa|a|o|os|as)\s+/;
+
+function norm(s){
+  return String(s)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .toLowerCase()
+    .replace(/[’'´`]/g,' ')
+    .replace(/·/g,'')
+    .replace(/[-–—_]/g,' ')
+    .replace(/[^a-z0-9\/ ]/g,' ')
+    .replace(/\s+/g,' ')
+    .trim();
+}
+
+function variantes(nombre){
+  const out = [];
+  const add = raw => {
+    const v = norm(raw);
+    if(!v || out.includes(v)) return;
+    out.push(v);
+    const sinArt = v.replace(ARTS,'');
+    if(sinArt && sinArt !== v && !out.includes(sinArt)) out.push(sinArt);
+    // Forma invertida del IGN: "Coruña, A" → "coruna a"
+    const cola = v.match(/^(.+)\s(el|la|els|les|los|las|lo|l|a|o|os|as)$/);
+    if(cola){
+      if(!out.includes(cola[1])) out.push(cola[1]);
+      const rec = cola[2]+' '+cola[1];
+      if(!out.includes(rec)) out.push(rec);
+    }
+  };
+  const limpio = String(nombre).replace(/\([^)]*\)/g,' ');
+  add(limpio);
+  limpio.split('/').forEach(add);
+  return out;
+}
+
+/* =========================================================================
+   3. MAPA
+   ========================================================================= */
+
+const map = L.map('map', {
+  center:[40.1, -3.3],
+  zoom:6,
+  minZoom:5,
+  maxZoom:18,
+  zoomControl:true,
+  preferCanvas:true
+});
+
+const baseOSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom:19, attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+
+const baseClaro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  maxZoom:20, subdomains:'abcd', attribution:'&copy; OpenStreetMap &copy; CARTO'
+});
+
+const satEsri = L.layerGroup([
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom:19, attribution:'Imágenes: Esri, Maxar, Earthstar Geographics'
+  }),
+  L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
+    maxZoom:19, opacity:.9
+  })
+]);
+
+const satPNOA = L.tileLayer('https://www.ign.es/wmts/pnoa-ma?service=WMTS&request=GetTile&version=1.0.0&format=image/jpeg&layer=OI.OrthoimageCoverage&tilematrixset=GoogleMapsCompatible&TileMatrix={z}&TileRow={y}&TileCol={x}', {
+  maxZoom:19, attribution:'Ortofoto PNOA &copy; Instituto Geográfico Nacional de España'
+});
+
+baseOSM.addTo(map);
+
+L.control.layers(
+  {'Mapa': baseOSM, 'Mapa claro': baseClaro, 'Satélite': satEsri, 'Ortofoto PNOA (IGN)': satPNOA},
+  null,
+  {position:'topright', collapsed:false}
+).addTo(map);
+
+L.control.scale({imperial:false, position:'bottomleft'}).addTo(map);
+
+/* Leyenda */
+const leyenda = L.control({position:'bottomright'});
+leyenda.onAdd = function(){
+  const d = L.DomUtil.create('div','legend');
+  const filas = Object.keys(COLORES).map(c =>
+    `<div class="lg"><i style="background:${COLORES[c]}"></i>${c}</div>`).join('');
+  d.innerHTML = `<h4>Comunidad autónoma</h4>${filas}
+    <div class="lg dashed" style="margin-top:7px"><i></i>Declaración parcial</div>
+    <p class="note">El trazo discontinuo marca municipios declarados solo en parte (barrios o núcleos concretos).</p>`;
+  L.DomEvent.disableClickPropagation(d);
+  return d;
+};
+leyenda.addTo(map);
+
+/* =========================================================================
+   4. CARGA DE LÍMITES Y CONSTRUCCIÓN DE CAPAS
+   ========================================================================= */
+
+const FUENTES = [
+  'https://unpkg.com/es-atlas@0.6.0/es/municipalities.json',
+  'https://cdn.jsdelivr.net/npm/es-atlas@0.6.0/es/municipalities.json',
+  'https://unpkg.com/es-atlas/es/municipalities.json'
+];
+
+const statusEl = document.getElementById('status');
+const capasPorGrupo = {};   // id de grupo → L.layerGroup
+const registros = [];       // una entrada por municipio
+let grupoActivo = null;     // id de grupo aislado, o null
+
+async function cargar(){
+  let topo = null, ultimoError = null;
+  for(const url of FUENTES){
+    try{
+      const r = await fetch(url, {cache:'force-cache'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      topo = await r.json();
+      break;
+    }catch(e){ ultimoError = e; }
+  }
+
+  if(!topo || !topo.objects || !topo.objects.municipalities){
+    statusEl.classList.add('err');
+    statusEl.textContent = 'No se han podido descargar los límites municipales. Revisa la conexión y recarga la página.';
+    console.error(ultimoError);
+    construirLista();
+    return;
+  }
+
+  // Índice: variante normalizada → [geometrías]
+  const indice = new Map();
+  for(const g of topo.objects.municipalities.geometries){
+    const nombre = g.properties && g.properties.name;
+    if(!nombre) continue;
+    for(const v of variantes(nombre)){
+      if(!indice.has(v)) indice.set(v, []);
+      indice.get(v).push(g);
+    }
+  }
+
+  function buscar(nombre, provs){
+    const intentos = [];
+    const meter = n => variantes(n).forEach(v => { if(!intentos.includes(v)) intentos.push(v); });
+    meter(nombre);
+    (ALIAS[nombre] || []).forEach(meter);
+    for(const t of intentos){
+      const arr = indice.get(t);
+      if(!arr) continue;
+      const hit = arr.filter(g => provs.includes(String(g.id).slice(0,2)));
+      if(hit.length) return hit[0];
+    }
+    return null;
+  }
+
+  let ok = 0, ko = 0;
+
+  for(const grupo of GRUPOS){
+    const capa = L.layerGroup().addTo(map);
+    capasPorGrupo[grupo.id] = capa;
+    const color = COLORES[grupo.ccaa];
+    const provs = PROV[grupo.ccaa];
+
+    for(const entrada of grupo.mun){
+      const nombre = typeof entrada === 'string' ? entrada : entrada.n;
+      const nota   = typeof entrada === 'string' ? null    : (entrada.nota || null);
+      const geom   = buscar(nombre, provs);
+
+      const reg = {nombre, nota, grupo, color, layer:null, ine:null};
+      registros.push(reg);
+
+      if(!geom){ ko++; continue; }
+      ok++;
+      reg.ine = geom.id;
+
+      const feature = topojson.feature(topo, geom);
+      const layer = L.geoJSON(feature, {
+        style:{
+          color: color,
+          weight: nota ? 1.6 : 1.2,
+          opacity: .95,
+          dashArray: nota ? '4 3' : null,
+          fillColor: color,
+          fillOpacity: nota ? .18 : .34
+        }
+      });
+
+      layer.bindPopup(popupHTML(reg), {maxWidth:300, autoPanPadding:[24,24]});
+      layer.on('mouseover', () => layer.setStyle({fillOpacity: nota ? .34 : .55, weight:2.4}));
+      layer.on('mouseout',  () => layer.setStyle({fillOpacity: nota ? .18 : .34, weight: nota ? 1.6 : 1.2}));
+
+      layer.addTo(capa);
+      reg.layer = layer;
+    }
+  }
+
+  // Contadores
+  const ccaas = new Set(GRUPOS.map(g => g.ccaa));
+  document.getElementById('c-mun').textContent  = registros.length;
+  document.getElementById('c-ccaa').textContent = ccaas.size;
+  document.getElementById('c-res').textContent  = new Set(GRUPOS.map(g => g.res)).size;
+
+  statusEl.textContent = ko === 0
+    ? `${ok} municipios dibujados sobre cartografía del IGN.`
+    : `${ok} municipios dibujados · ${ko} sin límite localizado (aparecen en gris en el listado).`;
+
+  construirVigencias();
+  construirLista();
+  ajustar();
+}
+
+function popupHTML(reg){
+  const g = reg.grupo;
+  const dias = Math.round((new Date(g.hasta) - new Date()) / 86400000);
+  const restante = dias > 0
+    ? (dias > 365 ? `${(dias/365).toFixed(1)} años` : `${dias} días`)
+    : 'caducada';
+  return `
+    <div class="pop-ccaa" style="color:${reg.color}">${g.ccaa}</div>
+    <div class="pop-name">${escapar(reg.nombre)}</div>
+    ${reg.nota ? `<div class="pop-nota"><strong>Declaración parcial.</strong> ${escapar(reg.nota)}</div>` : ''}
+    <div class="pop-rows">
+      <div class="pop-row"><span>En vigor</span><span>${fecha(g.desde)}</span></div>
+      <div class="pop-row"><span>Hasta</span><span>${fecha(g.hasta)}</span></div>
+      <div class="pop-row"><span>Queda</span><span>${restante}</span></div>
+      ${reg.ine ? `<div class="pop-row"><span>Cód. INE</span><span>${reg.ine}</span></div>` : ''}
+    </div>
+    <a class="pop-boe" href="${g.url}" target="_blank" rel="noopener">${escapar(g.boe)} →</a>
+  `;
+}
+
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function fecha(iso){
+  const d = new Date(iso);
+  return `${d.getUTCDate()} ${MESES[d.getUTCMonth()].slice(0,3)} ${d.getUTCFullYear()}`;
+}
+function escapar(s){
+  return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+}
+
+/* =========================================================================
+   5. LÍNEA DE VIGENCIAS
+   ========================================================================= */
+
+function construirVigencias(){
+  const cont = document.getElementById('vigencias');
+  const t0 = Math.min(...GRUPOS.map(g => +new Date(g.desde)));
+  const t1 = Math.max(...GRUPOS.map(g => +new Date(g.hasta)));
+  const span = t1 - t0;
+  const pct = t => ((t - t0) / span) * 100;
+
+  // Escala de años
+  const escala = document.createElement('div');
+  escala.className = 'vg-scale';
+  const a0 = new Date(t0).getUTCFullYear(), a1 = new Date(t1).getUTCFullYear();
+  for(let a = a0 + 1; a <= a1; a++){
+    const p = pct(+new Date(Date.UTC(a,0,1)));
+    if(p < 2 || p > 98) continue;
+    const s = document.createElement('span');
+    s.style.left = p + '%';
+    s.textContent = a;
+    escala.appendChild(s);
+  }
+  cont.appendChild(escala);
+
+  const hoy = pct(Date.now());
+
+  GRUPOS.forEach(g => {
+    const row = document.createElement('div');
+    row.className = 'vg-row';
+    row.tabIndex = 0;
+    row.dataset.id = g.id;
+    row.title = `${g.res} — pulsa para ver solo estos municipios`;
+    row.innerHTML = `
+      <div class="vg-meta">
+        <span class="vg-name">
+          <i class="vg-dot" style="background:${COLORES[g.ccaa]}"></i>
+          <b>${g.ccaa}</b>
+        </span>
+        <span class="vg-num">${g.mun.length} · ${g.res.match(/\d{4}$/)[0]}</span>
+      </div>
+      <div class="vg-track">
+        <div class="vg-bar" style="left:${pct(+new Date(g.desde))}%;width:${pct(+new Date(g.hasta)) - pct(+new Date(g.desde))}%;background:${COLORES[g.ccaa]}"></div>
+      </div>`;
+    const accion = () => aislar(g.id);
+    row.addEventListener('click', accion);
+    row.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); accion(); } });
+    cont.appendChild(row);
+  });
+
+  if(hoy > 0 && hoy < 100){
+    const marca = document.createElement('div');
+    marca.className = 'vg-today';
+    marca.style.left = hoy + '%';
+    marca.style.top = '17px';
+    marca.style.bottom = '0';
+    cont.style.position = 'relative';
+    cont.appendChild(marca);
+  }
+}
+
+function aislar(id){
+  grupoActivo = (grupoActivo === id) ? null : id;
+  GRUPOS.forEach(g => {
+    const capa = capasPorGrupo[g.id];
+    if(!capa) return;
+    const visible = !grupoActivo || grupoActivo === g.id;
+    if(visible) map.addLayer(capa); else map.removeLayer(capa);
+  });
+  document.querySelectorAll('.vg-row').forEach(r => {
+    r.classList.toggle('off', !!grupoActivo && r.dataset.id !== grupoActivo);
+  });
+  construirLista();
+  ajustar();
+}
+
+document.getElementById('all-on').addEventListener('click', () => {
+  grupoActivo = null;
+  Object.values(capasPorGrupo).forEach(c => map.addLayer(c));
+  document.querySelectorAll('.vg-row').forEach(r => r.classList.remove('off'));
+  construirLista();
+  ajustar();
+});
+
+function ajustar(){
+  const capas = [];
+  registros.forEach(r => {
+    if(!r.layer) return;
+    if(grupoActivo && r.grupo.id !== grupoActivo) return;
+    capas.push(r.layer);
+  });
+  if(!capas.length) return;
+  const b = capas.reduce((acc, l) => acc ? acc.extend(l.getBounds()) : L.latLngBounds(l.getBounds()), null);
+  map.fitBounds(b, {padding:[36,36], maxZoom:13});
+}
+
+/* =========================================================================
+   6. LISTADO Y BÚSQUEDA
+   ========================================================================= */
+
+const listaEl = document.getElementById('list');
+const qEl = document.getElementById('q');
+
+function construirLista(){
+  const q = norm(qEl.value);
+  listaEl.innerHTML = '';
+
+  const visibles = registros.filter(r => {
+    if(grupoActivo && r.grupo.id !== grupoActivo) return false;
+    if(!q) return true;
+    return variantes(r.nombre).some(v => v.includes(q));
+  });
+
+  if(!visibles.length){
+    listaEl.innerHTML = `<p class="empty">Sin resultados. Si el municipio que buscas no aparece, no está declarado zona de mercado residencial tensionado en la última relación publicada.</p>`;
+    return;
+  }
+
+  const porCCAA = {};
+  visibles.forEach(r => (porCCAA[r.grupo.ccaa] = porCCAA[r.grupo.ccaa] || []).push(r));
+
+  Object.keys(COLORES).forEach(ccaa => {
+    const items = porCCAA[ccaa];
+    if(!items) return;
+    items.sort((a,b) => a.nombre.localeCompare(b.nombre,'es'));
+
+    const h = document.createElement('div');
+    h.className = 'grp';
+    h.innerHTML = `<span>${ccaa}</span><span>${items.length}</span>`;
+    listaEl.appendChild(h);
+
+    items.forEach(r => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'item' + (r.layer ? '' : ' miss');
+      b.innerHTML = `<i class="sw" style="background:${r.layer ? r.color : 'var(--muted-2)'}"></i>
+                     <span class="nm">${escapar(r.nombre)}</span>
+                     ${r.nota ? '<span class="tag">parcial</span>' : ''}
+                     ${r.layer ? '' : '<span class="tag">sin límite</span>'}`;
+      if(r.layer){
+        b.addEventListener('click', () => {
+          if(!map.hasLayer(capasPorGrupo[r.grupo.id])) map.addLayer(capasPorGrupo[r.grupo.id]);
+          map.fitBounds(r.layer.getBounds(), {padding:[60,60], maxZoom:14});
+          r.layer.openPopup();
+          if(window.innerWidth <= 880) cerrarPanel();
+        });
+      }
+      listaEl.appendChild(b);
+    });
+  });
+}
+
+let debounce;
+qEl.addEventListener('input', () => {
+  clearTimeout(debounce);
+  debounce = setTimeout(construirLista, 110);
+});
+
+/* =========================================================================
+   7. Panel en móvil
+   ========================================================================= */
+
+const panel = document.getElementById('panel');
+const toggle = document.getElementById('toggle');
+function abrirPanel(){ panel.classList.add('open'); toggle.textContent = 'Ver mapa'; }
+function cerrarPanel(){ panel.classList.remove('open'); toggle.textContent = 'Ver listado'; }
+toggle.addEventListener('click', () => panel.classList.contains('open') ? cerrarPanel() : abrirPanel());
+
+/* Arranque */
+cargar();
+
+} /* fin iniciarMapa() */
+</script>
+</body>
+</html>

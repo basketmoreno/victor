@@ -1,0 +1,1161 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mapa Z2 - Destinos Iberia / Iberia Express / Air Nostrum</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<style>
+:root { --bg:#f5f7fb; --card:#fff; --ink:#0f172a; --muted:#64748b; --line:#dbe3ef; --blue:#1455d9; --green:#00796b; --shadow:0 18px 45px rgba(15,23,42,.10); }
+* { box-sizing:border-box; }
+body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; color:var(--ink); background:var(--bg); }
+header { padding:22px 28px; background:linear-gradient(135deg,#0f2f73,#173f9a); color:white; }
+header h1 { margin:0; font-size:27px; letter-spacing:-.02em; }
+header p { margin:7px 0 0; color:#dbeafe; max-width:1150px; line-height:1.45; }
+main { max-width:1520px; margin:0 auto; padding:20px 28px 32px; }
+.topnav { position:sticky; top:0; z-index:1000; background:rgba(245,247,251,.92); backdrop-filter:blur(10px); border-bottom:1px solid var(--line); padding:10px 28px; display:flex; gap:10px; }
+.navbtn { border:0; border-radius:999px; padding:10px 14px; background:#eaf1ff; color:#0b4bd3; font-weight:900; cursor:pointer; }
+.navbtn.active { background:#0b4bd3; color:#fff; }
+.view-title { margin:0 0 12px; font-size:20px; }
+.origin-bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin:0 0 12px; }
+.origin-bar label { display:flex; align-items:center; gap:7px; font-size:12px; font-weight:900; color:#475569; text-transform:uppercase; }
+.origin-bar input { min-height:38px; padding:8px 10px; }
+.grid { display:grid; grid-template-columns:1fr; gap:18px; align-items:start; }
+.left-stack { display:grid; gap:18px; min-width:0; }
+.card { background:var(--card); border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); overflow:hidden; }
+.card-pad { padding:16px; }
+.toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:14px; }
+.pill { display:inline-flex; align-items:center; gap:8px; padding:8px 11px; background:#eaf1ff; color:#0b4bd3; border-radius:999px; font-weight:800; font-size:13px; }
+.btn { border:0; background:#eaf1ff; color:#0b4bd3; font-weight:800; border-radius:14px; padding:10px 13px; cursor:pointer; }
+.btn:hover { background:#dbe8ff; }
+input, select { border:1px solid var(--line); background:white; border-radius:14px; padding:10px 12px; min-height:42px; color:var(--ink); outline:none; }
+input:focus, select:focus { border-color:#7aa7ff; box-shadow:0 0 0 4px rgba(20,85,217,.10); }
+#map { height:620px; width:100%; border-radius:18px; border:1px solid #cfe3f5; background:#dbeafe; }
+.leaflet-container { font-family:inherit; }
+.leaflet-control-attribution { font-size:10px; }
+.destino-popup { min-width:255px; }
+.destino-popup h3 { margin:0 0 8px; font-size:17px; }
+.destino-popup .price { display:inline-block; font-size:18px; font-weight:900; color:var(--green); margin-bottom:8px; }
+.popup-total { border-radius:16px; padding:12px; margin:8px 0 10px; background:linear-gradient(135deg,#eaf1ff,#f0fdf4); border:1px solid #bfdbfe; }
+.popup-total span { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:#475569; font-weight:900; }
+.popup-total b { display:block; margin-top:3px; font-size:28px; line-height:1; color:#0b4bd3; }
+.popup-breakdown { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px; }
+.popup-breakdown div { background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:8px; }
+.popup-breakdown span { display:block; font-size:10px; text-transform:uppercase; color:#64748b; font-weight:900; }
+.popup-breakdown b { display:block; font-size:14px; margin-top:2px; }
+.destino-popup .meta { font-size:13px; color:#334155; line-height:1.55; }
+.destino-label { background:rgba(255,255,255,.94); border:1px solid rgba(15,23,42,.18); border-radius:999px; padding:2px 7px; font-size:11px; font-weight:800; color:#0f172a; box-shadow:0 3px 10px rgba(15,23,42,.12); }
+.panel-title { padding:16px 16px 0; display:flex; align-items:center; justify-content:space-between; gap:10px; }
+.panel-title h2 { margin:0; font-size:18px; }
+.detail { padding:16px; border-top:1px solid var(--line); background:#fbfdff; min-height:160px; }
+.detail h2 { margin:0 0 9px; }
+.detail-subtitle { margin:-3px 0 12px; color:var(--muted); font-size:13px; }
+.cost-hero { border-radius:20px; padding:16px; background:linear-gradient(135deg,#eff6ff,#ecfdf5); border:1px solid #bfdbfe; margin-bottom:12px; }
+.cost-hero span { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:#475569; font-weight:900; }
+.cost-hero b { display:block; margin-top:4px; font-size:34px; line-height:1; color:#0b4bd3; }
+.cost-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+.cost-card { padding:11px; border:1px solid var(--line); background:#fff; border-radius:16px; }
+.cost-card span { display:block; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); font-weight:900; }
+.cost-card b { display:block; margin-top:4px; font-size:18px; }
+.cost-card.emphasis { border-color:#bfdbfe; background:#f8fbff; }
+.fare-options { display:grid; grid-template-columns:repeat(4,minmax(260px,1fr)); gap:14px; margin-top:14px; }
+.fare-option { border:1px solid var(--line); border-radius:20px; padding:14px; background:#fff; }
+.fare-option.cheapest { background:#fff8db; border-color:#facc15; box-shadow:0 0 0 3px rgba(250,204,21,.18) inset; }
+.fare-option h3 { margin:0 0 10px; }
+.ibs-tax-input { width:100%; margin:8px 0 10px; }
+@media (max-width:1200px){ .fare-options { grid-template-columns:repeat(2,minmax(260px,1fr)); } } @media (max-width:700px){ .fare-options { grid-template-columns:1fr; } }
+.r2-box { margin-top:14px; padding:13px; border-radius:18px; border:1px solid #bbf7d0; background:#f0fdf4; }
+.r2-box h3 { margin:0 0 8px; font-size:16px; color:#14532d; }
+.r2-actions { display:flex; flex-wrap:wrap; gap:8px; margin-top:10px; }
+.r2-actions button { border:0; border-radius:12px; padding:9px 11px; font-weight:800; cursor:pointer; }
+.r2-use { background:#dbeafe; color:#1d4ed8; }
+.r2-reset { background:#fee2e2; color:#991b1b; }
+.z2-use { background:#e0ecff; color:#1d4ed8; }
+.z2-use:disabled { opacity:.55; cursor:not-allowed; }
+.muted { color:#64748b; font-weight:800; }
+.usage-card { padding:16px; }
+.usage-head { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:12px; }
+.usage-head h2 { margin:0; font-size:18px; }
+.usage-actions { display:flex; gap:8px; flex-wrap:wrap; }
+.usage-actions button { border:0; border-radius:12px; padding:9px 11px; font-weight:800; cursor:pointer; background:#eef2ff; color:#263991; }
+.usage-actions .danger { background:#fee2e2; color:#991b1b; }
+.usage-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-bottom:12px; }
+.usage-summary .fiscal-metric b { font-size:16px; }
+.usage-table-wrap { max-height:270px; overflow:auto; border:1px solid var(--line); border-radius:16px; }
+.usage-table { min-width:900px; }
+.usage-empty { color:#64748b; font-size:13px; padding:14px; background:#f8fafc; border:1px dashed #cbd5e1; border-radius:16px; }
+@media (max-width:700px) { .usage-summary { grid-template-columns:1fr 1fr; } }
+.r2-muted { color:#64748b; font-size:12px; line-height:1.45; margin-top:8px; }
+.kv { display:grid; grid-template-columns:125px 1fr; gap:7px 10px; font-size:14px; }
+.kv b { color:#334155; }
+.big-price { font-size:24px; font-weight:900; color:var(--green); }
+.legend { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:12px; }
+.legend-item { border:1px solid var(--line); border-radius:14px; padding:9px; background:#fff; font-size:12px; }
+.dot { width:12px; height:12px; border-radius:50%; display:inline-block; margin-right:6px; vertical-align:-1px; }
+.table-wrap { margin-top:18px; background:#fff; border:1px solid var(--line); border-radius:22px; box-shadow:var(--shadow); overflow:hidden; }
+.table-head { padding:15px 16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); }
+.table-head h2 { margin:0; font-size:18px; }
+.scroll { max-height:570px; overflow:auto; }
+table { border-collapse:collapse; width:100%; min-width:1820px; table-layout:fixed; }
+th,td { padding:11px 12px; border-bottom:1px solid var(--line); text-align:left; vertical-align:middle; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+th { position:sticky; top:0; z-index:5; background:#f8fafc; color:#25324a; font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+tbody tr { cursor:pointer; }
+tbody tr:hover { background:#f8fbff; }
+tbody tr.selected { background:#eaf4ff; outline:2px solid #93c5fd; outline-offset:-2px; }
+.code { font-weight:900; }
+.price { color:var(--green); font-weight:900; white-space:nowrap; }
+.tax { color:#b45309; font-weight:900; white-space:nowrap; }
+.total-cost { color:#0b4bd3; font-weight:900; white-space:nowrap; }
+.savings { color:#047857; font-weight:900; white-space:nowrap; }
+.fiscal-box { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:12px; }
+.fiscal-metric { padding:10px; border:1px solid var(--line); border-radius:14px; background:#f8fafc; }
+.fiscal-metric span { display:block; font-size:11px; color:var(--muted); text-transform:uppercase; font-weight:800; letter-spacing:.04em; }
+.fiscal-metric b { display:block; margin-top:4px; font-size:18px; }
+.custom-tax { width:92px; }
+.tax-input-wrap { display:flex; align-items:center; gap:8px; border:1px solid var(--line); background:#fff; border-radius:14px; padding:0 10px; min-height:42px; }
+.tax-input-wrap span { font-size:12px; font-weight:900; color:#475569; text-transform:uppercase; letter-spacing:.04em; }
+.tax-rate-input { width:76px; border:0; padding:0; min-height:28px; font-weight:900; color:#0f172a; }
+.tax-rate-input:focus { box-shadow:none; }
+.compare-block { margin-top:14px; }
+.compare-block h3 { margin:0 0 8px; font-size:16px; }
+.compare-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:12px 0; }
+.compare-note { color:#64748b; font-size:12px; line-height:1.45; margin-top:8px; }
+@media (max-width:1100px) { .fiscal-box { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:700px) { .fiscal-box { grid-template-columns:1fr; } }
+.airline-tags { display:flex; flex-wrap:nowrap; gap:5px; }
+.tag { display:inline-flex; padding:4px 7px; border-radius:999px; background:#eef2ff; color:#263991; font-size:12px; font-weight:800; }
+.note { color:var(--muted); font-size:12px; line-height:1.45; margin-top:10px; }
+.warning { border-left:4px solid #f59e0b; padding:10px 12px; background:#fffbeb; border-radius:12px; font-size:13px; color:#543b08; margin-top:12px; }
+@media (max-width:1100px) { .grid { grid-template-columns:1fr; } #map { height:560px; } .legend { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:700px) { main { padding:14px; } header { padding:18px; } #map { height:500px; } .legend { grid-template-columns:1fr; } }
+
+.estimated-value { color:#92400e; font-weight:900; }
+.estimated-mark { display:inline-block; margin-left:4px; color:#92400e; font-weight:900; }
+.estimate-note { margin-top:8px; padding:8px 10px; border-radius:12px; background:#fffbeb; border:1px solid #facc15; color:#78350f; font-size:12px; line-height:1.35; }
+
+
+.popup-choice-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; margin-top:8px; }
+.popup-choice { border:1px solid #dbe7f7; border-radius:12px; padding:8px; background:#f8fafc; }
+.popup-choice span { display:block; font-size:10px; text-transform:uppercase; color:#64748b; font-weight:900; letter-spacing:.04em; }
+.popup-choice b { display:block; margin-top:2px; font-size:14px; color:#0f172a; }
+.popup-choice.best { background:#fff8db; border-color:#facc15; }
+.popup-total b small { font-size:13px; color:#64748b; font-weight:800; }
+
+
+.usage-note-pill { display:inline-block; margin-left:6px; padding:3px 7px; border-radius:999px; background:#eef2ff; color:#1d4ed8; font-size:11px; font-weight:900; }
+
+
+.tariff-green { color:#007f6e !important; font-weight:900; }
+.tax-black { color:#0f172a !important; font-weight:500; }
+.estimated-value { color:#b45309 !important; font-weight:900; }
+/* En tarjetas detalladas solo el coste total debe ser grande y muy destacado */
+.fare-options .cost-hero b { font-size:30px !important; font-weight:900 !important; color:#0b4bd3 !important; line-height:1.05; }
+.fare-options .cost-card b,
+.fare-options .cost-card b.price,
+.fare-options .cost-card b.tax,
+.fare-options .cost-card .price,
+.fare-options .cost-card .tax,
+.fare-options .cost-card .savings { font-size:14px !important; font-weight:600 !important; color:#0f172a !important; }
+.fare-options .cost-card .estimated-value { color:#b45309 !important; font-weight:800 !important; }
+
+</style>
+</head>
+<body>
+<header>
+  <h1>Mapa interactivo Z2 con impacto IRPF - destinos IB / I2 / YW</h1>
+  <p>Mapa real con Leaflet y OpenStreetMap. Precio siempre calculado con Z2 y coste fiscal estimado con IRPF editable: <strong>Zonal IB / YW / I2 sin reserva</strong>, por trayecto OW. La columna de aerolínea muestra el operador estimado de la ruta dentro del grupo Iberia, no solo las clases tarifarias IB/YW/I2.</p>
+</header>
+<nav class="topnav">
+  <button class="navbtn active" onclick="showView('map')">Mapa</button>
+  <button class="navbtn" onclick="showView('list')">Lista de destinos</button>
+  <button class="navbtn" onclick="showView('flights')">Vuelos registrados</button>
+</nav>
+<main>
+<script>document.addEventListener("DOMContentLoaded",()=>{showView("map")});</script>
+  <section id="mapView" class="grid">
+    <div class="left-stack">
+    <div class="card card-pad">
+      <div class="toolbar">
+        <span class="pill">Mapa real</span>
+        <input id="searchInput" type="search" placeholder="Buscar código o ciudad..." />
+        <select id="zoneFilter"><option value="">Todas las zonas</option></select>
+        <select id="airlineFilter"><option value="">Todas las aerolíneas</option><option value="Iberia">Iberia</option><option value="Air Nostrum">Air Nostrum</option><option value="Iberia Express">Iberia Express</option></select>
+        <label class="tax-input-wrap" title="Tipo marginal IRPF aplicado a la base en especie">
+          <span>IRPF %</span>
+          <input id="taxRateInput" class="tax-rate-input" type="number" min="0" max="60" step="0.1" value="16" />
+        </label>
+        <button class="btn" id="resetMapBtn">Reset filtros</button>
+      </div>
+      <div id="map"></div>
+      <div class="note">El mapa base requiere conexión a Internet para cargar teselas de OpenStreetMap. Las posiciones son aproximadas para visualización.</div>
+    </div>
+      <section id="flightsView" class="card usage-card">
+        <div class="usage-head">
+          <h2>Vuelos registrados</h2>
+          <div class="usage-actions">
+            <button onclick="exportUsedFlightsCsv()">Exportar CSV</button>
+            <button class="danger" onclick="clearUsedFlights()">Borrar historial</button>
+          </div>
+        </div>
+        <div id="usageSummary" class="usage-summary"></div>
+        <div id="usedFlightsContainer"></div>
+      </section>
+    </div>
+    <aside class="card">
+      <div class="panel-title"><h2>Opciones del destino seleccionado</h2><div style="display:flex;gap:8px;flex-wrap:wrap"><span id="r2Badge" class="pill">R2: 10/10</span><span id="selectedBadge" class="pill">Ninguno</span></div></div>
+      <div id="destinationDetail" class="detail"><div class="origin-bar"><label>Origen IATA <input id="originIata" value="MAD" maxlength="3"></label><label>Ciudad origen <input id="originCity" value="Madrid"></label></div>Haz clic en un punto del mapa o en una fila de la tabla para ver todas las opciones disponibles.</div>
+      <div class="card-pad">
+        <h2 style="font-size:16px;margin:0 0 8px;">Leyenda</h2>
+        <div id="legend" class="legend"></div>
+        <div class="warning"><strong>Nota:</strong> la columna "Aerolínea" se ha revisado a nivel de ruta como operador estimado dentro del grupo Iberia. Puede variar por temporada, wet lease o cambio operativo; conviene contrastarlo con el detalle del vuelo antes de emitir. Los importes fiscales usan la tabla de base imponible aportada para MAD-destino cuando existe; si no existe, usan una estimación editable en el código.</div>
+      </div>
+    </aside>
+  </section>
+  <section id="listView" class="table-wrap">
+    <div class="table-head"><h2>Lista de destinos</h2><div class="origin-bar"><label>Aeropuerto origen <input id="listOriginIata" value="MAD" maxlength="3" oninput="applyFilters()"></label></div><div><strong id="counter">0</strong></div><div id="fiscalSummary" class="fiscal-box"></div></div>
+    <div class="scroll"><table id="destinationsTable"><colgroup><col style="width:85px"><col style="width:190px"><col style="width:230px"><col style="width:150px"><col style="width:150px"><col style="width:150px"><col style="width:150px"></colgroup><thead><tr><th>IATA</th><th>Destino</th><th>Descripción de Zona</th><th>IBE Total R2</th><th>IBE Total Z2</th><th>IBS Total R2</th><th>IBS Total R1</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</main>
+<script id="appdata" type="application/json">{"destinations": [{"code": "AGP", "city": "Malaga", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 36.72, "lng": -4.42, "color": "#2E86AB", "note": "", "publicPriceEstimate": 36.5, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 14.5, "ibeR2Tax16": 3.86, "ibeR2Base": 24.125, "ibeZ2Tax16": 2.32, "ibeZ2Base": 14.499999999999998}, {"code": "ALC", "city": "Alicante", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 38.35, "lng": -0.49, "color": "#2E86AB", "note": "", "publicPriceEstimate": 32.94, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 10.94, "ibeR2Tax16": 3.29, "ibeR2Base": 20.5625, "ibeZ2Tax16": 1.75, "ibeZ2Base": 10.9375}, {"code": "BCN", "city": "Barcelona", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia"], "price": 22, "lat": 41.38, "lng": 2.17, "color": "#2E86AB", "note": "", "publicPriceEstimate": 42.94, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 20.94, "ibeR2Tax16": 4.89, "ibeR2Base": 30.562499999999996, "ibeZ2Tax16": 3.35, "ibeZ2Base": 20.9375}, {"code": "BIO", "city": "Bilbao", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 43.26, "lng": -2.93, "color": "#2E86AB", "note": "", "publicPriceEstimate": 37.81, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 15.81, "ibeR2Tax16": 4.07, "ibeR2Base": 25.4375, "ibeZ2Tax16": 2.53, "ibeZ2Base": 15.812499999999998}, {"code": "BJZ", "city": "Badajoz", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 38.88, "lng": -6.97, "color": "#2E86AB", "note": "", "publicPriceEstimate": 120, "operatorNote": "", "r2Price": 18}, {"code": "CDT", "city": "Castellon de la Plana", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 40.21, "lng": 0.03, "color": "#2E86AB", "note": "", "publicPriceEstimate": 120, "operatorNote": "", "r2Price": 18}, {"code": "EAS", "city": "San Sebastian", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 43.32, "lng": -1.98, "color": "#2E86AB", "note": "", "publicPriceEstimate": 42.0, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 20.0, "ibeR2Tax16": 4.74, "ibeR2Base": 29.625, "ibeZ2Tax16": 3.2, "ibeZ2Base": 20.0}, {"code": "GRX", "city": "Granada", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 37.18, "lng": -3.6, "color": "#2E86AB", "note": "", "publicPriceEstimate": 36.38, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 14.38, "ibeR2Tax16": 3.84, "ibeR2Base": 24.0, "ibeZ2Tax16": 2.3, "ibeZ2Base": 14.374999999999998}, {"code": "IBZ", "city": "Ibiza", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia Express", "Air Nostrum"], "price": 22, "lat": 38.91, "lng": 1.43, "color": "#2E86AB", "note": "", "publicPriceEstimate": 42.88, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 20.88, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 3.34, "ibeZ2Base": 20.875, "ibsZ2Tax16": 10.18, "ibsZ2Base": 63.625, "ibsR2Tax16": 4.88, "ibsR2Base": 30.5, "ibsOrigin": "MAD"}, {"code": "LCG", "city": "La Coruña", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 43.36, "lng": -8.41, "color": "#2E86AB", "note": "", "publicPriceEstimate": 37.75, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 15.75, "ibeR2Tax16": 4.05, "ibeR2Base": 25.3125, "ibeZ2Tax16": 2.52, "ibeZ2Base": 15.75}, {"code": "LEI", "city": "Almeria", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 36.84, "lng": -2.46, "color": "#2E86AB", "note": "", "publicPriceEstimate": 39.19, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 17.19, "ibeR2Tax16": 4.29, "ibeR2Base": 26.8125, "ibeZ2Tax16": 2.75, "ibeZ2Base": 17.1875}, {"code": "MAD", "city": "Madrid", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia", "Iberia Express"], "price": 22, "lat": 40.42, "lng": -3.7, "color": "#2E86AB", "note": "", "publicPriceEstimate": 120, "operatorNote": "", "r2Price": 18}, {"code": "MAH", "city": "Menorca", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia Express", "Air Nostrum"], "price": 22, "lat": 39.89, "lng": 4.22, "color": "#2E86AB", "note": "", "publicPriceEstimate": 60.31, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 38.31, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 6.13, "ibeZ2Base": 38.3125, "ibsZ2Tax16": 13.35, "ibsZ2Base": 83.4375, "ibsR2Tax16": 7.67, "ibsR2Base": 47.9375, "ibsOrigin": "MAD"}, {"code": "MLN", "city": "Melilla", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 35.29, "lng": -2.94, "color": "#2E86AB", "note": "", "publicPriceEstimate": 120, "operatorNote": "", "r2Price": 18}, {"code": "OVD", "city": "Oviedo", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 43.36, "lng": -5.84, "color": "#2E86AB", "note": "", "publicPriceEstimate": 37.81, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 15.81, "ibeR2Tax16": 4.07, "ibeR2Base": 25.4375, "ibeZ2Tax16": 2.53, "ibeZ2Base": 15.812499999999998}, {"code": "PMI", "city": "Palma de Mallorca", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia Express", "Air Nostrum"], "price": 22, "lat": 39.57, "lng": 2.65, "color": "#2E86AB", "note": "", "publicPriceEstimate": 51.25, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 29.25, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 4.68, "ibeZ2Base": 29.25, "ibsZ2Tax16": 10.8, "ibsZ2Base": 67.5, "ibsR2Tax16": 6.22, "ibsR2Base": 38.875, "ibsOrigin": "MAD"}, {"code": "PNA", "city": "Pamplona", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 42.82, "lng": -1.64, "color": "#2E86AB", "note": "", "publicPriceEstimate": 42.31, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 20.31, "ibeR2Tax16": 4.79, "ibeR2Base": 29.9375, "ibeZ2Tax16": 3.25, "ibeZ2Base": 20.3125}, {"code": "SCQ", "city": "Santiago de Compostela", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 42.88, "lng": -8.54, "color": "#2E86AB", "note": "", "publicPriceEstimate": 31.88, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 9.88, "ibeR2Tax16": 3.12, "ibeR2Base": 19.5, "ibeZ2Tax16": 1.58, "ibeZ2Base": 9.875}, {"code": "SDR", "city": "Santander", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 43.46, "lng": -3.8, "color": "#2E86AB", "note": "", "publicPriceEstimate": 38.44, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 16.44, "ibeR2Tax16": 4.17, "ibeR2Base": 26.0625, "ibeZ2Tax16": 2.63, "ibeZ2Base": 16.4375}, {"code": "SVQ", "city": "Sevilla", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia Express"], "price": 22, "lat": 37.39, "lng": -5.99, "color": "#2E86AB", "note": "", "publicPriceEstimate": 37.94, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 15.94, "ibeR2Tax16": 4.09, "ibeR2Base": 25.5625, "ibeZ2Tax16": 2.55, "ibeZ2Base": 15.937499999999998}, {"code": "VGO", "city": "Vigo", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 42.24, "lng": -8.72, "color": "#2E86AB", "note": "", "publicPriceEstimate": 37.13, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 15.13, "ibeR2Tax16": 3.96, "ibeR2Base": 24.75, "ibeZ2Tax16": 2.42, "ibeZ2Base": 15.125}, {"code": "VLC", "city": "Valencia", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Iberia Express", "Air Nostrum"], "price": 22, "lat": 39.47, "lng": -0.38, "color": "#2E86AB", "note": "", "publicPriceEstimate": 73.06, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 51.06, "ibeR2Tax16": 9.71, "ibeR2Base": 60.68750000000001, "ibeZ2Tax16": 8.17, "ibeZ2Base": 51.0625}, {"code": "XRY", "city": "Jerez de la Frontera", "zone": "A", "description": "Península y Baleares", "classText": "IB A / YW Z / I2 K", "airlines": ["Air Nostrum"], "price": 22, "lat": 36.68, "lng": -6.13, "color": "#2E86AB", "note": "", "publicPriceEstimate": 42.38, "operatorNote": "", "r2Price": 18, "taxableBaseAt16": 20.38, "ibeR2Tax16": 4.8, "ibeR2Base": 30.0, "ibeZ2Tax16": 3.26, "ibeZ2Base": 20.375}, {"code": "ACE", "city": "Lanzarote", "zone": "B", "description": "Canarias", "classText": "IB B / YW Y / I2 L", "airlines": ["Iberia Express"], "price": 32, "lat": 28.96, "lng": -13.61, "color": "#3CAEA3", "note": "", "publicPriceEstimate": 74.0, "operatorNote": "", "r2Price": 15, "taxableBaseAt16": 42.0, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 6.72, "ibeZ2Base": 42.0, "ibsZ2Tax16": 16.21, "ibsZ2Base": 101.3125, "ibsR2Tax16": 9.44, "ibsR2Base": 59.0, "ibsOrigin": "MAD"}, {"code": "FUE", "city": "Fuerteventura", "zone": "B", "description": "Canarias", "classText": "IB B / YW Y / I2 L", "airlines": ["Iberia Express"], "price": 32, "lat": 28.5, "lng": -13.86, "color": "#3CAEA3", "note": "", "publicPriceEstimate": 74.0, "operatorNote": "", "r2Price": 15, "taxableBaseAt16": 42.0, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 6.72, "ibeZ2Base": 42.0, "ibsZ2Tax16": 16.72, "ibsZ2Base": 104.5, "ibsR2Tax16": 9.44, "ibsR2Base": 59.0, "ibsOrigin": "MAD"}, {"code": "LPA", "city": "Gran Canaria", "zone": "B", "description": "Canarias", "classText": "IB B / YW Y / I2 L", "airlines": ["Iberia Express"], "price": 32, "lat": 28.12, "lng": -15.43, "color": "#3CAEA3", "note": "", "publicPriceEstimate": 69.13, "operatorNote": "", "r2Price": 15, "taxableBaseAt16": 37.13, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 5.94, "ibeZ2Base": 37.125, "ibsZ2Tax16": 15.52, "ibsZ2Base": 97.0, "ibsR2Tax16": 8.66, "ibsR2Base": 54.125, "ibsOrigin": "MAD"}, {"code": "SPC", "city": "Santa Cruz Palma", "zone": "B", "description": "Canarias", "classText": "IB B / YW Y / I2 L", "airlines": ["Air Nostrum"], "price": 32, "lat": 28.68, "lng": -17.76, "color": "#3CAEA3", "note": "", "publicPriceEstimate": 93.13, "operatorNote": "", "r2Price": 15, "taxableBaseAt16": 61.13, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 9.78, "ibeZ2Base": 61.12499999999999, "ibsZ2Tax16": 20.89, "ibsZ2Base": 130.5625, "ibsR2Tax16": 12.5, "ibsR2Base": 78.125, "ibsOrigin": "MAD"}, {"code": "TCI", "city": "Tenerife", "zone": "B", "description": "Canarias", "classText": "IB B / YW Y / I2 L", "airlines": ["Iberia Express"], "price": 32, "lat": 28.46, "lng": -16.25, "color": "#3CAEA3", "note": "", "publicPriceEstimate": 72.5, "operatorNote": "", "r2Price": 15, "taxableBaseAt16": 40.5}, {"code": "ALG", "city": "Argel", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 36.75, "lng": 3.06, "color": "#7BC96F", "note": "", "publicPriceEstimate": 61.0, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 32.0, "ibeR2Tax16": 4.32, "ibeR2Base": 27.0, "ibeZ2Tax16": 5.12, "ibeZ2Base": 32.0}, {"code": "BOD", "city": "Burdeos", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Air Nostrum"], "price": 29, "lat": 44.84, "lng": -0.58, "color": "#7BC96F", "note": "", "publicPriceEstimate": 230, "operatorNote": "", "r2Price": 22}, {"code": "CAG", "city": "Cagliari", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 39.22, "lng": 9.12, "color": "#7BC96F", "note": "", "publicPriceEstimate": 70.69, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 41.69, "ibeR2Tax16": 8.48, "ibeR2Base": 53.0, "ibeZ2Tax16": 6.67, "ibeZ2Base": 41.6875}, {"code": "FAO", "city": "Faro", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Air Nostrum"], "price": 29, "lat": 37.02, "lng": -7.93, "color": "#7BC96F", "note": "", "publicPriceEstimate": 58.19, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 29.19, "ibeR2Tax16": 6.48, "ibeR2Base": 40.5, "ibeZ2Tax16": 4.67, "ibeZ2Base": 29.1875}, {"code": "GVA", "city": "Ginebra", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 46.2, "lng": 6.14, "color": "#7BC96F", "note": "", "publicPriceEstimate": 66.31, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 37.31, "ibeR2Tax16": 7.78, "ibeR2Base": 48.625, "ibeZ2Tax16": 5.97, "ibeZ2Base": 37.3125}, {"code": "LIS", "city": "Lisboa", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 38.72, "lng": -9.14, "color": "#7BC96F", "note": "", "publicPriceEstimate": 46.19, "operatorNote": "Revisado: Lisboa no se marca como operada por Iberia Express.", "r2Price": 22, "taxableBaseAt16": 17.19, "ibeR2Tax16": 4.48, "ibeR2Base": 28.000000000000004, "ibeZ2Tax16": 2.75, "ibeZ2Base": 17.1875}, {"code": "OLB", "city": "Olbia", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 40.92, "lng": 9.49, "color": "#7BC96F", "note": "", "publicPriceEstimate": 74.69, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 45.69, "ibeR2Tax16": 9.12, "ibeR2Base": 56.99999999999999, "ibeZ2Tax16": 7.31, "ibeZ2Base": 45.6875}, {"code": "OPO", "city": "Oporto", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia", "Air Nostrum"], "price": 29, "lat": 41.15, "lng": -8.61, "color": "#7BC96F", "note": "", "publicPriceEstimate": 39.69, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 10.69, "ibeR2Tax16": 3.52, "ibeR2Base": 22.0, "ibeZ2Tax16": 1.71, "ibeZ2Base": 10.6875}, {"code": "SXB", "city": "Estrasburgo", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 48.58, "lng": 7.75, "color": "#7BC96F", "note": "", "publicPriceEstimate": 230, "operatorNote": "", "r2Price": 22}, {"code": "TLS", "city": "Toulouse", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Air Nostrum"], "price": 29, "lat": 43.6, "lng": 1.44, "color": "#7BC96F", "note": "", "publicPriceEstimate": 43.0, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 14.0, "ibeR2Tax16": 4.05, "ibeR2Base": 25.3125, "ibeZ2Tax16": 2.24, "ibeZ2Base": 14.000000000000002}, {"code": "TNG", "city": "Tanger", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Air Nostrum"], "price": 29, "lat": 35.76, "lng": -5.81, "color": "#7BC96F", "note": "", "publicPriceEstimate": 42.06, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 13.06, "ibeR2Tax16": 3.91, "ibeR2Base": 24.4375, "ibeZ2Tax16": 2.09, "ibeZ2Base": 13.0625}, {"code": "TRN", "city": "Turin", "zone": "C", "description": "Europa 1 y Africa 1", "classText": "IB C / YW X / I2 M", "airlines": ["Iberia"], "price": 29, "lat": 45.07, "lng": 7.69, "color": "#7BC96F", "note": "", "publicPriceEstimate": 63.13, "operatorNote": "", "r2Price": 22, "taxableBaseAt16": 34.13, "ibeR2Tax16": 7.27, "ibeR2Base": 45.4375, "ibeZ2Tax16": 5.46, "ibeZ2Base": 34.125}, {"code": "AMS", "city": "Amsterdam", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia", "Iberia Express"], "price": 33, "lat": 52.37, "lng": 4.9, "color": "#F6C85F", "note": "", "publicPriceEstimate": 66.06, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 33.06, "ibeR2Tax16": 7.28, "ibeR2Base": 45.5, "ibeZ2Tax16": 5.29, "ibeZ2Base": 33.0625}, {"code": "BLQ", "city": "Bolonia", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 44.5, "lng": 11.34, "color": "#F6C85F", "note": "", "publicPriceEstimate": 95.25, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 62.25, "ibeR2Tax16": 11.95, "ibeR2Base": 74.6875, "ibeZ2Tax16": 9.96, "ibeZ2Base": 62.25000000000001}, {"code": "BUD", "city": "Budapest", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 47.5, "lng": 19.04, "color": "#F6C85F", "note": "", "publicPriceEstimate": 100.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 67.56, "ibeR2Tax16": 12.8, "ibeR2Base": 80.0, "ibeZ2Tax16": 10.81, "ibeZ2Base": 67.5625}, {"code": "CAS", "city": "Casablanca", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Air Nostrum"], "price": 33, "lat": 33.57, "lng": -7.59, "color": "#F6C85F", "note": "", "publicPriceEstimate": 50.31, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 17.31, "ibeR2Tax16": 4.76, "ibeR2Base": 29.75, "ibeZ2Tax16": 2.77, "ibeZ2Base": 17.3125}, {"code": "CPH", "city": "Copenhague", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 55.68, "lng": 12.57, "color": "#F6C85F", "note": "", "publicPriceEstimate": 94.38, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 61.38, "ibeR2Tax16": null, "ibeR2Base": 0.0, "ibeZ2Tax16": 9.82, "ibeZ2Base": 61.375, "ibsZ2Tax16": 20.8, "ibsZ2Base": 130.0, "ibsR2Tax16": 11.8, "ibsR2Base": 73.75, "ibsOrigin": "MAD"}, {"code": "CTA", "city": "Catania", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 37.51, "lng": 15.09, "color": "#F6C85F", "note": "", "publicPriceEstimate": 117.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 84.56, "ibeR2Tax16": 15.52, "ibeR2Base": 97.0, "ibeZ2Tax16": 13.53, "ibeZ2Base": 84.5625}, {"code": "DBV", "city": "Dubrovnik", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 42.65, "lng": 18.09, "color": "#F6C85F", "note": "", "publicPriceEstimate": 109.38, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 76.38, "ibeR2Tax16": 14.2, "ibeR2Base": 88.75, "ibeZ2Tax16": 12.22, "ibeZ2Base": 76.375}, {"code": "DUB", "city": "Dublin", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia Express"], "price": 33, "lat": 53.35, "lng": -6.26, "color": "#F6C85F", "note": "", "publicPriceEstimate": 88.06, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 55.06, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 8.81, "ibeZ2Base": 55.0625, "ibsZ2Tax16": 18.08, "ibsZ2Base": 112.99999999999999, "ibsR2Tax16": 10.8, "ibsR2Base": 67.5, "ibsOrigin": "MAD"}, {"code": "DUS", "city": "Dusseldorf", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 51.23, "lng": 6.77, "color": "#F6C85F", "note": "", "publicPriceEstimate": 83.69, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 50.69, "ibeR2Tax16": 10.09, "ibeR2Base": 63.0625, "ibeZ2Tax16": 8.11, "ibeZ2Base": 50.6875}, {"code": "FLR", "city": "Florencia", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 43.77, "lng": 11.25, "color": "#F6C85F", "note": "", "publicPriceEstimate": 90.44, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 57.44, "ibeR2Tax16": 11.18, "ibeR2Base": 69.875, "ibeZ2Tax16": 9.19, "ibeZ2Base": 57.4375}, {"code": "FNC", "city": "Funchal", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 32.65, "lng": -16.91, "color": "#F6C85F", "note": "", "publicPriceEstimate": 109.06, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 76.06, "ibeR2Tax16": 14.16, "ibeR2Base": 88.5, "ibeZ2Tax16": 12.17, "ibeZ2Base": 76.0625}, {"code": "HAM", "city": "Hamburgo", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 53.55, "lng": 9.99, "color": "#F6C85F", "note": "", "publicPriceEstimate": 98.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 65.56, "ibeR2Tax16": 12.48, "ibeR2Base": 78.0, "ibeZ2Tax16": 10.49, "ibeZ2Base": 65.5625}, {"code": "LYS", "city": "Lyon", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia", "Air Nostrum"], "price": 33, "lat": 45.76, "lng": 4.84, "color": "#F6C85F", "note": "", "publicPriceEstimate": 58.88, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 25.88, "ibeR2Tax16": 6.13, "ibeR2Base": 38.3125, "ibeZ2Tax16": 4.14, "ibeZ2Base": 25.874999999999996}, {"code": "MIL", "city": "Milan", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 45.46, "lng": 9.19, "color": "#F6C85F", "note": "", "publicPriceEstimate": 82.25, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 49.25, "ibeR2Tax16": 9.98, "ibeR2Base": 62.375, "ibeZ2Tax16": 7.88, "ibeZ2Base": 49.25}, {"code": "MRS", "city": "Marsella", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 43.3, "lng": 5.37, "color": "#F6C85F", "note": "", "publicPriceEstimate": 54.94, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 21.94, "ibeR2Tax16": 5.49, "ibeR2Base": 34.3125, "ibeZ2Tax16": 3.51, "ibeZ2Base": 21.9375}, {"code": "NAP", "city": "Napoles", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia Express"], "price": 33, "lat": 40.85, "lng": 14.27, "color": "#F6C85F", "note": "", "publicPriceEstimate": 89.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 56.56, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 9.05, "ibeZ2Base": 56.56250000000001, "ibsZ2Tax16": 17.2, "ibsZ2Base": 107.5, "ibsR2Tax16": 11.04, "ibsR2Base": 69.0, "ibsOrigin": "MAD"}, {"code": "NCE", "city": "Niza", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia", "Air Nostrum"], "price": 33, "lat": 43.7, "lng": 7.26, "color": "#F6C85F", "note": "", "publicPriceEstimate": 87.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 54.56, "ibeR2Tax16": 10.72, "ibeR2Base": 67.0, "ibeZ2Tax16": 8.73, "ibeZ2Base": 54.5625}, {"code": "NTE", "city": "Nantes", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia", "Air Nostrum"], "price": 33, "lat": 47.22, "lng": -1.55, "color": "#F6C85F", "note": "", "publicPriceEstimate": 53.38, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 20.38, "ibeR2Tax16": 5.25, "ibeR2Base": 32.8125, "ibeZ2Tax16": 3.26, "ibeZ2Base": 20.375}, {"code": "OSL", "city": "Oslo", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 59.91, "lng": 10.75, "color": "#F6C85F", "note": "", "publicPriceEstimate": 280, "operatorNote": "", "r2Price": 24, "ibeR2Tax16": 12.16, "ibeR2Base": 76.0, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "PAR", "city": "PAR", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 48.86, "lng": 2.35, "color": "#F6C85F", "note": "", "publicPriceEstimate": 65.81, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 32.81, "ibeR2Tax16": 7.57, "ibeR2Base": 47.3125, "ibeZ2Tax16": 5.25, "ibeZ2Base": 32.8125}, {"code": "PDL", "city": "Ponta Delgada", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 37.74, "lng": -25.67, "color": "#F6C85F", "note": "", "publicPriceEstimate": 148.06, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 115.06, "ibeR2Tax16": 20.4, "ibeR2Base": 127.49999999999999, "ibeZ2Tax16": 18.41, "ibeZ2Base": 115.0625}, {"code": "PMO", "city": "Palermo", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 38.12, "lng": 13.36, "color": "#F6C85F", "note": "", "publicPriceEstimate": 121.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 88.56, "ibeR2Tax16": 16.16, "ibeR2Base": 101.0, "ibeZ2Tax16": 14.17, "ibeZ2Base": 88.5625}, {"code": "PRG", "city": "Praga", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 50.08, "lng": 14.44, "color": "#F6C85F", "note": "", "publicPriceEstimate": 101.06, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 68.06, "ibeR2Tax16": 12.88, "ibeR2Base": 80.5, "ibeZ2Tax16": 10.89, "ibeZ2Base": 68.0625}, {"code": "RAK", "city": "Marraquech", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia Express"], "price": 33, "lat": 31.63, "lng": -7.98, "color": "#F6C85F", "note": "", "publicPriceEstimate": 62.88, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 29.88, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 4.78, "ibeZ2Base": 29.875, "ibsZ2Tax16": 13.62, "ibsZ2Base": 85.125, "ibsR2Tax16": 6.76, "ibsR2Base": 42.25, "ibsOrigin": "MAD"}, {"code": "ROM", "city": "Roma", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 41.9, "lng": 12.5, "color": "#F6C85F", "note": "", "publicPriceEstimate": 80.25, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 47.25, "ibeR2Tax16": 8.98, "ibeR2Base": 56.125, "ibeZ2Tax16": 7.56, "ibeZ2Base": 47.25}, {"code": "RVN", "city": "Rovaniemi", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 66.5, "lng": 25.73, "color": "#F6C85F", "note": "", "publicPriceEstimate": 201.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 168.56, "ibeR2Tax16": 28.96, "ibeR2Base": 181.0, "ibeZ2Tax16": 26.97, "ibeZ2Base": 168.5625}, {"code": "SPU", "city": "Split", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 43.51, "lng": 16.44, "color": "#F6C85F", "note": "", "publicPriceEstimate": 125.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 92.56, "ibeR2Tax16": 16.8, "ibeR2Base": 105.0, "ibeZ2Tax16": 14.81, "ibeZ2Base": 92.5625}, {"code": "STO", "city": "Estocolmo", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 59.33, "lng": 18.07, "color": "#F6C85F", "note": "", "publicPriceEstimate": 111.0, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 78.0, "ibeR2Tax16": 14.47, "ibeR2Base": 90.4375, "ibeZ2Tax16": 12.48, "ibeZ2Base": 78.0}, {"code": "TOS", "city": "Tromso", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 69.65, "lng": 18.96, "color": "#F6C85F", "note": "", "publicPriceEstimate": 141.56, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 108.56, "ibeR2Tax16": 19.36, "ibeR2Base": 121.0, "ibeZ2Tax16": 17.37, "ibeZ2Base": 108.5625}, {"code": "VCE", "city": "Venecia", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 45.44, "lng": 12.32, "color": "#F6C85F", "note": "", "publicPriceEstimate": 73.0, "operatorNote": "", "r2Price": 24, "taxableBaseAt16": 40.0, "ibeR2Tax16": 8.39, "ibeR2Base": 52.4375, "ibeZ2Tax16": 6.4, "ibeZ2Base": 40.0}, {"code": "ZAG", "city": "Zagreb", "zone": "D", "description": "Europa 2 y Africa 2", "classText": "IB D / YW U / I2 N", "airlines": ["Iberia"], "price": 33, "lat": 45.81, "lng": 15.98, "color": "#F6C85F", "note": "", "publicPriceEstimate": 280, "operatorNote": "", "r2Price": 24, "ibeR2Tax16": 10.85, "ibeR2Base": 67.8125, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "ATH", "city": "Atenas", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 37.98, "lng": 23.73, "color": "#F08A5D", "note": "", "publicPriceEstimate": 133.5, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 91.5, "ibeR2Tax16": 16.59, "ibeR2Base": 103.6875, "ibeZ2Tax16": 14.64, "ibeZ2Base": 91.5}, {"code": "BER", "city": "Berlin", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia Express"], "price": 42, "lat": 52.52, "lng": 13.4, "color": "#F08A5D", "note": "", "publicPriceEstimate": 109.31, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 67.31, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 10.77, "ibeZ2Base": 67.3125, "ibsZ2Tax16": 19.76, "ibsZ2Base": 123.50000000000001, "ibsR2Tax16": 12.72, "ibsR2Base": 79.5, "ibsOrigin": "MAD"}, {"code": "BRU", "city": "Bruselas", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 50.85, "lng": 4.35, "color": "#F08A5D", "note": "", "publicPriceEstimate": 86.69, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 44.69, "ibeR2Tax16": 9.1, "ibeR2Base": 56.875, "ibeZ2Tax16": 7.15, "ibeZ2Base": 44.6875}, {"code": "BUH", "city": "Bucarest", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 44.43, "lng": 26.1, "color": "#F08A5D", "note": "", "publicPriceEstimate": 330, "operatorNote": "", "r2Price": 29}, {"code": "CFU", "city": "Corfu", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 39.62, "lng": 19.92, "color": "#F08A5D", "note": "", "publicPriceEstimate": 127.5, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 85.5, "ibeR2Tax16": 15.63, "ibeR2Base": 97.6875, "ibeZ2Tax16": 13.68, "ibeZ2Base": 85.5}, {"code": "EDI", "city": "Edimburgo", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia Express"], "price": 42, "lat": 55.95, "lng": -3.19, "color": "#F08A5D", "note": "", "publicPriceEstimate": 125.25, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 83.25, "ibeR2Tax16": 15.28, "ibeR2Base": 95.5, "ibeZ2Tax16": 13.32, "ibeZ2Base": 83.25}, {"code": "FRA", "city": "Frankfurt", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 50.11, "lng": 8.68, "color": "#F08A5D", "note": "", "publicPriceEstimate": 92.31, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 50.31, "ibeR2Tax16": 10.0, "ibeR2Base": 62.5, "ibeZ2Tax16": 8.05, "ibeZ2Base": 50.31250000000001}, {"code": "INN", "city": "Innsbruck", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 47.27, "lng": 11.4, "color": "#F08A5D", "note": "", "publicPriceEstimate": 66.81, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 24.81, "ibeR2Tax16": 5.93, "ibeR2Base": 37.0625, "ibeZ2Tax16": 3.97, "ibeZ2Base": 24.8125}, {"code": "JMK", "city": "Mykonos", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 37.45, "lng": 25.33, "color": "#F08A5D", "note": "", "publicPriceEstimate": 125.19, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 83.19, "ibeR2Tax16": 15.26, "ibeR2Base": 95.375, "ibeZ2Tax16": 13.31, "ibeZ2Base": 83.1875}, {"code": "JTR", "city": "Santorini", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 36.39, "lng": 25.46, "color": "#F08A5D", "note": "", "publicPriceEstimate": 119.81, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 77.81, "ibeR2Tax16": 14.4, "ibeR2Base": 90.0, "ibeZ2Tax16": 12.45, "ibeZ2Base": 77.8125}, {"code": "LJU", "city": "Liubliana", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 46.06, "lng": 14.51, "color": "#F08A5D", "note": "", "publicPriceEstimate": 107.25, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 65.25, "ibeR2Tax16": 12.4, "ibeR2Base": 77.5, "ibeZ2Tax16": 10.44, "ibeZ2Base": 65.25}, {"code": "LON", "city": "Londres", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia", "Iberia Express"], "price": 42, "lat": 51.51, "lng": -0.13, "color": "#F08A5D", "note": "", "publicPriceEstimate": 86.0, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 44.0, "ibeR2Tax16": 9.43, "ibeR2Base": 58.9375, "ibeZ2Tax16": 7.04, "ibeZ2Base": 44.0}, {"code": "MAN", "city": "Manchester", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia Express"], "price": 42, "lat": 53.48, "lng": -2.24, "color": "#F08A5D", "note": "", "publicPriceEstimate": 64.31, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 22.31, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 3.57, "ibeZ2Base": 22.3125, "ibsZ2Tax16": 12.32, "ibsZ2Base": 77.0, "ibsR2Tax16": 5.52, "ibsR2Base": 34.5, "ibsOrigin": "MAD"}, {"code": "MUC", "city": "Munich", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 48.14, "lng": 11.58, "color": "#F08A5D", "note": "", "publicPriceEstimate": 83.75, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 41.75, "ibeR2Tax16": 8.64, "ibeR2Base": 54.0, "ibeZ2Tax16": 6.68, "ibeZ2Base": 41.75}, {"code": "TIV", "city": "Montenegro", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 42.43, "lng": 18.7, "color": "#F08A5D", "note": "", "publicPriceEstimate": 120.31, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 78.31, "ibeR2Tax16": 14.48, "ibeR2Base": 90.5, "ibeZ2Tax16": 12.53, "ibeZ2Base": 78.3125}, {"code": "VIE", "city": "Viena", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 48.21, "lng": 16.37, "color": "#F08A5D", "note": "", "publicPriceEstimate": 98.13, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 56.13, "ibeR2Tax16": 10.93, "ibeR2Base": 68.3125, "ibeZ2Tax16": 8.98, "ibeZ2Base": 56.125}, {"code": "ZRH", "city": "Zurich", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 47.38, "lng": 8.54, "color": "#F08A5D", "note": "", "publicPriceEstimate": 84.31, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 42.31, "ibeR2Tax16": 8.72, "ibeR2Base": 54.50000000000001, "ibeZ2Tax16": 6.77, "ibeZ2Base": 42.3125}, {"code": "SZG", "city": "Salzburgo", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 47.81, "lng": 13.04, "color": "#F08A5D", "note": "", "publicPriceEstimate": 74.81, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 32.81, "ibeR2Tax16": 7.2, "ibeR2Base": 45.0, "ibeZ2Tax16": 5.25, "ibeZ2Base": 32.8125}, {"code": "TIA", "city": "Tirana", "zone": "E", "description": "Europa 3", "classText": "IB E / YW T / I2 O", "airlines": ["Iberia"], "price": 42, "lat": 41.33, "lng": 19.82, "color": "#F08A5D", "note": "", "publicPriceEstimate": 164.81, "operatorNote": "", "r2Price": 29, "taxableBaseAt16": 122.81, "ibeR2Tax16": 21.6, "ibeR2Base": 135.0, "ibeZ2Tax16": 19.65, "ibeZ2Base": 122.81249999999999}, {"code": "CAI", "city": "El Cairo", "zone": "F", "description": "Europa 4 y Oriente Medio", "classText": "IB F / I2 W", "airlines": ["Iberia Express"], "price": 50, "lat": 30.04, "lng": 31.24, "color": "#B83B5E", "note": "", "publicPriceEstimate": 123.81, "operatorNote": "Corregido: el destino El Cairo se marca como operado por Iberia Express.", "r2Price": 28, "taxableBaseAt16": 73.81, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 11.81, "ibeZ2Base": 73.8125, "ibsZ2Tax16": 23.08, "ibsZ2Base": 144.25, "ibsR2Tax16": 15.75, "ibsR2Base": 98.4375, "ibsOrigin": "MAD"}, {"code": "DOH", "city": "Doha", "zone": "F", "description": "Europa 4 y Oriente Medio", "classText": "IB F / I2 W", "airlines": ["Iberia"], "price": 50, "lat": 25.29, "lng": 51.53, "color": "#B83B5E", "note": "", "publicPriceEstimate": 164.31, "operatorNote": "", "r2Price": 28, "taxableBaseAt16": 114.31, "ibeR2Tax16": 22.24, "ibeR2Base": 139.0, "ibeZ2Tax16": 18.29, "ibeZ2Base": 114.3125}, {"code": "KEF", "city": "Keflavik", "zone": "F", "description": "Europa 4 y Oriente Medio", "classText": "IB F / I2 W", "airlines": ["Iberia Express"], "price": 50, "lat": 63.99, "lng": -22.6, "color": "#B83B5E", "note": "", "publicPriceEstimate": 450, "operatorNote": " Fiscalidad IBS asignada desde código REK del Excel.", "r2Price": 28, "ibsZ2Tax16": 26.74, "ibsZ2Base": 167.125, "ibsR2Tax16": 17.41, "ibsR2Base": 108.8125, "ibsOrigin": "MAD"}, {"code": "TLV", "city": "Tel-Aviv", "zone": "F", "description": "Europa 4 y Oriente Medio", "classText": "IB F / I2 W", "airlines": ["Iberia Express"], "price": 50, "lat": 32.08, "lng": 34.78, "color": "#B83B5E", "note": "", "publicPriceEstimate": 172.56, "operatorNote": "", "r2Price": 28, "taxableBaseAt16": 122.56, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 19.61, "ibeZ2Base": 122.5625, "ibsZ2Tax16": 29.24, "ibsZ2Base": 182.75, "ibsR2Tax16": 23.56, "ibsR2Base": 147.25, "ibsOrigin": "MAD"}, {"code": "DKR", "city": "Dakar", "zone": "G", "description": "Africa 3", "classText": "IB G", "airlines": ["Iberia"], "price": 77, "lat": 14.69, "lng": -17.45, "color": "#6A4C93", "note": "", "publicPriceEstimate": 177.25, "operatorNote": "", "r2Price": 55, "taxableBaseAt16": 100.25, "ibeR2Tax16": 19.96, "ibeR2Base": 124.75, "ibeZ2Tax16": 16.04, "ibeZ2Base": 100.25}, {"code": "BOG", "city": "Bogota", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 4.71, "lng": -74.07, "color": "#3867D6", "note": "", "publicPriceEstimate": 334.75, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 258.75, "ibeR2Tax16": 48.23, "ibeR2Base": 301.4375, "ibeZ2Tax16": 41.4, "ibeZ2Base": 258.75}, {"code": "BOS", "city": "Boston", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 42.36, "lng": -71.06, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 31.01, "ibeR2Base": 193.8125, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "CHI", "city": "Chicago", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 41.88, "lng": -87.63, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 34.37, "ibeR2Base": 214.81249999999997, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "DFW", "city": "Dallas", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 32.78, "lng": -96.8, "color": "#3867D6", "note": "", "publicPriceEstimate": 256.69, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 180.69, "ibeR2Tax16": 35.74, "ibeR2Base": 223.375, "ibeZ2Tax16": 28.91, "ibeZ2Base": 180.6875}, {"code": "FOR", "city": "Fortaleza", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": -3.73, "lng": -38.52, "color": "#3867D6", "note": "", "publicPriceEstimate": 267.75, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 191.75, "ibeR2Tax16": 37.5, "ibeR2Base": 234.375, "ibeZ2Tax16": 30.68, "ibeZ2Base": 191.75}, {"code": "GUA", "city": "Guatemala", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 14.63, "lng": -90.51, "color": "#3867D6", "note": "Excepcion documental: el trayecto GUA-SAL se considera Europa 2 a efectos de tarifa.", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 57.74, "ibeR2Base": 360.875, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "HAV", "city": "La Habana", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 23.11, "lng": -82.37, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 46.9, "ibeR2Base": 293.125, "ibeZ2Tax16": null, "ibeZ2Base": 0.0}, {"code": "MCO", "city": "Orlando", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 28.54, "lng": -81.38, "color": "#3867D6", "note": "", "publicPriceEstimate": 207.63, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 131.63}, {"code": "MIA", "city": "Miami", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 25.76, "lng": -80.19, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 34.74, "ibeR2Base": 217.125, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "NYC", "city": "Nueva York", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 40.71, "lng": -74.0, "color": "#3867D6", "note": "", "publicPriceEstimate": 225.25, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 149.25, "ibeR2Tax16": 30.71, "ibeR2Base": 191.9375, "ibeZ2Tax16": 23.88, "ibeZ2Base": 149.25}, {"code": "REC", "city": "Recife", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": -8.05, "lng": -34.88, "color": "#3867D6", "note": "", "publicPriceEstimate": 277.13, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 201.13, "ibeR2Tax16": 39.01, "ibeR2Base": 243.8125, "ibeZ2Tax16": 32.18, "ibeZ2Base": 201.125}, {"code": "RIO", "city": "Rio de Janeiro", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": -22.91, "lng": -43.17, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 55.43, "ibeR2Base": 346.4375, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "SAO", "city": "Sao Paulo", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": -23.55, "lng": -46.63, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 51.96, "ibeR2Base": 324.75, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "SAL", "city": "San Salvador", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 13.69, "lng": -89.19, "color": "#3867D6", "note": "Excepcion documental: el trayecto GUA-SAL se considera Europa 2 a efectos de tarifa.", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 58.23, "ibeR2Base": 363.9375, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "SJO", "city": "San Jose de Costa Rica", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 9.93, "lng": -84.09, "color": "#3867D6", "note": "", "publicPriceEstimate": 357.06, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 281.06, "ibeR2Tax16": 51.8, "ibeR2Base": 323.75, "ibeZ2Tax16": 44.97, "ibeZ2Base": 281.0625}, {"code": "SJU", "city": "San Juan", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 18.47, "lng": -66.11, "color": "#3867D6", "note": "", "publicPriceEstimate": 450, "operatorNote": "", "r2Price": 38, "ibeR2Tax16": 41.28, "ibeR2Base": 258.0, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "WAS", "city": "Washington", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 38.91, "lng": -77.04, "color": "#3867D6", "note": "", "publicPriceEstimate": 247.44, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 171.44, "ibeR2Tax16": 34.26, "ibeR2Base": 214.125, "ibeZ2Tax16": 27.43, "ibeZ2Base": 171.4375}, {"code": "YTO", "city": "Toronto", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 43.65, "lng": -79.38, "color": "#3867D6", "note": "", "publicPriceEstimate": 264.94, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 188.94, "ibeR2Tax16": null, "ibeR2Base": null, "ibeZ2Tax16": 30.23, "ibeZ2Base": 188.9375}, {"code": "EWR", "city": "Newark", "zone": "H", "description": "America 1", "classText": "IB H", "airlines": ["Iberia"], "price": 76, "lat": 40.69, "lng": -74.17, "color": "#3867D6", "note": "", "publicPriceEstimate": 254.31, "operatorNote": "", "r2Price": 38, "taxableBaseAt16": 178.31, "ibeR2Tax16": 35.36, "ibeR2Base": 221.0, "ibeZ2Tax16": 28.53, "ibeZ2Base": 178.3125}, {"code": "BUE", "city": "Buenos Aires", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -34.6, "lng": -58.38, "color": "#D35400", "note": "", "publicPriceEstimate": 489.56, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 402.56, "ibeR2Tax16": 72.42, "ibeR2Base": 452.625, "ibeZ2Tax16": 64.41, "ibeZ2Base": 402.5625}, {"code": "CCS", "city": "Caracas", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 10.48, "lng": -66.9, "color": "#D35400", "note": "", "publicPriceEstimate": 457.5, "operatorNote": "", "r2Price": 42, "ibeR2Tax16": 49.2, "ibeR2Base": 307.5, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "GYE", "city": "Guayaquil", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -2.19, "lng": -79.9, "color": "#D35400", "note": "", "publicPriceEstimate": 363.06, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 276.06, "ibeR2Tax16": 54.8, "ibeR2Base": 342.5, "ibeZ2Tax16": 44.17, "ibeZ2Base": 276.0625}, {"code": "LAX", "city": "Los Angeles", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 34.05, "lng": -118.24, "color": "#D35400", "note": "", "publicPriceEstimate": 324.94, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 237.94, "ibeR2Tax16": 43.79, "ibeR2Base": 273.6875, "ibeZ2Tax16": 38.07, "ibeZ2Base": 237.9375}, {"code": "LIM", "city": "Lima", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -12.05, "lng": -77.04, "color": "#D35400", "note": "", "publicPriceEstimate": 425.88, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 338.88, "ibeR2Tax16": 62.24, "ibeR2Base": 389.0, "ibeZ2Tax16": 54.22, "ibeZ2Base": 338.875}, {"code": "MEX", "city": "Mexico", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 19.43, "lng": -99.13, "color": "#D35400", "note": "", "publicPriceEstimate": 353.38, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 266.38, "ibeR2Tax16": 50.63, "ibeR2Base": 316.4375, "ibeZ2Tax16": 42.62, "ibeZ2Base": 266.375}, {"code": "MTY", "city": "Monterrey", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 25.69, "lng": -100.32, "color": "#D35400", "note": "", "publicPriceEstimate": 369.88, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 282.88, "ibeR2Tax16": 53.27, "ibeR2Base": 332.9375, "ibeZ2Tax16": 45.26, "ibeZ2Base": 282.875}, {"code": "MVD", "city": "Montevideo", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -34.9, "lng": -56.16, "color": "#D35400", "note": "", "publicPriceEstimate": 457.5, "operatorNote": "", "r2Price": 42, "ibeR2Tax16": 72.03, "ibeR2Base": 450.1875, "ibeZ2Tax16": null, "ibeZ2Base": null}, {"code": "PTY", "city": "Panama", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 8.98, "lng": -79.52, "color": "#D35400", "note": "", "publicPriceEstimate": 337.19, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 250.19, "ibeR2Tax16": 48.05, "ibeR2Base": 300.3125, "ibeZ2Tax16": 40.03, "ibeZ2Base": 250.1875}, {"code": "SCL", "city": "Santiago de Chile", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -33.45, "lng": -70.66, "color": "#D35400", "note": "", "publicPriceEstimate": 441.19, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 354.19, "ibeR2Tax16": 64.68, "ibeR2Base": 404.25000000000006, "ibeZ2Tax16": 56.67, "ibeZ2Base": 354.1875}, {"code": "SDQ", "city": "Santo Domingo", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 18.49, "lng": -69.93, "color": "#D35400", "note": "", "publicPriceEstimate": 352.56, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 265.56, "ibeR2Tax16": 50.51, "ibeR2Base": 315.6875, "ibeZ2Tax16": 42.49, "ibeZ2Base": 265.5625}, {"code": "SFO", "city": "San Francisco", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 37.77, "lng": -122.42, "color": "#D35400", "note": "", "publicPriceEstimate": 317.38, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 230.38, "ibeR2Tax16": 43.03, "ibeR2Base": 268.9375, "ibeZ2Tax16": 36.86, "ibeZ2Base": 230.375}, {"code": "TYO", "city": "Tokyo", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": 35.69, "lng": 139.69, "color": "#D35400", "note": "", "publicPriceEstimate": 457.5, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 370.5, "ibeR2Tax16": 67.3, "ibeR2Base": 420.625, "ibeZ2Tax16": 59.28, "ibeZ2Base": 370.5}, {"code": "UIO", "city": "Quito", "zone": "I", "description": "America 2 y Asia", "classText": "IB I", "airlines": ["Iberia"], "price": 87, "lat": -0.18, "lng": -78.47, "color": "#D35400", "note": "", "publicPriceEstimate": 379.44, "operatorNote": "", "r2Price": 42, "taxableBaseAt16": 292.44, "ibeR2Tax16": 54.8, "ibeR2Base": 342.5, "ibeZ2Tax16": 46.79, "ibeZ2Base": 292.4375}], "zones": {"A": "Península y Baleares", "B": "Canarias", "C": "Europa 1 y Africa 1", "D": "Europa 2 y Africa 2", "E": "Europa 3", "F": "Europa 4 y Oriente Medio", "G": "Africa 3", "H": "America 1", "I": "America 2 y Asia"}, "prices": {"A": 22, "B": 32, "C": 29, "D": 33, "E": 42, "F": 50, "G": 77, "H": 76, "I": 87}, "colors": {"A": "#2E86AB", "B": "#3CAEA3", "C": "#7BC96F", "D": "#F6C85F", "E": "#F08A5D", "F": "#B83B5E", "G": "#6A4C93", "H": "#3867D6", "I": "#D35400"}, "taxTableInfo": {"source": "Tabla aportada por el usuario", "irpfPercent": 16, "updatedDestinations": 107}}</script>
+<script>
+const DATA = JSON.parse(document.getElementById('appdata').textContent);
+const DESTINATIONS = DATA.destinations;
+const ZONES = DATA.zones;
+const PRICES = DATA.prices;
+const zoneColors = DATA.colors;
+let map, markersLayer;
+const markerByCode = new Map();
+function getZoneColor(zone) { return zoneColors[zone] || '#64748B'; }
+function airlineTags(dest) { return dest.airlines.map(a => `<span class="tag">${a}</span>`).join(''); }
+function money(n) {
+  const value = Number(n || 0);
+  const hasCents = Math.abs(value - Math.round(value)) > 0.005;
+  return new Intl.NumberFormat('es-ES', {minimumFractionDigits: hasCents ? 2 : 0, maximumFractionDigits: hasCents ? 2 : 0}).format(value) + ' EUR';
+}
+function getTaxRate() {
+  const input = document.getElementById('taxRateInput');
+  const v = Number(input?.value || 0);
+  return Math.max(0, Math.min(60, v)) / 100;
+}
+function fiscal(dest) {
+  const publicPrice = Number(dest.publicPriceEstimate || 0);
+  const z2 = Number(dest.price || 0);
+  const taxableBenefit = Math.max(0, publicPrice - z2);
+  const tax = taxableBenefit * getTaxRate();
+  const totalCost = z2 + tax;
+  const netSaving = Math.max(0, publicPrice - totalCost);
+  return { publicPrice, z2, taxableBenefit, tax, totalCost, netSaving };
+}
+
+function fiscalForFare(dest, fareAmount) {
+  const publicPrice = Number(dest.publicPriceEstimate || 0);
+  const paid = Number(fareAmount || 0);
+  const taxableBenefit = Math.max(0, publicPrice - paid);
+  const tax = taxableBenefit * getTaxRate();
+  const totalCost = paid + tax;
+  const netSaving = Math.max(0, publicPrice - totalCost);
+  return { publicPrice, paid, taxableBenefit, tax, totalCost, netSaving };
+}
+function currentTaxPercentText() { return (getTaxRate()*100).toLocaleString('es-ES') + '%'; }
+function r2StorageKey() { return 'iberiaStaffTravelR2Remaining_' + new Date().getFullYear(); }
+function getR2Remaining() {
+  const key = r2StorageKey();
+  const raw = localStorage.getItem(key);
+  if (raw === null) { localStorage.setItem(key, '10'); return 10; }
+  const n = Number(raw);
+  return Number.isFinite(n) ? Math.max(0, Math.min(10, Math.round(n))) : 10;
+}
+function setR2Remaining(n) {
+  localStorage.setItem(r2StorageKey(), String(Math.max(0, Math.min(10, Math.round(n)))));
+  renderR2Badge();
+}
+function renderR2Badge() {
+  const badge = document.getElementById('r2Badge');
+  if (badge) badge.textContent = `R2: ${getR2Remaining()}/10`;
+}
+let currentSelectedCode = null;
+function useR2ForSelected() {
+  if (!currentSelectedCode) return;
+  const left = getR2Remaining();
+  if (left <= 0) return;
+  const dest = DESTINATIONS.find(d => d.code === currentSelectedCode);
+  if (dest) addUsedFlight(dest, 'IBE Tipo R2', 'Iberia', dest.r2Price, getTaxBase(dest));
+  setR2Remaining(left - 1);
+  selectDestination(currentSelectedCode, false);
+}
+function resetR2Uses() {
+  setR2Remaining(10);
+  if (currentSelectedCode) selectDestination(currentSelectedCode, false);
+}
+
+function usedFlightsKey() { return 'iberiaStaffTravelUsedFlights_' + new Date().getFullYear(); }
+function getUsedFlights() {
+  try { return JSON.parse(localStorage.getItem(usedFlightsKey()) || '[]'); }
+  catch { return []; }
+}
+function setUsedFlights(rows) {
+  localStorage.setItem(usedFlightsKey(), JSON.stringify(rows));
+  renderUsedFlights();
+}
+function addUsedFlight(dest, fareType, airlineLabel, fareAmount, taxBase, extraFee=0) {
+  const paid = Number(fareAmount || 0) + Number(extraFee || 0);
+  const publicPrice = Number(dest.publicPriceEstimate || 0) + Number(extraFee || 0);
+  const base = Number(taxBase ?? Math.max(0, publicPrice - paid));
+  const tax = base * getTaxRate();
+  const totalCost = paid + tax;
+  const saving = Math.max(0, publicPrice - totalCost);
+  const originIata = (document.getElementById('originIata')?.value || 'MAD').toUpperCase();
+  const originCity = document.getElementById('originCity')?.value || 'Madrid';
+  const rows = getUsedFlights();
+  rows.unshift({
+    id: Date.now(), date: new Date().toISOString(),
+    originIata, originCity, destIata: dest.code, destCity: dest.city,
+    fareType, airline: airlineLabel || dest.airlines.join(' / '),
+    paid, taxRate: getTaxRate()*100, tax, taxBase: base, publicPrice, saving, totalCost
+  });
+  setUsedFlights(rows);
+}
+function recordZ2ForSelected() {
+  if (!currentSelectedCode) return;
+  const dest = DESTINATIONS.find(d => d.code === currentSelectedCode);
+  if (!dest) return;
+  addUsedFlight(dest, 'IBE Tipo Z2', 'Iberia', dest.price, getTaxBase(dest));
+  selectDestination(currentSelectedCode, false);
+}
+function clearUsedFlights() {
+  localStorage.removeItem(usedFlightsKey());
+  renderUsedFlights();
+}
+function removeUsedFlight(id) {
+  setUsedFlights(getUsedFlights().filter(r => r.id !== id));
+}
+function exportUsedFlightsCsv() {
+  const rows = getUsedFlights();
+  const header = ['fecha','ciudad_origen','iata_origen','destino','iata_destino','aerolinea','tipo','precio_tipo','porcentaje_impuesto','valor_impuesto','base_impuesto','base_publico','ahorrado'];
+  const csvRows = [header.join(';')].concat(rows.map(r => [
+    new Date(r.date).toLocaleString('es-ES'), r.originCity || 'Madrid', r.originIata || 'MAD', r.destCity || r.city || '', r.destIata || r.code || '', r.airline, r.fareType, r.paid, r.taxRate, r.tax, r.taxBase, r.publicPrice, r.saving
+  ].map(v => String(v).replaceAll(';', ',')).join(';')));
+  const blob = new Blob([csvRows.join('\n')], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `vuelos_usados_${new Date().getFullYear()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+}
+function renderUsedFlights() {
+  const container = document.getElementById('usedFlightsContainer');
+  const summary = document.getElementById('usageSummary');
+  if (!container || !summary) return;
+  const rows = getUsedFlights();
+  const totals = rows.reduce((a,r) => { a.paid += Number(r.paid||0); a.tax += Number(r.tax||0); a.total += Number(r.totalCost||0); a.saving += Number(r.saving||0); return a; }, {paid:0,tax:0,total:0,saving:0});
+  summary.innerHTML = `<div class="fiscal-metric"><span>Vuelos</span><b>${rows.length}</b></div><div class="fiscal-metric"><span>Total pagado</span><b class="price">${money(totals.paid)}</b></div><div class="fiscal-metric"><span>Coste total</span><b class="total-cost">${money(totals.total)}</b></div><div class="fiscal-metric"><span>Total ahorrado</span><b class="savings">${money(totals.saving)}</b></div>`;
+  if (!rows.length) { container.innerHTML = '<div class="usage-empty">Todavía no hay vuelos registrados. Registra una opción desde el mapa.</div>'; return; }
+  container.innerHTML = `<div class="usage-table-wrap"><table class="usage-table"><thead><tr><th>Ciudad Origen</th><th>IATA Origen</th><th>Destino</th><th>IATA Destino</th><th>Aerolínea</th><th>Tipo</th><th>Precio tipo</th><th>% impuesto</th><th>Valor impuesto</th><th>Base impuesto</th><th>Base público</th><th>Ahorrado</th><th></th></tr></thead><tbody>${rows.map(r => `<tr><td>${r.originCity || 'Madrid'}</td><td>${r.originIata || 'MAD'}</td><td>${r.destCity || r.city || ''}</td><td><strong>${r.destIata || r.code || ''}</strong></td><td>${r.airline || ''}</td><td>${r.fareType || ''}</td><td class="price">${money(r.paid)}</td><td>${Number(r.taxRate || getTaxRate()*100).toLocaleString('es-ES')}%</td><td class="tax">${money(r.tax)}</td><td>${money(r.taxBase)}</td><td>${money(r.publicPrice)}</td><td class="savings">${money(r.saving)}</td><td><button class="btn" onclick="removeUsedFlight(${r.id})">Quitar</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+function renderR2Panel(dest) {
+  const left = getR2Remaining();
+  if (left <= 0) {
+    return `<div class="r2-box compare-block"><h3>Alternativa R2</h3><div class="compare-note">No quedan usos R2 disponibles este año en este navegador. Puedes restaurarlos manualmente si estás probando la herramienta.</div><div class="r2-actions"><button class="r2-reset" onclick="resetR2Uses()">Restaurar 10 usos</button></div></div>`;
+  }
+  const r = fiscalForFare(dest, dest.r2Price);
+  return `<div class="r2-box compare-block"><h3>Alternativa R2 disponible</h3><div class="cost-hero"><span>Lo que te costaría realmente con R2</span><b>${money(r.totalCost)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio R2 pagado</span><b class="price">${money(r.paid)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b class="tax">${money(r.tax)}</b></div><div class="cost-card"><span>Precio público estimado</span><b>${money(r.publicPrice)}</b></div><div class="cost-card"><span>Base especie</span><b>${money(r.taxableBenefit)}</b></div><div class="cost-card"><span>Usos R2 restantes</span><b>${left}/10</b></div><div class="cost-card"><span>Ahorro neto</span><b class="savings">${money(r.netSaving)}</b></div></div><div class="compare-note">El R2 solo se muestra aquí, no en el popup del mapa. El contador y el historial se guardan en este navegador para ${new Date().getFullYear()}.</div><div class="r2-actions"><button class="r2-use" onclick="useR2ForSelected()">Marcar 1 uso R2</button><button class="r2-reset" onclick="resetR2Uses()">Restaurar 10 usos</button></div></div>`;
+}
+function updateFiscalSummary(rows) {
+  const box = document.getElementById('fiscalSummary');
+  if (!box) return;
+  if (!rows.length) { box.innerHTML = ''; return; }
+  const agg = rows.reduce((a,d) => {
+    const f = fiscal(d);
+    a.z2 += f.z2; a.tax += f.tax; a.total += f.totalCost; a.pub += f.publicPrice; return a;
+  }, {z2:0,tax:0,total:0,pub:0});
+  const n = rows.length;
+  box.innerHTML = `
+    <div class="fiscal-metric"><span>IRPF usado</span><b>${(getTaxRate()*100).toLocaleString('es-ES')}%</b></div>
+    <div class="fiscal-metric"><span>IRPF medio estimado</span><b class="tax">${money(agg.tax/n)}</b></div>
+    <div class="fiscal-metric"><span>Coste total medio</span><b class="total-cost">${money(agg.total/n)}</b></div>
+    <div class="fiscal-metric"><span>Ahorro neto medio</span><b class="savings">${money((agg.pub-agg.total)/n)}</b></div>`;
+}
+function initControls() {
+  const zoneFilter = document.getElementById('zoneFilter');
+  Object.keys(ZONES).forEach(z => zoneFilter.add(new Option(`Zona ${z} - ${ZONES[z]} - ${PRICES[z]} EUR`, z)));
+  const legend = document.getElementById('legend');
+  legend.innerHTML = Object.keys(ZONES).map(z => `<div class="legend-item"><span class="dot" style="background:${getZoneColor(z)}"></span><strong>Zona ${z}</strong><br>${ZONES[z]}<br><strong>${PRICES[z]} EUR</strong></div>`).join('');
+}
+function initMap() {
+  map = L.map('map', { preferCanvas:true, worldCopyJump:true, zoomControl:true }).setView([35, -10], 3);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom:18, attribution:'&copy; OpenStreetMap contributors' }).addTo(map);
+  markersLayer = L.layerGroup().addTo(map);
+  renderMapMarkers(DESTINATIONS);
+  fitMapToDestinations(DESTINATIONS, 5);
+}
+function renderMapMarkers(rows) {
+  markersLayer.clearLayers(); markerByCode.clear();
+  rows.forEach(dest => {
+    const f = fiscal(dest);
+    const marker = L.circleMarker([dest.lat, dest.lng], { radius:7, color:'#fff', weight:2, fillColor:getZoneColor(dest.zone), fillOpacity:.95 });
+    marker.bindTooltip(`${dest.code} · ${money(f.totalCost)}`, { direction:'top', className:'destino-label', opacity:1 });
+    marker.bindPopup(`<div class="destino-popup"><h3>${dest.code} · ${dest.city}</h3><div class="popup-total"><span>Coste total estimado con Z2</span><b>${money(f.totalCost)}</b></div><div class="popup-breakdown"><div><span>Precio Z2</span><b class="price">${money(f.z2)}</b></div><div><span>IRPF ${currentTaxPercentText()}</span><b class="tax">${money(f.tax)}</b></div><div><span>Precio público est.</span><b>${money(f.publicPrice)}</b></div><div><span>Ahorro neto</span><b class="savings">${money(f.netSaving)}</b></div></div><div class="meta"><strong>Zona:</strong> ${dest.zone} · ${dest.description}<br><strong>Aerolínea:</strong> ${dest.airlines.join(' / ')}${dest.operatorNote ? '<br><strong>Operador:</strong> '+dest.operatorNote : ''}${dest.note ? '<br><strong>Nota:</strong> '+dest.note : ''}</div></div>`);
+    marker.on('click', () => selectDestination(dest.code, true));
+    marker.addTo(markersLayer); markerByCode.set(dest.code, marker);
+  });
+}
+function fitMapToDestinations(rows, maxZoom=6) {
+  const points = rows.filter(d => Number.isFinite(d.lat) && Number.isFinite(d.lng)).map(d => [d.lat,d.lng]);
+  if (!points.length) return;
+  map.fitBounds(L.latLngBounds(points), { padding:[38,38], maxZoom });
+}
+function renderTable(rows) {
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  rows.forEach(dest => {
+    const z2 = fiscal(dest);
+    const r2Tax = 'Pendiente';
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td class="price">${money(dest.r2Price || 0)}</td><td>${r2Tax}</td><td class="price">${money(z2.z2)}</td><td class="tax">${money(z2.tax)}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+
+function getTaxBase(dest) { return Number(dest.taxableBaseAt16 ?? Math.max(0, Number(dest.publicPriceEstimate||0) - Number(dest.price||0))); }
+function optionCalc(dest, fareAmount, extraFee=0) {
+  const paid = Number(fareAmount || 0) + Number(extraFee || 0);
+  const base = getTaxBase(dest);
+  const tax = base * getTaxRate();
+  const publicPrice = paid + base;
+  const totalCost = paid + tax;
+  return {paid, base, tax, publicPrice, totalCost};
+}
+function registerOption(code, type, airline, fareAmount, extraFee=0, consumesR2=false) {
+  const dest = DESTINATIONS.find(d => d.code === code);
+  if (!dest) return;
+  if (consumesR2) {
+    const left = getR2Remaining();
+    if (left <= 0) return;
+    setR2Remaining(left - 1);
+  }
+  addUsedFlight(dest, type, airline, fareAmount, getTaxBase(dest), extraFee);
+  selectDestination(code, false);
+}
+function optionCard(dest, type, airline, fareAmount, extraFee, cheapestTotal, consumesR2=false, showIbsFee=false) {
+  const c = optionCalc(dest, fareAmount, extraFee);
+  const isCheapest = Math.abs(c.totalCost - cheapestTotal) < 0.01;
+  const feeHtml = showIbsFee ? `<label class="compare-note">Tasa salida IBS <input class="ibs-tax-input" type="number" step="0.01" value="${extraFee}" onchange="selectDestination('${dest.code}', false)"></label>` : '';
+  return `<div class="fare-option ${isCheapest ? 'cheapest' : ''}"><h3>${type}</h3><div class="cost-hero"><span>Coste total</span><b>${money(c.totalCost)}</b></div>${feeHtml}<div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${type.includes('R2')?'R2':'Z2'}</span><b class="price">${money(fareAmount)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b class="tax">${money(c.tax)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${money(c.base)}</b></div><div class="cost-card"><span>Base público</span><b>${money(c.publicPrice)}</b></div></div><div class="r2-actions"><button class="z2-use" onclick="registerOption('${dest.code}', '${type}', '${airline}', ${fareAmount}, ${extraFee}, ${consumesR2})">Registrar vuelo</button></div></div>`;
+}
+function renderFareOptions(dest) {
+  const isIbs = dest.airlines.includes('Iberia Express');
+  const ibsFee = 0;
+  const candidates = [optionCalc(dest, dest.r2Price, 0), optionCalc(dest, dest.price, 0)];
+  if (isIbs) { candidates.push(optionCalc(dest, dest.r2Price, ibsFee), optionCalc(dest, dest.price, ibsFee)); }
+  const cheapest = Math.min(...candidates.map(c => c.totalCost));
+  let html = `<div class="fare-options">`;
+  html += optionCard(dest, 'IBE Tipo R2', 'Iberia', dest.r2Price, 0, cheapest, true, false);
+  html += optionCard(dest, 'IBE Tipo Z2', 'Iberia', dest.price, 0, cheapest, false, false);
+  if (isIbs) {
+    html += optionCard(dest, 'IBS Tipo R2', 'Iberia Express', dest.r2Price, ibsFee, cheapest, true, true);
+    html += optionCard(dest, 'IBS Tipo R1', 'Iberia Express', dest.price, ibsFee, cheapest, false, true);
+  }
+  html += `</div>`;
+  return html;
+}
+function showView(view) {
+  const mapView = document.getElementById('mapView');
+  const listView = document.getElementById('listView');
+  const flightsView = document.getElementById('flightsView');
+  if (mapView) mapView.style.display = view === 'map' ? 'grid' : 'none';
+  if (listView) listView.style.display = view === 'list' ? 'block' : 'none';
+  if (flightsView) flightsView.style.display = view === 'flights' ? 'block' : 'none';
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.remove('active'));
+  const i = view === 'map' ? 0 : view === 'list' ? 1 : 2;
+  document.querySelectorAll('.navbtn')[i]?.classList.add('active');
+  if (view === 'flights') renderUsedFlights();
+  if (view === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
+}
+
+function selectDestination(code, zoomTo=false) {
+  const dest = DESTINATIONS.find(d => d.code === code); if (!dest) return;
+  currentSelectedCode = code;
+  document.getElementById('selectedBadge').textContent = dest.code;
+  document.getElementById('destinationDetail').innerHTML = `
+    <div class="origin-bar"><label>Origen IATA <input id="originIata" value="${document.getElementById('originIata')?.value || 'MAD'}" maxlength="3"></label><label>Ciudad origen <input id="originCity" value="${document.getElementById('originCity')?.value || 'Madrid'}"></label></div>
+    <h2>${dest.code} · ${dest.city}</h2>
+    <div class="detail-subtitle">${dest.description} · ${dest.airlines.join(' / ')}</div>
+    ${dest.operatorNote ? '<div class="warning">'+dest.operatorNote+'</div>' : ''}
+    ${renderFareOptions(dest)}
+  `;
+  document.querySelectorAll('#destinationsTable tbody tr').forEach(row => row.classList.toggle('selected', row.dataset.code === code));
+  const marker = markerByCode.get(code);
+  if (marker) { if (zoomTo) map.setView([dest.lat,dest.lng], Math.max(map.getZoom(), 6), { animate:true }); marker.openPopup(); }
+}
+function applyFilters() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const z = document.getElementById('zoneFilter').value;
+  const a = document.getElementById('airlineFilter').value;
+  const rows = DESTINATIONS.filter(d => (!q || d.code.toLowerCase().includes(q) || d.city.toLowerCase().includes(q)) && (!z || d.zone === z) && (!a || d.airlines.includes(a)));
+  renderTable(rows); renderMapMarkers(rows); if (currentSelectedCode) selectDestination(currentSelectedCode, false); fitMapToDestinations(rows, 7);
+}
+function bindEvents() {
+  ['searchInput','zoneFilter','airlineFilter','taxRateInput'].forEach(id => document.getElementById(id).addEventListener(id==='searchInput'||id==='taxRateInput'?'input':'change', applyFilters));
+  document.getElementById('resetMapBtn').addEventListener('click', () => { if (map) map.closePopup(); currentSelectedCode = null; document.getElementById('selectedBadge').textContent='Ninguno'; document.getElementById('destinationDetail').innerHTML='<div class="origin-bar"><label>Origen IATA <input id="originIata" value="MAD" maxlength="3"></label><label>Ciudad origen <input id="originCity" value="Madrid"></label></div>Haz clic en un punto del mapa o en una fila de la tabla para ver todas las opciones disponibles.'; document.getElementById('searchInput').value=''; document.getElementById('zoneFilter').value=''; document.getElementById('airlineFilter').value=''; document.getElementById('taxRateInput').value='16'; renderTable(DESTINATIONS); renderMapMarkers(DESTINATIONS); renderR2Badge(); renderUsedFlights(); fitMapToDestinations(DESTINATIONS,5); setTimeout(() => { if (map) map.closePopup(); }, 50); });
+}
+
+function usableNumber(v) { const n = Number(v); return Number.isFinite(n) ? n : null; }
+function baseFor(dest, type) {
+  if (type === 'IBE_R2') return usableNumber(dest.ibeR2Base);
+  if (type === 'IBE_Z2') return usableNumber(dest.ibeZ2Base ?? dest.taxableBaseAt16);
+  if (type === 'IBS_R2') return usableNumber(dest.ibsR2Base);
+  if (type === 'IBS_Z2') return usableNumber(dest.ibsZ2Base);
+  return null;
+}
+function fareFor(dest, type) {
+  return type.includes('R2') ? Number(dest.r2Price || 0) : Number(dest.price || 0);
+}
+function totalFor(dest, type) {
+  const b = baseFor(dest, type);
+  if (b === null) return null;
+  return fareFor(dest, type) + b * getTaxRate();
+}
+function displayTotal(n, green=false) {
+  if (n === null || !Number.isFinite(n)) return '<span class="muted">Pendiente</span>';
+  return `<span class="${green ? 'savings' : ''}">${money(n)}</span>`;
+}
+function originIsMad() {
+  return ((document.getElementById('listOriginIata')?.value || 'MAD').trim().toUpperCase() || 'MAD') === 'MAD';
+}
+function isExpress(dest) { return dest.airlines.includes('Iberia Express'); }
+function renderTable(rows) {
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const ibeR2 = totalFor(dest,'IBE_R2');
+    const ibeZ2 = totalFor(dest,'IBE_Z2');
+    const ibsR2 = isExpress(dest) && madOrigin ? totalFor(dest,'IBS_R2') : null;
+    const ibsZ2 = isExpress(dest) && madOrigin ? totalFor(dest,'IBS_Z2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td>${displayTotal(ibeR2,false)}</td><td>${displayTotal(ibeZ2,true)}</td><td>${isExpress(dest) ? displayTotal(ibsR2,false) : ''}</td><td>${isExpress(dest) ? displayTotal(ibsZ2,true) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function optionCalcTyped(dest, type) {
+  const base = baseFor(dest,type);
+  if (base === null) return null;
+  const paid = fareFor(dest,type);
+  const tax = base * getTaxRate();
+  const publicPrice = paid + base;
+  const totalCost = paid + tax;
+  return {paid, base, tax, publicPrice, totalCost};
+}
+function registerTypedOption(code, type, airline) {
+  const dest = DESTINATIONS.find(d => d.code === code);
+  const c = dest ? optionCalcTyped(dest,type) : null;
+  if (!dest || !c) return;
+  if (type.includes('R2')) {
+    const left = getR2Remaining();
+    if (left <= 0) return;
+    setR2Remaining(left - 1);
+  }
+  addUsedFlight(dest, type.replace('_',' Tipo '), airline, c.paid, c.base, 0);
+  selectDestination(code,false);
+}
+function typedOptionCard(dest, type, title, airline, cheapest) {
+  const c = optionCalcTyped(dest, type);
+  if (!c) return '';
+  const isCheap = Math.abs(c.totalCost - cheapest) < 0.01;
+  const fareLabel = type.includes('R2') ? 'R2' : 'Z2';
+  return `<div class="fare-option ${isCheap ? 'cheapest' : ''}"><h3>${title}</h3><div class="cost-hero"><span>Coste total</span><b>${money(c.totalCost)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${fareLabel}</span><b class="price">${money(c.paid)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b class="tax">${money(c.tax)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${money(c.base)}</b></div><div class="cost-card"><span>Base público</span><b>${money(c.publicPrice)}</b></div></div><div class="r2-actions"><button class="z2-use" onclick="registerTypedOption('${dest.code}', '${type}', '${airline}')">Registrar vuelo</button></div></div>`;
+}
+function renderFareOptions(dest) {
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isExpress(dest)) types.push('IBS_R2','IBS_Z2');
+  const valid = types.map(t => optionCalcTyped(dest,t)).filter(Boolean);
+  const cheapest = valid.length ? Math.min(...valid.map(c=>c.totalCost)) : Infinity;
+  let html = `<div class="fare-options">`;
+  html += typedOptionCard(dest,'IBE_R2','IBE Tipo R2','Iberia',cheapest);
+  html += typedOptionCard(dest,'IBE_Z2','IBE Tipo Z2','Iberia',cheapest);
+  if (isExpress(dest)) {
+    html += typedOptionCard(dest,'IBS_R2','IBS Tipo R2','Iberia Express',cheapest);
+    html += typedOptionCard(dest,'IBS_Z2','IBS Tipo R1','Iberia Express',cheapest);
+  }
+  html += `</div>`;
+  return html;
+}
+function showView(view) {
+  const mapView = document.getElementById('mapView');
+  const listView = document.getElementById('listView');
+  const flightsView = document.getElementById('flightsView');
+  const mapCard = document.querySelector('#mapView .left-stack > .card.card-pad');
+  const sidePanel = document.querySelector('#mapView > aside.card');
+  if (mapView) mapView.style.display = (view === 'map' || view === 'flights') ? 'grid' : 'none';
+  if (mapCard) mapCard.style.display = view === 'map' ? 'block' : 'none';
+  if (sidePanel) sidePanel.style.display = view === 'map' ? 'block' : 'none';
+  if (listView) listView.style.display = view === 'list' ? 'block' : 'none';
+  if (flightsView) flightsView.style.display = view === 'flights' ? 'block' : 'none';
+  document.querySelectorAll('.navbtn').forEach(b => b.classList.remove('active'));
+  const i = view === 'map' ? 0 : view === 'list' ? 1 : 2;
+  document.querySelectorAll('.navbtn')[i]?.classList.add('active');
+  if (view === 'flights') renderUsedFlights();
+  if (view === 'map' && map) setTimeout(() => map.invalidateSize(), 100);
+}
+
+
+function fallbackTaxBase(dest, type) {
+  const publicPrice = Number(dest.publicPriceEstimate || 0);
+  const z2 = Number(dest.price || 0);
+  const r2 = Number(dest.r2Price || 0);
+  if (type.includes('R2')) {
+    return publicPrice > r2 ? publicPrice - r2 : null;
+  }
+  return publicPrice > z2 ? publicPrice - z2 : null;
+}
+function baseFor(dest, type) {
+  let value = null;
+  if (type === 'IBE_R2') value = usableNumber(dest.ibeR2Base);
+  if (type === 'IBE_Z2') value = usableNumber(dest.ibeZ2Base ?? dest.taxableBaseAt16);
+  if (type === 'IBS_R2') value = usableNumber(dest.ibsR2Base);
+  if (type === 'IBS_Z2') value = usableNumber(dest.ibsZ2Base);
+  if (value === null && type.startsWith('IBE_')) value = fallbackTaxBase(dest, type);
+  return value;
+}
+function optionCalcTyped(dest, type) {
+  const base = baseFor(dest,type);
+  const paid = fareFor(dest,type);
+  if (base === null) return {paid, base:null, tax:null, publicPrice:null, totalCost:null, pending:true};
+  const tax = base * getTaxRate();
+  const publicPrice = paid + base;
+  const totalCost = paid + tax;
+  return {paid, base, tax, publicPrice, totalCost, pending:false};
+}
+function formatOrPending(value, cls='') {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  return `<span class="${cls}">${money(value)}</span>`;
+}
+function typedOptionCard(dest, type, title, airline, cheapest) {
+  const c = optionCalcTyped(dest, type);
+  const canRegister = !c.pending;
+  const isCheap = canRegister && Math.abs(c.totalCost - cheapest) < 0.01;
+  const fareLabel = type.includes('R2') ? 'R2' : 'Z2';
+  const pendingNote = canRegister ? '' : '<div class="warning">Fiscalidad pendiente para esta opción. Se muestra la tarjeta para completar la información cuando esté disponible.</div>';
+  const button = canRegister
+    ? `<button class="z2-use" onclick="registerTypedOption('${dest.code}', '${type}', '${airline}')">Registrar vuelo</button>`
+    : `<button class="z2-use" disabled title="Falta base fiscal">Registrar vuelo</button>`;
+  return `<div class="fare-option ${isCheap ? 'cheapest' : ''}"><h3>${title}</h3><div class="cost-hero"><span>Coste total</span><b>${formatOrPending(c.totalCost)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${fareLabel}</span><b class="price">${money(c.paid)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b class="tax">${formatOrPending(c.tax)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${formatOrPending(c.base)}</b></div><div class="cost-card"><span>Base público</span><b>${formatOrPending(c.publicPrice)}</b></div></div>${pendingNote}<div class="r2-actions">${button}</div></div>`;
+}
+function renderFareOptions(dest) {
+  const isIbsFlight = isExpress(dest);
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isIbsFlight) types.push('IBS_R2','IBS_Z2');
+  const valid = types.map(t => optionCalcTyped(dest,t)).filter(c => c && !c.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(c=>c.totalCost)) : Infinity;
+  let html = `<div class="fare-options">`;
+  html += typedOptionCard(dest,'IBE_R2','IBE Tipo R2','Iberia',cheapest);
+  html += typedOptionCard(dest,'IBE_Z2','IBE Tipo Z2','Iberia',cheapest);
+  if (isIbsFlight) {
+    html += typedOptionCard(dest,'IBS_R2','IBS Tipo R2','Iberia Express',cheapest);
+    html += typedOptionCard(dest,'IBS_Z2','IBS Tipo R1','Iberia Express',cheapest);
+  }
+  html += `</div>`;
+  return html;
+}
+function renderTable(rows) {
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const ibeR2 = totalFor(dest,'IBE_R2');
+    const ibeZ2 = totalFor(dest,'IBE_Z2');
+    const ibsR2 = isExpress(dest) && madOrigin ? totalFor(dest,'IBS_R2') : null;
+    const ibsZ2 = isExpress(dest) && madOrigin ? totalFor(dest,'IBS_Z2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td>${displayTotal(ibeR2,false)}</td><td>${displayTotal(ibeZ2,true)}</td><td>${isExpress(dest) ? displayTotal(ibsR2,false) : ''}</td><td>${isExpress(dest) ? displayTotal(ibsZ2,true) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+
+
+function rawBaseFor(dest, type) {
+  if (type === 'IBE_R2') return usableNumber(dest.ibeR2Base);
+  if (type === 'IBE_Z2') return usableNumber(dest.ibeZ2Base ?? dest.taxableBaseAt16);
+  if (type === 'IBS_R2') return usableNumber(dest.ibsR2Base);
+  if (type === 'IBS_Z2') return usableNumber(dest.ibsZ2Base);
+  return null;
+}
+function estimateBaseByZone(dest, type) {
+  const values = DESTINATIONS
+    .filter(d => d.zone === dest.zone)
+    .map(d => rawBaseFor(d, type))
+    .filter(v => v !== null && Number.isFinite(v) && v > 0);
+  if (!values.length) return null;
+  return values.reduce((a,b) => a + b, 0) / values.length;
+}
+function baseInfoFor(dest, type) {
+  const direct = rawBaseFor(dest, type);
+  if (direct !== null) return {base: direct, estimated:false, method:'excel'};
+  if (type.startsWith('IBS_')) return {base:null, estimated:false, method:'pendiente IBS no estimado'};
+  const estimated = estimateBaseByZone(dest, type);
+  if (estimated !== null) return {base: estimated, estimated:true, method:'media zona'};
+  const fallback = fallbackTaxBase(dest, type);
+  if (fallback !== null) return {base: fallback, estimated:true, method:'fallback precio público'};
+  return {base:null, estimated:false, method:'pendiente'};
+}
+function baseFor(dest, type) { return baseInfoFor(dest,type).base; }
+function totalInfoFor(dest, type) {
+  const info = baseInfoFor(dest,type);
+  if (info.base === null) return {total:null, base:null, tax:null, estimated:false, method:info.method};
+  const paid = fareFor(dest,type);
+  const tax = info.base * getTaxRate();
+  return {total: paid + tax, paid, base: info.base, tax, publicPrice: paid + info.base, estimated: info.estimated, method:info.method};
+}
+function totalFor(dest, type) {
+  return totalInfoFor(dest,type).total;
+}
+function displayTotalInfo(info, green=false) {
+  if (!info || info.total === null || !Number.isFinite(Number(info.total))) return '<span class="muted">Pendiente</span>';
+  const cls = info.estimated ? 'estimated-value' : (green ? 'savings' : '');
+  const mark = info.estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  return `<span class="${cls}">${money(info.total)}</span>${mark}`;
+}
+function renderTable(rows) {
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const ibeR2 = totalInfoFor(dest,'IBE_R2');
+    const ibeZ2 = totalInfoFor(dest,'IBE_Z2');
+    const ibsR2 = isExpress(dest) && madOrigin ? totalInfoFor(dest,'IBS_R2') : null;
+    const ibsZ2 = isExpress(dest) && madOrigin ? totalInfoFor(dest,'IBS_Z2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td>${displayTotalInfo(ibeR2,false)}</td><td>${displayTotalInfo(ibeZ2,true)}</td><td>${isExpress(dest) ? displayTotalInfo(ibsR2,false) : ''}</td><td>${isExpress(dest) ? displayTotalInfo(ibsZ2,true) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function optionCalcTyped(dest, type) {
+  const info = totalInfoFor(dest,type);
+  const paid = fareFor(dest,type);
+  if (info.total === null) return {paid, base:null, tax:null, publicPrice:null, totalCost:null, pending:true, estimated:false, method:info.method};
+  return {paid, base:info.base, tax:info.tax, publicPrice:info.publicPrice, totalCost:info.total, pending:false, estimated:info.estimated, method:info.method};
+}
+function formatOrPending(value, cls='', estimated=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  const finalCls = estimated && !cls ? 'estimated-value' : cls;
+  return `<span class="${finalCls}">${money(value)}</span>${mark}`;
+}
+function typedOptionCard(dest, type, title, airline, cheapest) {
+  const c = optionCalcTyped(dest, type);
+  const canRegister = !c.pending;
+  const isCheap = canRegister && Math.abs(c.totalCost - cheapest) < 0.01;
+  const fareLabel = type.includes('R2') ? 'R2' : 'Z2';
+  const note = c.estimated ? `<div class="estimate-note">≈ Importe IBE estimado usando la media de destinos de la misma zona fiscal (${dest.description}).</div>` : '';
+  const pendingNote = canRegister ? note : '<div class="warning">Fiscalidad pendiente para esta opción. Se muestra la tarjeta para completar la información cuando esté disponible.</div>';
+  const button = canRegister
+    ? `<button class="z2-use" onclick="registerTypedOption('${dest.code}', '${type}', '${airline}')">Registrar vuelo</button>`
+    : `<button class="z2-use" disabled title="Falta base fiscal">Registrar vuelo</button>`;
+  return `<div class="fare-option ${isCheap ? 'cheapest' : ''}"><h3>${title}</h3><div class="cost-hero"><span>Coste total</span><b>${formatOrPending(c.totalCost, '', c.estimated)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${fareLabel}</span><b class="price">${money(c.paid)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b class="tax">${formatOrPending(c.tax, 'tax', c.estimated)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${formatOrPending(c.base, '', c.estimated)}</b></div><div class="cost-card"><span>Base público</span><b>${formatOrPending(c.publicPrice, '', c.estimated)}</b></div></div>${pendingNote}<div class="r2-actions">${button}</div></div>`;
+}
+function renderFareOptions(dest) {
+  const isIbsFlight = isExpress(dest);
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isIbsFlight) types.push('IBS_R2','IBS_Z2');
+  const valid = types.map(t => optionCalcTyped(dest,t)).filter(c => c && !c.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(c=>c.totalCost)) : Infinity;
+  let html = `<div class="fare-options">`;
+  html += typedOptionCard(dest,'IBE_R2','IBE Tipo R2','Iberia',cheapest);
+  html += typedOptionCard(dest,'IBE_Z2','IBE Tipo Z2','Iberia',cheapest);
+  if (isIbsFlight) {
+    html += typedOptionCard(dest,'IBS_R2','IBS Tipo R2','Iberia Express',cheapest);
+    html += typedOptionCard(dest,'IBS_Z2','IBS Tipo R1','Iberia Express',cheapest);
+  }
+  html += `</div>`;
+  return html;
+}
+
+
+function hasIbsData(dest) {
+  return usableNumber(dest.ibsR2Base) !== null || usableNumber(dest.ibsZ2Base) !== null;
+}
+function isExpress(dest) {
+  // IBS options are shown only when the IBS Excel contains the route. No IBS estimation.
+  return hasIbsData(dest);
+}
+function popupOptionSummary(dest) {
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isExpress(dest)) types.push('IBS_R2','IBS_Z2');
+  const labels = {IBE_R2:'IBE R2', IBE_Z2:'IBE Z2', IBS_R2:'IBS R2', IBS_Z2:'IBS R1'};
+  const valid = types.map(t => ({type:t, calc:optionCalcTyped(dest,t)})).filter(x => x.calc && !x.calc.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(x => x.calc.totalCost)) : null;
+  const cards = types.map(t => {
+    const c = optionCalcTyped(dest,t);
+    const best = c && !c.pending && cheapest !== null && Math.abs(c.totalCost - cheapest) < 0.01;
+    const value = c && !c.pending ? money(c.totalCost) : 'Pendiente';
+    const estimated = c && c.estimated ? ' ≈' : '';
+    return `<div class="popup-choice ${best ? 'best' : ''}"><span>${labels[t]}</span><b>${value}${estimated}</b></div>`;
+  }).join('');
+  return {cheapest, cards};
+}
+function renderMapMarkers(rows) {
+  markersLayer.clearLayers(); markerByCode.clear();
+  rows.forEach(dest => {
+    const p = popupOptionSummary(dest);
+    const totalText = p.cheapest !== null ? money(p.cheapest) : 'Pendiente';
+    const marker = L.circleMarker([dest.lat, dest.lng], { radius:7, color:'#fff', weight:2, fillColor:getZoneColor(dest.zone), fillOpacity:.95 });
+    marker.bindTooltip(`${dest.code} · ${totalText}`, { direction:'top', className:'destino-label', opacity:1 });
+    marker.bindPopup(`<div class="destino-popup"><h3>${dest.code} · ${dest.city}</h3><div class="popup-total"><span>Coste total más barato</span><b>${totalText}</b></div><div class="popup-choice-grid">${p.cards}</div><div class="meta"><strong>Zona:</strong> ${dest.zone} · ${dest.description}<br><strong>Opciones:</strong> ${isExpress(dest) ? 'IBE + IBS' : 'IBE'}</div></div>`);
+    marker.on('click', () => selectDestination(dest.code, true));
+    marker.addTo(markersLayer); markerByCode.set(dest.code, marker);
+  });
+}
+function renderTable(rows) {
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const ibeR2 = totalInfoFor(dest,'IBE_R2');
+    const ibeZ2 = totalInfoFor(dest,'IBE_Z2');
+    const showIbs = isExpress(dest) && madOrigin;
+    const ibsR2 = showIbs ? totalInfoFor(dest,'IBS_R2') : null;
+    const ibsZ2 = showIbs ? totalInfoFor(dest,'IBS_Z2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td>${displayTotalInfo(ibeR2,false)}</td><td>${displayTotalInfo(ibeZ2,true)}</td><td>${showIbs ? displayTotalInfo(ibsR2,false) : ''}</td><td>${showIbs ? displayTotalInfo(ibsZ2,true) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+
+
+function taxAmountFor(dest, type) {
+  const info = totalInfoFor(dest, type);
+  if (!info || info.tax === null || !Number.isFinite(Number(info.tax))) return null;
+  return {value: info.tax, estimated: info.estimated};
+}
+function fareAmountFor(dest, type) {
+  if (type === 'IBE_R2' || type === 'IBS_R2') return Number(dest.r2Price || 0);
+  // IBS_Z2 internal key represents IBS R1 after correction.
+  return Number(dest.price || 0);
+}
+function displayAmount(value, estimated=false, green=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const cls = estimated ? 'estimated-value' : (green ? 'savings' : '');
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  return `<span class="${cls}">${money(value)}</span>${mark}`;
+}
+function renderDestinationTableHeader() {
+  const table = document.getElementById('destinationsTable');
+  if (!table || table.dataset.finalHeader === '1') return;
+  table.dataset.finalHeader = '1';
+  table.innerHTML = `<colgroup><col style="width:85px"><col style="width:180px"><col style="width:230px"><col style="width:130px"><col style="width:145px"><col style="width:130px"><col style="width:145px"><col style="width:130px"><col style="width:145px"><col style="width:130px"><col style="width:145px"></colgroup><thead><tr><th>IATA</th><th>Destino</th><th>Descripción Zona</th><th>IBE Tarifa R2</th><th>IBE Impuesto R2</th><th>IBE Tarifa Z2</th><th>IBE Impuesto Z2</th><th>IBS Tarifa R1</th><th>IBS Impuesto R1</th><th>IBS Tarifa R2</th><th>IBS Impuesto R2</th></tr></thead><tbody></tbody>`;
+}
+function renderTable(rows) {
+  renderDestinationTableHeader();
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const showIbs = isExpress(dest) && madOrigin;
+    const ibeR2Tax = taxAmountFor(dest,'IBE_R2');
+    const ibeZ2Tax = taxAmountFor(dest,'IBE_Z2');
+    const ibsR1Tax = showIbs ? taxAmountFor(dest,'IBS_Z2') : null;
+    const ibsR2Tax = showIbs ? taxAmountFor(dest,'IBS_R2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td class="price">${money(fareAmountFor(dest,'IBE_R2'))}</td><td>${displayAmount(ibeR2Tax?.value ?? null, ibeR2Tax?.estimated ?? false)}</td><td class="price">${money(fareAmountFor(dest,'IBE_Z2'))}</td><td>${displayAmount(ibeZ2Tax?.value ?? null, ibeZ2Tax?.estimated ?? false, true)}</td><td>${showIbs ? `<span class="price">${money(fareAmountFor(dest,'IBS_Z2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR1Tax?.value ?? null, false) : ''}</td><td>${showIbs ? `<span class="price">${money(fareAmountFor(dest,'IBS_R2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR2Tax?.value ?? null, false) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function popupOptionSummary(dest) {
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isExpress(dest)) types.push('IBS_Z2','IBS_R2');
+  const labels = {IBE_R2:'IBE R2', IBE_Z2:'IBE Z2', IBS_Z2:'IBS R1', IBS_R2:'IBS R2'};
+  const valid = types.map(t => ({type:t, calc:optionCalcTyped(dest,t)})).filter(x => x.calc && !x.calc.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(x => x.calc.totalCost)) : null;
+  const cards = types.map(t => {
+    const c = optionCalcTyped(dest,t);
+    const best = c && !c.pending && cheapest !== null && Math.abs(c.totalCost - cheapest) < 0.01;
+    const value = c && !c.pending ? money(c.totalCost) : 'Pendiente';
+    const estimated = c && c.estimated ? ' ≈' : '';
+    return `<div class="popup-choice ${best ? 'best' : ''}"><span>${labels[t]}</span><b>${value}${estimated}</b></div>`;
+  }).join('');
+  return {cheapest, cards};
+}
+function renderFareOptions(dest) {
+  const isIbsFlight = isExpress(dest);
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isIbsFlight) types.push('IBS_Z2','IBS_R2');
+  const valid = types.map(t => optionCalcTyped(dest,t)).filter(c => c && !c.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(c=>c.totalCost)) : Infinity;
+  let html = `<div class="fare-options">`;
+  html += typedOptionCard(dest,'IBE_R2','IBE Tipo R2','Iberia',cheapest);
+  html += typedOptionCard(dest,'IBE_Z2','IBE Tipo Z2','Iberia',cheapest);
+  if (isIbsFlight) {
+    html += typedOptionCard(dest,'IBS_Z2','IBS Tipo R1 <span class="usage-note-pill">6/año · plaza confirmada</span>','Iberia Express',cheapest);
+    html += typedOptionCard(dest,'IBS_R2','IBS Tipo R2 <span class="usage-note-pill">Ilimitado · sin plaza</span>','Iberia Express',cheapest);
+  }
+  html += `</div>`;
+  return html;
+}
+
+
+function displayAmount(value, estimated=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const cls = estimated ? 'estimated-value' : 'tax-black';
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  return `<span class="${cls}">${money(value)}</span>${mark}`;
+}
+function renderTable(rows) {
+  renderDestinationTableHeader();
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  const madOrigin = originIsMad();
+  rows.forEach(dest => {
+    const showIbs = isExpress(dest) && madOrigin;
+    const ibeR2Tax = taxAmountFor(dest,'IBE_R2');
+    const ibeZ2Tax = taxAmountFor(dest,'IBE_Z2');
+    const ibsR1Tax = showIbs ? taxAmountFor(dest,'IBS_Z2') : null;
+    const ibsR2Tax = showIbs ? taxAmountFor(dest,'IBS_R2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_R2'))}</span></td><td>${displayAmount(ibeR2Tax?.value ?? null, ibeR2Tax?.estimated ?? false)}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_Z2'))}</span></td><td>${displayAmount(ibeZ2Tax?.value ?? null, ibeZ2Tax?.estimated ?? false)}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_Z2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR1Tax?.value ?? null, false) : ''}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_R2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR2Tax?.value ?? null, false) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function formatOrPending(value, cls='', estimated=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  const finalCls = estimated ? 'estimated-value' : (cls || 'tax-black');
+  return `<span class="${finalCls}">${money(value)}</span>${mark}`;
+}
+function typedOptionCard(dest, type, title, airline, cheapest) {
+  const c = optionCalcTyped(dest, type);
+  const canRegister = !c.pending;
+  const isCheap = canRegister && Math.abs(c.totalCost - cheapest) < 0.01;
+  const fareLabel = type.includes('R2') ? 'R2' : (type === 'IBS_Z2' ? 'R1' : 'Z2');
+  const note = c.estimated ? `<div class="estimate-note">≈ Importe IBE estimado usando la media de destinos de la misma zona fiscal (${dest.description}).</div>` : '';
+  const pendingNote = canRegister ? note : '<div class="warning">Fiscalidad pendiente para esta opción. Se muestra la tarjeta para completar la información cuando esté disponible.</div>';
+  const button = canRegister
+    ? `<button class="z2-use" onclick="registerTypedOption('${dest.code}', '${type}', '${airline}')">Registrar vuelo</button>`
+    : `<button class="z2-use" disabled title="Falta base fiscal">Registrar vuelo</button>`;
+  return `<div class="fare-option ${isCheap ? 'cheapest' : ''}"><h3>${title}</h3><div class="cost-hero"><span>Coste total</span><b>${formatOrPending(c.totalCost, '', c.estimated)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${fareLabel}</span><b>${formatOrPending(c.paid, 'tariff-green', false)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b>${formatOrPending(c.tax, 'tax-black', c.estimated)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${formatOrPending(c.base, 'tax-black', c.estimated)}</b></div><div class="cost-card"><span>Base público</span><b>${formatOrPending(c.publicPrice, 'tax-black', c.estimated)}</b></div></div>${pendingNote}<div class="r2-actions">${button}</div></div>`;
+}
+
+
+// IBS standby route fares from the uploaded image. Same fare is used for IBS R1 and IBS R2; tax base differs by type.
+const IBS_STANDBY_ROUTE_FARES = {
+  'MAD-SVQ': 21.53, 'SVQ-MAD': 11.53,
+  'MAD-AGP': 21.53, 'AGP-MAD': 12.48,
+  'MAD-IBZ': 20.45, 'IBZ-MAD': 7.71,
+  'MAD-PMI': 20.45, 'PMI-MAD': 8.33,
+  'MAD-MAH': 20.45, 'MAH-MAD': 9.30,
+  'MAD-TFN': 19.57, 'TFN-MAD': 8.91,
+  'MAD-TFS': 19.57, 'TFS-MAD': 9.65,
+  'MAD-TCI': 19.57, 'TCI-MAD': 8.91,
+  'MAD-LPA': 19.57, 'LPA-MAD': 9.65,
+  'MAD-ACE': 19.57, 'ACE-MAD': 8.91,
+  'MAD-FUE': 19.57, 'FUE-MAD': 8.91,
+  'MAD-SPC': 19.57, 'SPC-MAD': 7.70,
+  'MAD-BER': 20.09, 'BER-MAD': 33.30,
+  'MAD-CPH': 19.57, 'CPH-MAD': 35.88,
+  'MAD-DUB': 19.57, 'DUB-MAD': 10.00,
+  'MAD-LGW': 19.57, 'LGW-MAD': 39.12,
+  'MAD-LON': 19.57, 'LON-MAD': 39.12,
+  'MAD-MAN': 19.57, 'MAN-MAD': 43.63,
+  'MAD-NAP': 19.57, 'NAP-MAD': 19.92,
+  'MAD-KEF': 20.97, 'KEF-MAD': 36.32,
+  'MAD-RAK': 25.42, 'RAK-MAD': 18.05,
+  'MAD-CAI': 27.11, 'CAI-MAD': 30.11,
+  'MAD-TLV': 25.42, 'TLV-MAD': 28.70
+};
+function currentOriginIata() {
+  const listOrigin = document.getElementById('listOriginIata')?.value;
+  const detailOrigin = document.getElementById('originIata')?.value;
+  return (listOrigin || detailOrigin || 'MAD').trim().toUpperCase() || 'MAD';
+}
+function ibsRouteFare(dest) {
+  const origin = currentOriginIata();
+  const direct = IBS_STANDBY_ROUTE_FARES[`${origin}-${dest.code}`];
+  if (direct !== undefined) return direct;
+  // Tenerife appears as TCI in the destination list, but the tariff image splits TFN/TFS.
+  if (dest.code === 'TCI') return IBS_STANDBY_ROUTE_FARES[`${origin}-TFN`] ?? IBS_STANDBY_ROUTE_FARES[`${origin}-TFS`] ?? null;
+  if (dest.code === 'LON') return IBS_STANDBY_ROUTE_FARES[`${origin}-LGW`] ?? null;
+  return null;
+}
+function hasIbsFareData(dest) { return ibsRouteFare(dest) !== null; }
+function isExpress(dest) {
+  // For display of IBS options, use explicit route fare availability from the standby price table, not the operator label.
+  return hasIbsFareData(dest);
+}
+function fareFor(dest, type) {
+  if (type === 'IBS_R2' || type === 'IBS_Z2') {
+    const fare = ibsRouteFare(dest);
+    return fare !== null ? fare : Number(dest.r2Price || 0);
+  }
+  return type.includes('R2') ? Number(dest.r2Price || 0) : Number(dest.price || 0);
+}
+function fareAmountFor(dest, type) {
+  return fareFor(dest, type);
+}
+function renderTable(rows) {
+  renderDestinationTableHeader();
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  rows.forEach(dest => {
+    const showIbs = isExpress(dest);
+    const ibeR2Tax = taxAmountFor(dest,'IBE_R2');
+    const ibeZ2Tax = taxAmountFor(dest,'IBE_Z2');
+    const ibsR1Tax = showIbs ? taxAmountFor(dest,'IBS_Z2') : null;
+    const ibsR2Tax = showIbs ? taxAmountFor(dest,'IBS_R2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_R2'))}</span></td><td>${displayAmount(ibeR2Tax?.value ?? null, ibeR2Tax?.estimated ?? false)}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_Z2'))}</span></td><td>${displayAmount(ibeZ2Tax?.value ?? null, ibeZ2Tax?.estimated ?? false)}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_Z2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR1Tax?.value ?? null, false) : ''}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_R2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR2Tax?.value ?? null, false) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function popupOptionSummary(dest) {
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isExpress(dest)) types.push('IBS_Z2','IBS_R2');
+  const labels = {IBE_R2:'IBE R2', IBE_Z2:'IBE Z2', IBS_Z2:'IBS R1', IBS_R2:'IBS R2'};
+  const valid = types.map(t => ({type:t, calc:optionCalcTyped(dest,t)})).filter(x => x.calc && !x.calc.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(x => x.calc.totalCost)) : null;
+  const cards = types.map(t => {
+    const c = optionCalcTyped(dest,t);
+    const best = c && !c.pending && cheapest !== null && Math.abs(c.totalCost - cheapest) < 0.01;
+    const value = c && !c.pending ? money(c.totalCost) : 'Pendiente';
+    const estimated = c && c.estimated ? ' ≈' : '';
+    return `<div class="popup-choice ${best ? 'best' : ''}"><span>${labels[t]}</span><b>${value}${estimated}</b></div>`;
+  }).join('');
+  return {cheapest, cards};
+}
+function renderFareOptions(dest) {
+  const isIbsFlight = isExpress(dest);
+  const types = ['IBE_R2','IBE_Z2'];
+  if (isIbsFlight) types.push('IBS_Z2','IBS_R2');
+  const valid = types.map(t => optionCalcTyped(dest,t)).filter(c => c && !c.pending);
+  const cheapest = valid.length ? Math.min(...valid.map(c=>c.totalCost)) : Infinity;
+  let html = `<div class="fare-options">`;
+  html += typedOptionCard(dest,'IBE_R2','IBE Tipo R2','Iberia',cheapest);
+  html += typedOptionCard(dest,'IBE_Z2','IBE Tipo Z2','Iberia',cheapest);
+  if (isIbsFlight) {
+    html += typedOptionCard(dest,'IBS_Z2','IBS Tipo R1 <span class="usage-note-pill">6/año · plaza confirmada</span>','Iberia Express',cheapest);
+    html += typedOptionCard(dest,'IBS_R2','IBS Tipo R2 <span class="usage-note-pill">Ilimitado · sin plaza</span>','Iberia Express',cheapest);
+  }
+  html += `</div>`;
+  return html;
+}
+
+
+// FINAL FIX: IBE N/A must never become 0 EUR. Missing IBE tax is estimated by same fiscal zone.
+function directBaseFor(dest, type) {
+  if (type === 'IBE_R2') return usableNumber(dest.ibeR2Base);
+  if (type === 'IBE_Z2') return usableNumber(dest.ibeZ2Base ?? dest.taxableBaseAt16);
+  if (type === 'IBS_R2') return usableNumber(dest.ibsR2Base);
+  // Internal key IBS_Z2 represents IBS R1.
+  if (type === 'IBS_Z2') return usableNumber(dest.ibsZ2Base);
+  return null;
+}
+function estimateIbeBaseByZone(dest, type) {
+  if (!type.startsWith('IBE_')) return null;
+  const vals = DESTINATIONS
+    .filter(d => d.zone === dest.zone && d.code !== dest.code)
+    .map(d => directBaseFor(d, type))
+    .filter(v => v !== null && Number.isFinite(Number(v)) && Number(v) > 0);
+  if (!vals.length) return null;
+  return vals.reduce((a,b) => a + Number(b), 0) / vals.length;
+}
+function fallbackIbeBase(dest, type) {
+  const p = Number(dest.publicPriceEstimate || 0);
+  const f = fareFor(dest, type);
+  const b = p > f ? p - f : null;
+  return b && Number.isFinite(b) && b > 0 ? b : null;
+}
+function baseInfoFor(dest, type) {
+  const direct = directBaseFor(dest, type);
+  if (direct !== null && Number.isFinite(Number(direct)) && Number(direct) > 0) {
+    return {base:Number(direct), estimated:false, method:'excel'};
+  }
+  // If Excel has N/A/missing for IBE, estimate. Never convert it to 0 EUR.
+  if (type.startsWith('IBE_')) {
+    const byZone = estimateIbeBaseByZone(dest, type);
+    if (byZone !== null) return {base:byZone, estimated:true, method:'media zona'};
+    const fallback = fallbackIbeBase(dest, type);
+    if (fallback !== null) return {base:fallback, estimated:true, method:'fallback precio público'};
+  }
+  // IBS is not estimated because supplied IBS table defines applicable routes/data.
+  return {base:null, estimated:false, method:'pendiente'};
+}
+function baseFor(dest, type) { return baseInfoFor(dest,type).base; }
+function totalInfoFor(dest, type) {
+  const info = baseInfoFor(dest,type);
+  if (info.base === null) return {total:null, base:null, tax:null, estimated:false, method:info.method};
+  const paid = fareFor(dest,type);
+  const tax = info.base * getTaxRate();
+  return {total: paid + tax, paid, base: info.base, tax, publicPrice: paid + info.base, estimated: info.estimated, method:info.method};
+}
+function totalFor(dest, type) { return totalInfoFor(dest,type).total; }
+function taxAmountFor(dest, type) {
+  const info = totalInfoFor(dest, type);
+  if (!info || info.tax === null || !Number.isFinite(Number(info.tax))) return null;
+  return {value: info.tax, estimated: info.estimated};
+}
+function optionCalcTyped(dest, type) {
+  const info = totalInfoFor(dest,type);
+  const paid = fareFor(dest,type);
+  if (info.total === null) return {paid, base:null, tax:null, publicPrice:null, totalCost:null, pending:true, estimated:false, method:info.method};
+  return {paid, base:info.base, tax:info.tax, publicPrice:info.publicPrice, totalCost:info.total, pending:false, estimated:info.estimated, method:info.method};
+}
+function displayAmount(value, estimated=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const cls = estimated ? 'estimated-value' : 'tax-black';
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  return `<span class="${cls}">${money(value)}</span>${mark}`;
+}
+function renderTable(rows) {
+  renderDestinationTableHeader();
+  const tbody = document.querySelector('#destinationsTable tbody'); tbody.innerHTML = '';
+  rows.forEach(dest => {
+    const showIbs = isExpress(dest);
+    const ibeR2Tax = taxAmountFor(dest,'IBE_R2');
+    const ibeZ2Tax = taxAmountFor(dest,'IBE_Z2');
+    const ibsR1Tax = showIbs ? taxAmountFor(dest,'IBS_Z2') : null;
+    const ibsR2Tax = showIbs ? taxAmountFor(dest,'IBS_R2') : null;
+    const tr = document.createElement('tr'); tr.dataset.code = dest.code;
+    tr.innerHTML = `<td class="code">${dest.code}</td><td>${dest.city}</td><td>${dest.description}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_R2'))}</span></td><td>${displayAmount(ibeR2Tax?.value ?? null, ibeR2Tax?.estimated ?? false)}</td><td><span class="tariff-green">${money(fareAmountFor(dest,'IBE_Z2'))}</span></td><td>${displayAmount(ibeZ2Tax?.value ?? null, ibeZ2Tax?.estimated ?? false)}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_Z2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR1Tax?.value ?? null, false) : ''}</td><td>${showIbs ? `<span class="tariff-green">${money(fareAmountFor(dest,'IBS_R2'))}</span>` : ''}</td><td>${showIbs ? displayAmount(ibsR2Tax?.value ?? null, false) : ''}</td>`;
+    tr.addEventListener('click', () => { showView('map'); selectDestination(dest.code, true); });
+    tbody.appendChild(tr);
+  });
+  document.getElementById('counter').textContent = `${rows.length} de ${DESTINATIONS.length} destinos`;
+  updateFiscalSummary(rows);
+}
+function formatOrPending(value, cls='', estimated=false) {
+  if (value === null || !Number.isFinite(Number(value))) return '<span class="muted">Pendiente</span>';
+  const mark = estimated ? '<span class="estimated-mark" title="Importe estimado por media de zona">≈</span>' : '';
+  const finalCls = estimated ? 'estimated-value' : (cls || 'tax-black');
+  return `<span class="${finalCls}">${money(value)}</span>${mark}`;
+}
+function typedOptionCard(dest, type, title, airline, cheapest) {
+  const c = optionCalcTyped(dest, type);
+  const canRegister = !c.pending;
+  const isCheap = canRegister && Math.abs(c.totalCost - cheapest) < 0.01;
+  const fareLabel = type.includes('R2') ? 'R2' : (type === 'IBS_Z2' ? 'R1' : 'Z2');
+  const note = c.estimated ? `<div class="estimate-note">≈ Importe IBE estimado usando la media de destinos de la misma zona fiscal (${dest.description}).</div>` : '';
+  const pendingNote = canRegister ? note : '<div class="warning">Fiscalidad pendiente para esta opción. Se muestra la tarjeta para completar la información cuando esté disponible.</div>';
+  const button = canRegister
+    ? `<button class="z2-use" onclick="registerTypedOption('${dest.code}', '${type}', '${airline}')">Registrar vuelo</button>`
+    : `<button class="z2-use" disabled title="Falta base fiscal">Registrar vuelo</button>`;
+  return `<div class="fare-option ${isCheap ? 'cheapest' : ''}"><h3>${title}</h3><div class="cost-hero"><span>Coste total</span><b>${formatOrPending(c.totalCost, '', c.estimated)}</b></div><div class="compare-grid"><div class="cost-card emphasis"><span>Precio ${fareLabel}</span><b>${formatOrPending(c.paid, 'tariff-green', false)}</b></div><div class="cost-card emphasis"><span>IRPF estimado (${currentTaxPercentText()})</span><b>${formatOrPending(c.tax, 'tax-black', c.estimated)}</b></div><div class="cost-card"><span>Base IRPF</span><b>${formatOrPending(c.base, 'tax-black', c.estimated)}</b></div><div class="cost-card"><span>Base público</span><b>${formatOrPending(c.publicPrice, 'tax-black', c.estimated)}</b></div></div>${pendingNote}<div class="r2-actions">${button}</div></div>`;
+}
+
+window.addEventListener('load', () => { initControls(); initMap(); renderTable(DESTINATIONS); renderR2Badge(); renderUsedFlights(); bindEvents(); });
+</script>
+</body>
+</html>

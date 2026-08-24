@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Órganos de contratación de la PLACSP · 2012-2025</title>
+<style>
+:root{
+  --papel:#F0F1EE; --panel:#FFFFFF; --tinta:#191C1F; --tinta2:#5A6068; --linea:#CDD1CA;
+  --azul:#26506B; --verde:#3E7A5E; --ocre:#B8892B; --granate:#8C3B3B; --violeta:#5A4A7A; --arena:#9AA090;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono","Menlo","Consolas",monospace;
+  --serif:Georgia,"Iowan Old Style","Times New Roman",serif;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--papel);color:var(--tinta);font-family:var(--sans);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+h1,h2,h3{font-family:var(--serif);font-weight:700;letter-spacing:-.015em;margin:0}
+a{color:var(--azul)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--tinta2)}
+
+/* ---------- cabecera ---------- */
+header{border-bottom:1px solid var(--linea);background:linear-gradient(180deg,#fff 0%,var(--papel) 100%)}
+header .wrap{padding-top:46px;padding-bottom:34px}
+h1{font-size:clamp(30px,4.6vw,52px);line-height:1.04;max-width:16ch}
+h1 em{font-style:normal;color:var(--azul)}
+.lede{max-width:60ch;margin-top:16px;color:var(--tinta2);font-size:16px}
+.fuente{margin-top:22px;font-family:var(--mono);font-size:11.5px;color:var(--tinta2);border-top:1px solid var(--linea);padding-top:12px;display:flex;flex-wrap:wrap;gap:6px 26px}
+
+/* ---------- kpis ---------- */
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--linea);border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.kpi{background:var(--panel);padding:20px 18px}
+.kpi .v{font-family:var(--serif);font-size:clamp(24px,3vw,34px);line-height:1;letter-spacing:-.02em}
+.kpi .l{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--tinta2);margin-top:9px}
+.kpi .n{font-size:12.5px;color:var(--tinta2);margin-top:7px;line-height:1.35}
+.kpi.alerta .v{color:var(--granate)}
+
+section{padding:56px 0;border-bottom:1px solid var(--linea)}
+section h2{font-size:clamp(22px,2.7vw,31px);margin-top:10px;max-width:28ch;line-height:1.14}
+section .intro{max-width:66ch;color:var(--tinta2);margin-top:14px}
+.panel{background:var(--panel);border:1px solid var(--linea);padding:22px}
+.grid2{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;margin-top:28px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:26px}
+@media(max-width:900px){.grid2,.grid3,.kpis{grid-template-columns:1fr}}
+
+/* ---------- controles ---------- */
+.tabs{display:flex;flex-wrap:wrap;gap:0;margin-top:26px;border-bottom:1px solid var(--linea)}
+.tab{font-family:var(--mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;background:none;border:none;border-bottom:2px solid transparent;padding:10px 15px;cursor:pointer;color:var(--tinta2)}
+.tab:hover{color:var(--tinta)}
+.tab[aria-selected="true"]{color:var(--azul);border-bottom-color:var(--azul);font-weight:700}
+button:focus-visible,input:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+
+/* ---------- tablas ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--tinta2);text-align:left;padding:8px 10px;border-bottom:1px solid var(--linea);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #EAECE8;vertical-align:top}
+td.num,th.num{text-align:right;font-family:var(--mono);font-size:12.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+tbody tr:hover{background:#F6F7F4}
+.barcell{position:relative}
+.barcell span{position:absolute;left:0;top:0;bottom:0;background:#DCE6EC;z-index:0}
+.barcell b{position:relative;z-index:1;font-weight:600}
+.scroll{max-height:430px;overflow:auto}
+
+/* ---------- chips ---------- */
+.chip{display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;padding:3px 8px;border:1px solid var(--linea);border-radius:2px;color:var(--tinta2);background:#fff}
+.chip.rojo{border-color:#DDBBBB;color:var(--granate);background:#FBF4F4}
+.chip.ambar{border-color:#E3D2A8;color:#8A6516;background:#FBF7EC}
+
+/* ---------- incidencias ---------- */
+.inc{background:var(--panel);border:1px solid var(--linea);border-left:3px solid var(--granate);padding:18px 20px;margin-top:14px}
+.inc.media{border-left-color:var(--ocre)}
+.inc.baja{border-left-color:var(--arena)}
+.inc h3{font-size:17px;margin-bottom:4px}
+.inc .meta{font-family:var(--mono);font-size:11.5px;color:var(--tinta2);margin:8px 0 10px;display:flex;flex-wrap:wrap;gap:6px 18px}
+.inc p{margin:0;font-size:14px;color:#33383D}
+.inc .fix{margin-top:10px;font-size:13px;color:var(--tinta2);border-top:1px dotted var(--linea);padding-top:9px}
+.inc .fix b{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--verde)}
+
+.nota{font-size:12.5px;color:var(--tinta2);margin-top:12px;max-width:78ch}
+svg{display:block;width:100%;height:auto;overflow:visible}
+.tt{position:fixed;pointer-events:none;background:var(--tinta);color:#fff;font-family:var(--mono);font-size:11.5px;padding:7px 9px;border-radius:3px;opacity:0;transition:opacity .12s;z-index:99;max-width:290px;line-height:1.45}
+footer{padding:44px 0 70px;color:var(--tinta2);font-size:13px}
+@media (prefers-reduced-motion: reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="tt" id="tt"></div>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">Plataforma de Contratación del Sector Público · análisis del inventario de órganos</div>
+    <h1>17.870 órganos, <em>10.683 entidades</em> y 4,5 billones de euros por ordenar</h1>
+    <p class="lede">El fichero no lista organizaciones: lista puertas de publicación. Un mismo ayuntamiento aparece hasta 48 veces —alcaldía, pleno, junta de gobierno, cada concejalía— y la Guardia Civil se reparte entre 87 comandancias, zonas y academias. Aquí están agrupados por cinco ejes, y auditados: quince comprobaciones de coherencia marcan qué cifras no deberían usarse tal cual.</p>
+    <div class="fuente">
+      <span>FUENTE: organos_contratacion_placsp_2012_2026.xlsx</span>
+      <span>REGISTROS: 17.870</span>
+      <span>PERIODO REAL: 2012-2025</span>
+      <span>IMPORTES: licitación, sin IVA</span>
+    </div>
+  </div>
+</header>
+
+<div class="kpis" id="kpis"></div>
+
+<!-- ============ AGRUPACIÓN ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">01 · Agrupación</div>
+    <h2>Cinco ejes para ordenar el inventario</h2>
+    <p class="intro">Cada órgano se ha etiquetado con su <b>nivel administrativo</b>, su <b>grupo institucional</b> (la familia real: Guardia Civil, Ayuntamientos, ADIF…), su <b>ámbito funcional</b>, su <b>territorio</b> y su <b>entidad consolidada</b>. Las reglas leen el nombre del órgano y su código DIR3/NIF; cubren el 98,9 % de los registros. El mosaico muestra el reparto del importe: haga clic en un bloque para ver sus grupos.</p>
+
+    <div class="panel" style="margin-top:26px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:10px">
+        <div class="eyebrow" id="tmTitulo">Importe por nivel administrativo</div>
+        <button id="tmVolver" class="chip" style="cursor:pointer;display:none">← volver a niveles</button>
+      </div>
+      <div id="treemap" style="margin-top:14px"></div>
+    </div>
+
+    <div class="tabs" role="tablist" id="tabs"></div>
+    <div class="panel" style="border-top:none">
+      <div class="scroll"><table id="tablaGrupos"></table></div>
+    </div>
+    <p class="nota">La columna “entidades” cuenta organizaciones distintas tras consolidar; “órganos” cuenta filas del fichero. La distancia entre ambas es la medida de fragmentación de cada grupo.</p>
+  </div>
+</section>
+
+<!-- ============ SEGURIDAD Y DEFENSA ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">02 · Caso de uso</div>
+    <h2>Seguridad y defensa: 279 órganos, nueve organizaciones</h2>
+    <p class="intro">Es el ejemplo más claro de por qué agrupar cambia la lectura. Sueltos, los cuerpos de seguridad y las fuerzas armadas ocupan 279 filas dispersas; agrupados, se ve que la contratación se concentra en unas pocas jefaturas de asuntos económicos, mientras las comandancias provinciales manejan importes pequeños.</p>
+    <div id="foco" class="grid3"></div>
+    <div class="panel" style="margin-top:20px">
+      <div class="eyebrow">Dentro de la Guardia Civil: 87 órganos, 13.144 M€</div>
+      <div id="gcChart" style="margin-top:14px"></div>
+      <p class="nota">La Jefatura de Asuntos Económicos concentra el 98 % del importe del cuerpo. Las 62 comandancias provinciales juntas suman 44 M€ —el 0,3 % del cuerpo—, apenas lo que licita por sí sola la Dirección General.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONCENTRACIÓN ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">03 · Concentración</div>
+    <h2>El 1 % de los órganos mueve el 70 % del dinero</h2>
+    <p class="intro">La distribución del importe es de las más desiguales que se pueden medir en un registro administrativo: índice de Gini 0,964. La curva compara el reparto real con el reparto igualitario; cada punto es un percentil de órganos ordenados de mayor a menor importe.</p>
+    <div class="grid2">
+      <div class="panel">
+        <div class="eyebrow">Curva de concentración del importe</div>
+        <div id="lorenz" style="margin-top:10px"></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">Mayores órganos por importe acumulado</div>
+        <div class="scroll" style="max-height:330px;margin-top:10px"><table id="tablaTop"></table></div>
+      </div>
+    </div>
+    <p class="nota">Cuidado al leer el ranking: los primeros puestos están dominados por acuerdos marco, conciertos y contratos de infraestructuras valorados por su importe máximo estimado, no por gasto ejecutado. Ver incidencia 06.</p>
+  </div>
+</section>
+
+<!-- ============ TERRITORIO Y TIEMPO ============ -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow">04 · Territorio y tiempo</div>
+    <h2>Dónde y desde cuándo publican</h2>
+    <div class="grid2">
+      <div class="panel">
+        <div class="eyebrow">Importe por comunidad autónoma</div>
+        <div id="ccaaChart" style="margin-top:12px"></div>
+        <p class="nota">El territorio se deduce del código DIR3 (posiciones 4-5 = provincia INE) y, si falta, del NIF o del nombre. “Estatal / multiterritorial” recoge la AGE y la Seguridad Social, que no son atribuibles a una comunidad.</p>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">Órganos activos y altas por año</div>
+        <div id="tiempoChart" style="margin-top:12px"></div>
+        <p class="nota">Un órgano se considera activo entre su primer y su último año con licitaciones. El salto de 2018 —5.162 altas, el 29 % del inventario— coincide con la entrada en vigor de la Ley 9/2017 de Contratos del Sector Público, que obligó a publicar en la Plataforma a todo el sector público. No es un aumento de contratación: es un aumento de visibilidad.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INCOHERENCIAS ============ -->
+<section id="secInc">
+  <div class="wrap">
+    <div class="eyebrow">05 · Control de calidad</div>
+    <h2>Diez incoherencias que condicionan cualquier explotación</h2>
+    <p class="intro">Ordenadas por impacto sobre las conclusiones, no por número de registros. Las quince comprobaciones que las sustentan están marcadas fila a fila en el Excel adjunto (columnas S a AG), de modo que cualquier caso puede filtrarse o excluirse antes de calcular.</p>
+    <div id="incidencias"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">06 · Ejemplos</div>
+    <h2>Las incoherencias, vistas de cerca</h2>
+    <div class="grid2">
+      <div class="panel">
+        <div class="eyebrow">Mismo órgano, dos filas, dos identificadores</div>
+        <div class="scroll" style="max-height:300px;margin-top:10px"><table id="tablaDup"></table></div>
+      </div>
+      <div class="panel">
+        <div class="eyebrow">Importes medios imposibles de gestionar contrato a contrato</div>
+        <div class="scroll" style="max-height:300px;margin-top:10px"><table id="tablaExt"></table></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="eyebrow">Metodología y límites</div>
+    <p style="max-width:78ch;margin-top:12px">Todo el análisis se deriva del propio fichero: no se han consultado fuentes externas ni el inventario DIR3 oficial, de modo que la clasificación se apoya en el nombre del órgano y en el identificador que trae cada registro. Las reglas son deterministas y reproducibles, pero heurísticas: el 1,1 % de los registros queda sin nivel asignado y algunas entidades consolidadas conservan restos del cargo que las nombraba. Los importes son de licitación —presupuesto base o valor estimado—, nunca adjudicación ni gasto ejecutado, y la serie termina en 2025 pese al título del fichero.</p>
+    <p style="margin-top:14px">Excel adjunto: <b>organos_contratacion_agrupados.xlsx</b> — detalle clasificado, resúmenes con fórmulas vivas, entidades consolidadas y cuadro de incidencias.</p>
+  </div>
+</footer>
+
+<script>
+const D = {"tot": {"org": 17870, "lic": 3607530, "sin": 4471340239917.92, "con": 5165238744531.818, "a1": 2012, "a2": 2025, "ent": 10683, "nom": 16526}, "conc": {"top1pct": 70.37275340962901, "top5pct": 90.80046633210449, "top10pct": 95.87481968355473, "top100": 61.8600869748728, "top10": 25.667256859464732}, "gini": 0.9638276162305079, "lorenz": [[0, 0], [0.0001, 0.0445], [0.0023, 0.4772], [0.0045, 0.5859], [0.0068, 0.6461], [0.009, 0.6882], [0.0112, 0.7209], [0.0135, 0.7477], [0.0157, 0.7696], [0.018, 0.7881], [0.0202, 0.8039], [0.0224, 0.8175], [0.0247, 0.8295], [0.0269, 0.8402], [0.0292, 0.85], [0.0314, 0.8586], [0.0336, 0.8664], [0.0359, 0.8737], [0.0381, 0.8804], [0.0403, 0.8866], [0.0426, 0.8923], [0.0448, 0.8975], [0.0471, 0.9023], [0.0493, 0.9066], [0.0515, 0.9108], [0.0538, 0.9146], [0.056, 0.9181], [0.0583, 0.9214], [0.0605, 0.9245], [0.0627, 0.9275], [0.065, 0.9302], [0.0672, 0.9328], [0.0694, 0.9353], [0.0717, 0.9376], [0.0739, 0.9398], [0.0762, 0.942], [0.0784, 0.9439], [0.0806, 0.9458], [0.0829, 0.9476], [0.0851, 0.9493], [0.0874, 0.9509], [0.0896, 0.9524], [0.0918, 0.9538], [0.0941, 0.9553], [0.0963, 0.9566], [0.0985, 0.9579], [0.1008, 0.9591], [0.103, 0.9604], [0.1053, 0.9615], [0.1075, 0.9626], [0.1097, 0.9637], [0.112, 0.9647], [0.1142, 0.9657], [0.1165, 0.9666], [0.1187, 0.9675], [0.1209, 0.9684], [0.1232, 0.9693], [0.1254, 0.9701], [0.1276, 0.9709], [0.1299, 0.9716], [0.1321, 0.9724], [0.1344, 0.9731], [0.1366, 0.9737], [0.1388, 0.9744], [0.1411, 0.975], [0.1433, 0.9756], [0.1456, 0.9762], [0.1478, 0.9768], [0.15, 0.9773], [0.1523, 0.9779], [0.1545, 0.9784], [0.1567, 0.9789], [0.159, 0.9794], [0.1612, 0.9798], [0.1635, 0.9803], [0.1657, 0.9807], [0.1679, 0.9812], [0.1702, 0.9816], [0.1724, 0.982], [0.1747, 0.9824], [0.1769, 0.9828], [0.1791, 0.9831], [0.1814, 0.9835], [0.1836, 0.9838], [0.1858, 0.9842], [0.1881, 0.9845], [0.1903, 0.9848], [0.1926, 0.9852], [0.1948, 0.9855], [0.197, 0.9858], [0.1993, 0.9861], [0.2015, 0.9863], [0.2037, 0.9866], [0.206, 0.9869], [0.2082, 0.9872], [0.2105, 0.9874], [0.2127, 0.9877], [0.2149, 0.9879], [0.2172, 0.9881], [0.2194, 0.9884], [0.2217, 0.9886], [0.2239, 0.9888], [0.2261, 0.989], [0.2284, 0.9893], [0.2306, 0.9895], [0.2328, 0.9897], [0.2351, 0.9899], [0.2373, 0.9901], [0.2396, 0.9903], [0.2418, 0.9904], [0.244, 0.9906], [0.2463, 0.9908], [0.2485, 0.991], [0.2508, 0.9911], [0.253, 0.9913], [0.2552, 0.9915], [0.2575, 0.9916], [0.2597, 0.9918], [0.2619, 0.9919], [0.2642, 0.9921], [0.2664, 0.9922], [0.2687, 0.9924], [0.2709, 0.9925], [0.2731, 0.9926], [0.2754, 0.9928], [0.2776, 0.9929], [0.2799, 0.993], [0.2821, 0.9931], [0.2843, 0.9933], [0.2866, 0.9934], [0.2888, 0.9935], [0.291, 0.9936], [0.2933, 0.9937], [0.2955, 0.9938], [0.2978, 0.9939], [0.3, 0.994], [0.3022, 0.9941], [0.3045, 0.9942], [0.3067, 0.9943], [0.309, 0.9944], [0.3112, 0.9945], [0.3134, 0.9946], [0.3157, 0.9947], [0.3179, 0.9948], [0.3201, 0.9949], [0.3224, 0.995], [0.3246, 0.9951], [0.3269, 0.9952], [0.3291, 0.9952], [0.3313, 0.9953], [0.3336, 0.9954], [0.3358, 0.9955], [0.3381, 0.9955], [0.3403, 0.9956], [0.3425, 0.9957], [0.3448, 0.9958], [0.347, 0.9958], [0.3492, 0.9959], [0.3515, 0.996], [0.3537, 0.996], [0.356, 0.9961], [0.3582, 0.9962], [0.3604, 0.9962], [0.3627, 0.9963], [0.3649, 0.9964], [0.3672, 0.9964], [0.3694, 0.9965], [0.3716, 0.9965], [0.3739, 0.9966], [0.3761, 0.9966], [0.3783, 0.9967], [0.3806, 0.9968], [0.3828, 0.9968], [0.3851, 0.9969], [0.3873, 0.9969], [0.3895, 0.997], [0.3918, 0.997], [0.394, 0.9971], [0.3963, 0.9971], [0.3985, 0.9972], [0.4007, 0.9972], [0.403, 0.9972], [0.4052, 0.9973], [0.4074, 0.9973], [0.4097, 0.9974], [0.4119, 0.9974], [0.4142, 0.9975], [0.4164, 0.9975], [0.4186, 0.9975], [0.4209, 0.9976], [0.4231, 0.9976], [0.4253, 0.9977], [0.4276, 0.9977], [0.4298, 0.9977], [0.4321, 0.9978], [0.4343, 0.9978], [0.4365, 0.9979], [0.4388, 0.9979], [0.441, 0.9979], [0.4433, 0.998], [0.4455, 0.998], [0.4477, 0.998], [0.45, 0.9981], [0.4522, 0.9981], [0.4544, 0.9981], [0.4567, 0.9981], [0.4589, 0.9982], [0.4612, 0.9982], [0.4634, 0.9982], [0.4656, 0.9983], [0.4679, 0.9983], [0.4701, 0.9983], [0.4724, 0.9984], [0.4746, 0.9984], [0.4768, 0.9984], [0.4791, 0.9984], [0.4813, 0.9985], [0.4835, 0.9985], [0.4858, 0.9985], [0.488, 0.9985], [0.4903, 0.9986], [0.4925, 0.9986], [0.4947, 0.9986], [0.497, 0.9986], [0.4992, 0.9987], [0.5015, 0.9987], [0.5037, 0.9987], [0.5059, 0.9987], [0.5082, 0.9987], [0.5104, 0.9988], [0.5126, 0.9988], [0.5149, 0.9988], [0.5171, 0.9988], [0.5194, 0.9988], [0.5216, 0.9989], [0.5238, 0.9989], [0.5261, 0.9989], [0.5283, 0.9989], [0.5306, 0.9989], [0.5328, 0.999], [0.535, 0.999], [0.5373, 0.999], [0.5395, 0.999], [0.5417, 0.999], [0.544, 0.999], [0.5462, 0.9991], [0.5485, 0.9991], [0.5507, 0.9991], [0.5529, 0.9991], [0.5552, 0.9991], [0.5574, 0.9991], [0.5597, 0.9991], [0.5619, 0.9992], [0.5641, 0.9992], [0.5664, 0.9992], [0.5686, 0.9992], [0.5708, 0.9992], [0.5731, 0.9992], [0.5753, 0.9992], [0.5776, 0.9993], [0.5798, 0.9993], [0.582, 0.9993], [0.5843, 0.9993], [0.5865, 0.9993], [0.5888, 0.9993], [0.591, 0.9993], [0.5932, 0.9993], [0.5955, 0.9994], [0.5977, 0.9994], [0.5999, 0.9994], [0.6022, 0.9994], [0.6044, 0.9994], [0.6067, 0.9994], [0.6089, 0.9994], [0.6111, 0.9994], [0.6134, 0.9994], [0.6156, 0.9995], [0.6179, 0.9995], [0.6201, 0.9995], [0.6223, 0.9995], [0.6246, 0.9995], [0.6268, 0.9995], [0.629, 0.9995], [0.6313, 0.9995], [0.6335, 0.9995], [0.6358, 0.9995], [0.638, 0.9996], [0.6402, 0.9996], [0.6425, 0.9996], [0.6447, 0.9996], [0.647, 0.9996], [0.6492, 0.9996], [0.6514, 0.9996], [0.6537, 0.9996], [0.6559, 0.9996], [0.6581, 0.9996], [0.6604, 0.9996], [0.6626, 0.9996], [0.6649, 0.9996], [0.6671, 0.9997], [0.6693, 0.9997], [0.6716, 0.9997], [0.6738, 0.9997], [0.676, 0.9997], [0.6783, 0.9997], [0.6805, 0.9997], [0.6828, 0.9997], [0.685, 0.9997], [0.6872, 0.9997], [0.6895, 0.9997], [0.6917, 0.9997], [0.694, 0.9997], [0.6962, 0.9997], [0.6984, 0.9997], [0.7007, 0.9997], [0.7029, 0.9998], [0.7051, 0.9998], [0.7074, 0.9998], [0.7096, 0.9998], [0.7119, 0.9998], [0.7141, 0.9998], [0.7163, 0.9998], [0.7186, 0.9998], [0.7208, 0.9998], [0.7231, 0.9998], [0.7253, 0.9998], [0.7275, 0.9998], [0.7298, 0.9998], [0.732, 0.9998], [0.7342, 0.9998], [0.7365, 0.9998], [0.7387, 0.9998], [0.741, 0.9998], [0.7432, 0.9998], [0.7454, 0.9998], [0.7477, 0.9998], [0.7499, 0.9998], [0.7522, 0.9999], [0.7544, 0.9999], [0.7566, 0.9999], [0.7589, 0.9999], [0.7611, 0.9999], [0.7633, 0.9999], [0.7656, 0.9999], [0.7678, 0.9999], [0.7701, 0.9999], [0.7723, 0.9999], [0.7745, 0.9999], [0.7768, 0.9999], [0.779, 0.9999], [0.7813, 0.9999], [0.7835, 0.9999], [0.7857, 0.9999], [0.788, 0.9999], [0.7902, 0.9999], [0.7924, 0.9999], [0.7947, 0.9999], [0.7969, 0.9999], [0.7992, 0.9999], [0.8014, 0.9999], [0.8036, 0.9999], [0.8059, 0.9999], [0.8081, 0.9999], [0.8104, 0.9999], [0.8126, 0.9999], [0.8148, 0.9999], [0.8171, 0.9999], [0.8193, 0.9999], [0.8215, 0.9999], [0.8238, 0.9999], [0.826, 0.9999], [0.8283, 0.9999], [0.8305, 0.9999], [0.8327, 0.9999], [0.835, 1.0], [0.8372, 1.0], [0.8395, 1.0], [0.8417, 1.0], [0.8439, 1.0], [0.8462, 1.0], [0.8484, 1.0], [0.8506, 1.0], [0.8529, 1.0], [0.8551, 1.0], [0.8574, 1.0], [0.8596, 1.0], [0.8618, 1.0], [0.8641, 1.0], [0.8663, 1.0], [0.8686, 1.0], [0.8708, 1.0], [0.873, 1.0], [0.8753, 1.0], [0.8775, 1.0], [0.8797, 1.0], [0.882, 1.0], [0.8842, 1.0], [0.8865, 1.0], [0.8887, 1.0], [0.8909, 1.0], [0.8932, 1.0], [0.8954, 1.0], [0.8976, 1.0], [0.8999, 1.0], [0.9021, 1.0], [0.9044, 1.0], [0.9066, 1.0], [0.9088, 1.0], [0.9111, 1.0], [0.9133, 1.0], [0.9156, 1.0], [0.9178, 1.0], [0.92, 1.0], [0.9223, 1.0], [0.9245, 1.0], [0.9267, 1.0], [0.929, 1.0], [0.9312, 1.0], [0.9335, 1.0], [0.9357, 1.0], [0.9379, 1.0], [0.9402, 1.0], [0.9424, 1.0], [0.9447, 1.0], [0.9469, 1.0], [0.9491, 1.0], [0.9514, 1.0], [0.9536, 1.0], [0.9558, 1.0], [0.9581, 1.0], [0.9603, 1.0], [0.9626, 1.0], [0.9648, 1.0], [0.967, 1.0], [0.9693, 1.0], [0.9715, 1.0], [0.9738, 1.0], [0.976, 1.0], [0.9782, 1.0], [0.9805, 1.0], [0.9827, 1.0], [0.9849, 1.0], [0.9872, 1.0], [0.9894, 1.0], [0.9917, 1.0], [0.9939, 1.0], [0.9961, 1.0], [0.9984, 1.0], [1, 1]], "act": [{"y": 2012, "org": 842, "altas": 842, "bajas": 37}, {"y": 2013, "org": 1041, "altas": 236, "bajas": 57}, {"y": 2014, "org": 1230, "altas": 246, "bajas": 71}, {"y": 2015, "org": 1471, "altas": 312, "bajas": 77}, {"y": 2016, "org": 1807, "altas": 413, "bajas": 187}, {"y": 2017, "org": 2317, "altas": 697, "bajas": 975}, {"y": 2018, "org": 6504, "altas": 5162, "bajas": 308}, {"y": 2019, "org": 8643, "altas": 2447, "bajas": 498}, {"y": 2020, "org": 9690, "altas": 1545, "bajas": 468}, {"y": 2021, "org": 10652, "altas": 1430, "bajas": 657}, {"y": 2022, "org": 11459, "altas": 1464, "bajas": 998}, {"y": 2023, "org": 11580, "altas": 1119, "bajas": 1429}, {"y": 2024, "org": 11273, "altas": 1122, "bajas": 1841}, {"y": 2025, "org": 10267, "altas": 835, "bajas": 10267}], "inc": {"dup_nombre": {"filas": 2543, "nombres": 1199, "lic": 731303, "imp": 1265381887538.421}, "id": {"DIR3": 14423, "NIF/CIF": 2882, "Ausente": 531, "Malformado / no reconocido": 34}, "id_imp": {"Ausente": 25998800674.39999, "DIR3": 3789267853619.7983, "Malformado / no reconocido": 876994811.0199997, "NIF/CIF": 655196590812.7013}, "malformados_ej": ["01290075", "CC0000078", "Q9655740C", "A90109719", "A2901117B", "P4621000B", "G06115727", "Q4700649l", "S4600019S", "P0600900F", "G43143522", "l01090912"], "dir3_multi": 604, "ent_multi": 540, "dir3_multi_filas": 2972, "iva_alto": {"n": 518, "max": 1.6528925619834711, "imp": 7513772827.249997}, "iva_nulo": {"n": 490, "lic": 2211, "imp": 2576496840.8}, "iva_bajo": 439, "importe_cero": {"n": 95, "lic": 365}, "medio_extremo": {"n": 212, "imp": 1890829687245.8787, "pct_imp": 42.287761292810686, "lic": 59666, "pct_lic": 1.6539294198523644}, "inactivo": {"n": 2210, "pct": 12.367095691102406, "imp": 136510018167.22}, "una_licitacion": 892, "nombre_con_anio": 7}, "por_nivel": [{"k": "Administración General del Estado", "org": 1607, "lic": 968991, "imp": 1952908610895.4502, "ent": 786}, {"k": "Administración Local", "org": 13162, "lic": 1678160, "imp": 1231735999860.7896, "ent": 7735}, {"k": "Comunidades Autónomas", "org": 1301, "lic": 440515, "imp": 630534873291.3799, "ent": 1059}, {"k": "Seguridad Social y Mutuas", "org": 498, "lic": 219705, "imp": 429009373091.9401, "ent": 254}, {"k": "Sector público empresarial y fundacional", "org": 864, "lic": 155802, "imp": 134167175974.30997, "ent": 712}, {"k": "Universidades", "org": 233, "lic": 126499, "imp": 76819438165.93999, "ent": 77}, {"k": "Otros / No determinado", "org": 205, "lic": 17858, "imp": 16164768638.109999, "ent": 174}], "por_grupo": [{"k": "Ayuntamientos", "org": 10213, "lic": 1182852, "imp": 728795675068.9293, "ent": 5665}, {"k": "Consejerías y entes autonómicos", "org": 1286, "lic": 425894, "imp": 618044445908.2299, "ent": 1045}, {"k": "Correos", "org": 12, "lic": 18962, "imp": 335660055683.23956, "ent": 1}, {"k": "ADIF", "org": 15, "lic": 44450, "imp": 310741302501.0099, "ent": 1}, {"k": "Otros organismos de la AGE", "org": 428, "lic": 174567, "imp": 204784273172.14972, "ent": 309}, {"k": "Mutuas colaboradoras con la Seguridad Social", "org": 64, "lic": 152380, "imp": 200795894552.83017, "ent": 36}, {"k": "INGESA", "org": 13, "lic": 8388, "imp": 182344883795.60983, "ent": 1}, {"k": "Otras entidades locales", "org": 343, "lic": 77274, "imp": 158803244764.39008, "ent": 291}, {"k": "AENA", "org": 94, "lic": 62228, "imp": 150521146782.22, "ent": 1}, {"k": "Ministerios y órganos centrales", "org": 319, "lic": 60509, "imp": 142678537297.5099, "ent": 220}, {"k": "Empresas, fundaciones y otras entidades", "org": 864, "lic": 155802, "imp": 134167175974.30997, "ent": 712}, {"k": "Carreteras del Estado", "org": 16, "lic": 13653, "imp": 120629625316.1599, "ent": 1}, {"k": "Defensa - Órganos centrales", "org": 23, "lic": 39105, "imp": 109919184018.22997, "ent": 1}, {"k": "Entes dependientes locales", "org": 826, "lic": 160830, "imp": 94216268658.55008, "ent": 615}, {"k": "Consorcios", "org": 369, "lic": 34494, "imp": 90783498722.61005, "ent": 220}, {"k": "Universidades públicas", "org": 233, "lic": 126499, "imp": 76819438165.93999, "ent": 77}, {"k": "Diputaciones Provinciales", "org": 113, "lic": 154065, "imp": 68531389738.00001, "ent": 55}, {"k": "TRAGSA", "org": 5, "lic": 91820, "imp": 65014056535.991325, "ent": 1}, {"k": "Puertos del Estado y Autoridades Portuarias", "org": 51, "lic": 57977, "imp": 62250261404.59999, "ent": 43}, {"k": "Confederaciones Hidrográficas y agua estatal", "org": 17, "lic": 32921, "imp": 61591227840.939964, "ent": 15}, {"k": "Ejército de Tierra", "org": 29, "lic": 28025, "imp": 57225894629.080086, "ent": 1}, {"k": "RENFE", "org": 17, "lic": 49160, "imp": 54204513983.37999, "ent": 1}, {"k": "Otras empresas y entes estatales", "org": 48, "lic": 44274, "imp": 46331163010.82998, "ent": 44}, {"k": "Entidades gestoras de la Seguridad Social", "org": 421, "lic": 58937, "imp": 45868594743.50012, "ent": 217}, {"k": "Mancomunidades", "org": 662, "lic": 17619, "imp": 43323844906.16999, "ent": 481}, {"k": "ISFAS", "org": 1, "lic": 824, "imp": 36776939535.46995, "ent": 1}, {"k": "Cabildos Insulares", "org": 159, "lic": 28093, "imp": 33887375488.839928, "ent": 14}, {"k": "Organismos autónomos y reguladores estatales", "org": 78, "lic": 51129, "imp": 32604001331.129982, "ent": 47}, {"k": "RTVE", "org": 1, "lic": 18379, "imp": 22338010193.71986, "ent": 1}, {"k": "Instituciones Penitenciarias", "org": 107, "lic": 13210, "imp": 18616675641.989994, "ent": 1}, {"k": "Sin clasificar", "org": 205, "lic": 17858, "imp": 16164768638.109999, "ent": 174}, {"k": "Ejército del Aire y del Espacio", "org": 17, "lic": 35095, "imp": 16128221192.47003, "ent": 1}, {"k": "Armada", "org": 5, "lic": 10182, "imp": 14755038533.119987, "ent": 1}, {"k": "Organismos estatales de investigación", "org": 32, "lic": 11819, "imp": 13493638285.289993, "ent": 15}, {"k": "Guardia Civil", "org": 87, "lic": 9636, "imp": 13144304217.52003, "ent": 1}, {"k": "ENAIRE / Navegación aérea", "org": 10, "lic": 19116, "imp": 12870389193.48007, "ent": 1}, {"k": "Ciudades Autónomas de Ceuta y Melilla", "org": 15, "lic": 14621, "imp": 12490427383.149979, "ent": 14}, {"k": "Administración de Justicia", "org": 7, "lic": 7255, "imp": 12198134076.709997, "ent": 5}, {"k": "Policía Nacional", "org": 9, "lic": 8034, "imp": 12114418478.33, "ent": 1}, {"k": "Agencia Tributaria (AEAT)", "org": 47, "lic": 13045, "imp": 10861906117.729998, "ent": 1}, {"k": "Consells Insulars", "org": 53, "lic": 9561, "imp": 10177422978.650007, "ent": 23}, {"k": "CSIC", "org": 4, "lic": 19390, "imp": 8643762037.140001, "ent": 1}, {"k": "Paradores", "org": 2, "lic": 20333, "imp": 3285287614.8299947, "ent": 1}, {"k": "Órganos constitucionales del Estado", "org": 14, "lic": 4734, "imp": 1949721689.259999, "ent": 13}, {"k": "Bomberos y Protección Civil", "org": 11, "lic": 5387, "imp": 1631666281.420001, "ent": 9}, {"k": "Comarcas", "org": 106, "lic": 5158, "imp": 1248557738.3899999, "ent": 70}, {"k": "Unidad Militar de Emergencias", "org": 1, "lic": 3843, "imp": 976237176.7699963, "ent": 1}, {"k": "Delegaciones y Subdelegaciones del Gobierno", "org": 111, "lic": 5316, "imp": 600683405.15, "ent": 57}, {"k": "Entidades locales menores", "org": 304, "lic": 2218, "imp": 256448315.04999998, "ent": 295}, {"k": "Áreas metropolitanas", "org": 3, "lic": 609, "imp": 80607199.79000004, "ent": 2}], "por_ambito": [{"k": "Administración general y servicios múltiples", "org": 12934, "lic": 1727114, "imp": 1086135297822.2694, "ent": 8061}, {"k": "Transporte e Infraestructuras", "org": 460, "lic": 310139, "imp": 865134258671.45, "ent": 203}, {"k": "Sanidad y Salud", "org": 442, "lic": 344073, "imp": 622016673608.7997, "ent": 296}, {"k": "Otros servicios estatales", "org": 141, "lic": 153077, "imp": 440218517833.7494, "ent": 94}, {"k": "Medio Ambiente y Agua", "org": 534, "lic": 241304, "imp": 354239463003.93134, "ent": 367}, {"k": "Defensa", "org": 76, "lic": 117074, "imp": 235781515085.14, "ent": 6}, {"k": "Empleo y Protección Social", "org": 841, "lic": 130051, "imp": 208520076810.0401, "ent": 512}, {"k": "Hacienda y Economía", "org": 301, "lic": 84490, "imp": 165972049553.87973, "ent": 171}, {"k": "Administración Central del Estado", "org": 319, "lic": 60509, "imp": 142678537297.5099, "ent": 220}, {"k": "Educación", "org": 371, "lic": 177310, "imp": 122172208730.28012, "ent": 173}, {"k": "Seguridad y Emergencias", "org": 199, "lic": 45053, "imp": 72390203111.65999, "ent": 74}, {"k": "Cultura, Deporte y Turismo", "org": 592, "lic": 100637, "imp": 54173764844.87002, "ent": 372}, {"k": "Justicia y Prisiones", "org": 114, "lic": 20465, "imp": 30814809718.699993, "ent": 6}, {"k": "Industria, Energía y Tecnología", "org": 224, "lic": 34415, "imp": 29850608782.59001, "ent": 165}, {"k": "I+D+i", "org": 70, "lic": 43101, "imp": 25551452474.48999, "ent": 42}, {"k": "Agricultura, Ganadería y Pesca", "org": 127, "lic": 8668, "imp": 13140397474.15, "ent": 99}, {"k": "Órganos constitucionales", "org": 14, "lic": 4734, "imp": 1949721689.259999, "ent": 13}, {"k": "Administración Periférica del Estado", "org": 111, "lic": 5316, "imp": 600683405.15, "ent": 57}], "por_ccaa": [{"k": "Estatal / multiterritorial", "org": 1032, "lic": 891545, "imp": 2170791969755.0002, "ent": 607}, {"k": "C. Valenciana", "org": 1834, "lic": 372817, "imp": 433152347460.8094, "ent": 965}, {"k": "Andalucía", "org": 2117, "lic": 467562, "imp": 270617408048.35986, "ent": 1200}, {"k": "Madrid", "org": 576, "lic": 196999, "imp": 259907346648.71017, "ent": 320}, {"k": "No determinada", "org": 1249, "lic": 227656, "imp": 217459920241.89993, "ent": 965}, {"k": "Canarias", "org": 919, "lic": 208907, "imp": 173622923702.02985, "ent": 469}, {"k": "Aragón", "org": 1468, "lic": 126591, "imp": 166807960171.49002, "ent": 911}, {"k": "Illes Balears", "org": 503, "lic": 112580, "imp": 133440436214.31003, "ent": 309}, {"k": "Castilla y León", "org": 2925, "lic": 183506, "imp": 124880295470.23997, "ent": 2006}, {"k": "Castilla-La Mancha", "org": 1883, "lic": 195814, "imp": 110348380750.26999, "ent": 1220}, {"k": "Extremadura", "org": 988, "lic": 126250, "imp": 85596893230.9201, "ent": 620}, {"k": "Galicia", "org": 571, "lic": 132043, "imp": 72724424015.96002, "ent": 347}, {"k": "Murcia", "org": 244, "lic": 82546, "imp": 63901491801.26007, "ent": 152}, {"k": "Asturias", "org": 379, "lic": 79153, "imp": 50318357329.039925, "ent": 220}, {"k": "Cantabria", "org": 381, "lic": 65185, "imp": 46174837588.38002, "ent": 254}, {"k": "Cataluña", "org": 145, "lic": 52557, "imp": 34150909456.63, "ent": 100}, {"k": "País Vasco", "org": 189, "lic": 28485, "imp": 31579343931.32002, "ent": 143}, {"k": "Melilla", "org": 36, "lic": 18595, "imp": 11175238157.319977, "ent": 27}, {"k": "Ceuta", "org": 54, "lic": 13329, "imp": 6723968714.530006, "ent": 45}, {"k": "La Rioja", "org": 355, "lic": 22296, "imp": 6665583982.479989, "ent": 223}, {"k": "C. Foral de Navarra", "org": 22, "lic": 3114, "imp": 1300203246.9599988, "ent": 15}], "jer": [{"nivel": "Administración General del Estado", "grupo": "ADIF", "org": 15, "lic": 44450, "imp": 310741302501.0099}, {"nivel": "Administración General del Estado", "grupo": "AENA", "org": 94, "lic": 62228, "imp": 150521146782.22}, {"nivel": "Administración General del Estado", "grupo": "Administración de Justicia", "org": 7, "lic": 7255, "imp": 12198134076.709997}, {"nivel": "Administración General del Estado", "grupo": "Agencia Tributaria (AEAT)", "org": 47, "lic": 13045, "imp": 10861906117.729998}, {"nivel": "Administración General del Estado", "grupo": "Armada", "org": 5, "lic": 10182, "imp": 14755038533.119987}, {"nivel": "Administración General del Estado", "grupo": "CSIC", "org": 4, "lic": 19390, "imp": 8643762037.140001}, {"nivel": "Administración General del Estado", "grupo": "Carreteras del Estado", "org": 16, "lic": 13653, "imp": 120629625316.1599}, {"nivel": "Administración General del Estado", "grupo": "Confederaciones Hidrográficas y agua estatal", "org": 17, "lic": 32921, "imp": 61591227840.939964}, {"nivel": "Administración General del Estado", "grupo": "Correos", "org": 12, "lic": 18962, "imp": 335660055683.23956}, {"nivel": "Administración General del Estado", "grupo": "Defensa - Órganos centrales", "org": 23, "lic": 39105, "imp": 109919184018.22997}, {"nivel": "Administración General del Estado", "grupo": "Delegaciones y Subdelegaciones del Gobierno", "org": 111, "lic": 5316, "imp": 600683405.15}, {"nivel": "Administración General del Estado", "grupo": "ENAIRE / Navegación aérea", "org": 10, "lic": 19116, "imp": 12870389193.48007}, {"nivel": "Administración General del Estado", "grupo": "Ejército de Tierra", "org": 29, "lic": 28025, "imp": 57225894629.080086}, {"nivel": "Administración General del Estado", "grupo": "Ejército del Aire y del Espacio", "org": 17, "lic": 35095, "imp": 16128221192.47003}, {"nivel": "Administración General del Estado", "grupo": "Guardia Civil", "org": 87, "lic": 9636, "imp": 13144304217.52003}, {"nivel": "Administración General del Estado", "grupo": "ISFAS", "org": 1, "lic": 824, "imp": 36776939535.46995}, {"nivel": "Administración General del Estado", "grupo": "Instituciones Penitenciarias", "org": 107, "lic": 13210, "imp": 18616675641.989994}, {"nivel": "Administración General del Estado", "grupo": "Ministerios y órganos centrales", "org": 319, "lic": 60509, "imp": 142678537297.5099}, {"nivel": "Administración General del Estado", "grupo": "Organismos autónomos y reguladores estatales", "org": 78, "lic": 51129, "imp": 32604001331.129982}, {"nivel": "Administración General del Estado", "grupo": "Organismos estatales de investigación", "org": 32, "lic": 11819, "imp": 13493638285.289993}, {"nivel": "Administración General del Estado", "grupo": "Otras empresas y entes estatales", "org": 48, "lic": 44274, "imp": 46331163010.82998}, {"nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "org": 428, "lic": 174567, "imp": 204784273172.14972}, {"nivel": "Administración General del Estado", "grupo": "Paradores", "org": 2, "lic": 20333, "imp": 3285287614.8299947}, {"nivel": "Administración General del Estado", "grupo": "Policía Nacional", "org": 9, "lic": 8034, "imp": 12114418478.33}, {"nivel": "Administración General del Estado", "grupo": "Puertos del Estado y Autoridades Portuarias", "org": 51, "lic": 57977, "imp": 62250261404.59999}, {"nivel": "Administración General del Estado", "grupo": "RENFE", "org": 17, "lic": 49160, "imp": 54204513983.37999}, {"nivel": "Administración General del Estado", "grupo": "RTVE", "org": 1, "lic": 18379, "imp": 22338010193.71986}, {"nivel": "Administración General del Estado", "grupo": "TRAGSA", "org": 5, "lic": 91820, "imp": 65014056535.991325}, {"nivel": "Administración General del Estado", "grupo": "Unidad Militar de Emergencias", "org": 1, "lic": 3843, "imp": 976237176.7699963}, {"nivel": "Administración General del Estado", "grupo": "Órganos constitucionales del Estado", "org": 14, "lic": 4734, "imp": 1949721689.259999}, {"nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 10213, "lic": 1182852, "imp": 728795675068.9293}, {"nivel": "Administración Local", "grupo": "Bomberos y Protección Civil", "org": 11, "lic": 5387, "imp": 1631666281.420001}, {"nivel": "Administración Local", "grupo": "Cabildos Insulares", "org": 159, "lic": 28093, "imp": 33887375488.839928}, {"nivel": "Administración Local", "grupo": "Comarcas", "org": 106, "lic": 5158, "imp": 1248557738.3899999}, {"nivel": "Administración Local", "grupo": "Consells Insulars", "org": 53, "lic": 9561, "imp": 10177422978.650007}, {"nivel": "Administración Local", "grupo": "Consorcios", "org": 369, "lic": 34494, "imp": 90783498722.61005}, {"nivel": "Administración Local", "grupo": "Diputaciones Provinciales", "org": 113, "lic": 154065, "imp": 68531389738.00001}, {"nivel": "Administración Local", "grupo": "Entes dependientes locales", "org": 826, "lic": 160830, "imp": 94216268658.55008}, {"nivel": "Administración Local", "grupo": "Entidades locales menores", "org": 304, "lic": 2218, "imp": 256448315.04999998}, {"nivel": "Administración Local", "grupo": "Mancomunidades", "org": 662, "lic": 17619, "imp": 43323844906.16999}, {"nivel": "Administración Local", "grupo": "Otras entidades locales", "org": 343, "lic": 77274, "imp": 158803244764.39008}, {"nivel": "Administración Local", "grupo": "Áreas metropolitanas", "org": 3, "lic": 609, "imp": 80607199.79000004}, {"nivel": "Comunidades Autónomas", "grupo": "Ciudades Autónomas de Ceuta y Melilla", "org": 15, "lic": 14621, "imp": 12490427383.149979}, {"nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1286, "lic": 425894, "imp": 618044445908.2299}, {"nivel": "Otros / No determinado", "grupo": "Sin clasificar", "org": 205, "lic": 17858, "imp": 16164768638.109999}, {"nivel": "Sector público empresarial y fundacional", "grupo": "Empresas, fundaciones y otras entidades", "org": 864, "lic": 155802, "imp": 134167175974.30997}, {"nivel": "Seguridad Social y Mutuas", "grupo": "Entidades gestoras de la Seguridad Social", "org": 421, "lic": 58937, "imp": 45868594743.50012}, {"nivel": "Seguridad Social y Mutuas", "grupo": "INGESA", "org": 13, "lic": 8388, "imp": 182344883795.60983}, {"nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "org": 64, "lic": 152380, "imp": 200795894552.83017}, {"nivel": "Universidades", "grupo": "Universidades públicas", "org": 233, "lic": 126499, "imp": 76819438165.93999}], "top_org": [{"organo": "Consejo de Administración-Comité de Inversiones de la Sociedad Estatal Correos y Telégrafos S.A", "nivel": "Administración General del Estado", "grupo": "Correos", "ccaa": "Estatal / multiterritorial", "n": 3991, "sin": 199176652189.5397, "medio": 49906452.56565765, "a1": 2023, "a2": 2025}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "nivel": "Seguridad Social y Mutuas", "grupo": "INGESA", "ccaa": "Estatal / multiterritorial", "n": 820, "sin": 149911338690.8698, "medio": 182818705.72057295, "a1": 2018, "a2": 2025}, {"organo": "ADIF Alta Velocidad - Consejo de Administración", "nivel": "Administración General del Estado", "grupo": "ADIF", "ccaa": "Estatal / multiterritorial", "n": 2515, "sin": 135348033991.2697, "medio": 53816315.70229411, "a1": 2016, "a2": 2025}, {"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "ccaa": "Estatal / multiterritorial", "n": 85, "sin": 133272910299.83, "medio": 1567916591.7627058, "a1": 2018, "a2": 2025}, {"organo": "Dirección General de Carreteras", "nivel": "Administración General del Estado", "grupo": "Carreteras del Estado", "ccaa": "Estatal / multiterritorial", "n": 13139, "sin": 120172176618.2999, "medio": 9146219.394040635, "a1": 2012, "a2": 2025}, {"organo": "Aena. Consejo de Administración", "nivel": "Administración General del Estado", "grupo": "AENA", "ccaa": "Estatal / multiterritorial", "n": 3996, "sin": 119950531045.31, "medio": 30017650.411739238, "a1": 2018, "a2": 2025}, {"organo": "ADIF -Consejo de Administración", "nivel": "Administración General del Estado", "grupo": "ADIF", "ccaa": "Estatal / multiterritorial", "n": 4452, "sin": 90624749540.69978, "medio": 20355963.508692674, "a1": 2022, "a2": 2025}, {"organo": "Consejo de Administración de Correos Express Paquetería Urgente, S.A. - S.M.E.", "nivel": "Administración General del Estado", "grupo": "Correos", "ccaa": "Estatal / multiterritorial", "n": 1910, "sin": 74711987069.72003, "medio": 39116223.59671206, "a1": 2018, "a2": 2025}, {"organo": "Subdirección General de Adquisiciones de Armamento y Material DGAM", "nivel": "Administración General del Estado", "grupo": "Defensa - Órganos centrales", "ccaa": "Estatal / multiterritorial", "n": 1700, "sin": 63589770760.20994, "medio": 37405747.506005846, "a1": 2012, "a2": 2025}, {"organo": "Dirección General de Racionalización y Centralización de la Contratación-Junta de Contratación Centralizada", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "ccaa": "Estatal / multiterritorial", "n": 25308, "sin": 60912234234.58972, "medio": 2406837.1358696744, "a1": 2018, "a2": 2025}, {"organo": "Subdirección de Compras de la Sociedad Estatal Correos y Telégrafos S.A.", "nivel": "Administración General del Estado", "grupo": "Correos", "ccaa": "Estatal / multiterritorial", "n": 10465, "sin": 60319737571.49985, "medio": 5763950.0784997465, "a1": 2012, "a2": 2025}, {"organo": "Empresa de Transformación Agraria S.A.,S.M.E., M.P., (TRAGSA)", "nivel": "Administración General del Estado", "grupo": "TRAGSA", "ccaa": "Estatal / multiterritorial", "n": 82782, "sin": 58634472356.27133, "medio": 708299.7796172034, "a1": 2018, "a2": 2025}, {"organo": "Junta de Gobierno del Ajuntament de València", "nivel": "Administración Local", "grupo": "Ayuntamientos", "ccaa": "C. Valenciana", "n": 5216, "sin": 54617342106.30948, "medio": 10471116.201363014, "a1": 2018, "a2": 2025}, {"organo": "Área de Gobierno de Medio Ambiente y Movilidad", "nivel": "Administración Local", "grupo": "Otras entidades locales", "ccaa": "No determinada", "n": 2658, "sin": 52173433104.29005, "medio": 19628831.115233276, "a1": 2018, "a2": 2025}, {"organo": "Área de Gobierno de Urbanismo, Medio Ambiente y Movilidad del Ayuntamiento de Madrid", "nivel": "Administración Local", "grupo": "Ayuntamientos", "ccaa": "Madrid", "n": 2126, "sin": 50889257543.51996, "medio": 23936621.610310424, "a1": 2023, "a2": 2025}, {"organo": "Consorcio de Transportes de Mallorca", "nivel": "Administración Local", "grupo": "Consorcios", "ccaa": "Illes Balears", "n": 739, "sin": 49144503566.17007, "medio": 66501358.00564285, "a1": 2017, "a2": 2025}, {"organo": "ADIF - Consejo de Administración", "nivel": "Administración General del Estado", "grupo": "ADIF", "ccaa": "Estatal / multiterritorial", "n": 1663, "sin": 44844290126.91004, "medio": 26965899.054064967, "a1": 2014, "a2": 2025}, {"organo": "Departamento de Vertebración del Territorio, Movilidad y Vivienda", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Aragón", "n": 723, "sin": 43444038751.21003, "medio": 60088573.653125905, "a1": 2018, "a2": 2025}, {"organo": "Gobierno de Zaragoza", "nivel": "Administración Local", "grupo": "Otras entidades locales", "ccaa": "Aragón", "n": 1697, "sin": 42592561982.85006, "medio": 25098740.119534507, "a1": 2018, "a2": 2025}, {"organo": "Instituto Social de las Fuerzas Armadas (ISFAS)", "nivel": "Administración General del Estado", "grupo": "ISFAS", "ccaa": "Estatal / multiterritorial", "n": 824, "sin": 36776939535.46995, "medio": 44632208.17411401, "a1": 2012, "a2": 2025}, {"organo": "Jefatura de Asuntos Económicos del Mando de Apoyo Logístico", "nivel": "Administración General del Estado", "grupo": "Ejército de Tierra", "ccaa": "Estatal / multiterritorial", "n": 15632, "sin": 32305558440.96003, "medio": 2066629.8900307082, "a1": 2012, "a2": 2025}, {"organo": "Asamblea General de la Mancomunidad de Municipios del Noroeste", "nivel": "Administración Local", "grupo": "Mancomunidades", "ccaa": "Madrid", "n": 90, "sin": 32027260913.64, "medio": 355858454.596, "a1": 2020, "a2": 2025}, {"organo": "Dirección General de Renfe Viajeros Sociedad Mercantil Estatal, S.A.", "nivel": "Administración General del Estado", "grupo": "RENFE", "ccaa": "Estatal / multiterritorial", "n": 9126, "sin": 29385316747.48999, "medio": 3219955.812786543, "a1": 2016, "a2": 2025}, {"organo": "Subsecretaría de la Consellería de Sanidad y Salud Pública", "nivel": "Administración General del Estado", "grupo": "Ministerios y órganos centrales", "ccaa": "C. Valenciana", "n": 1979, "sin": 27956598724.81992, "medio": 14126628.966558827, "a1": 2018, "a2": 2025}, {"organo": "Junta de Gobierno del Ayuntamiento de Granada", "nivel": "Administración Local", "grupo": "Ayuntamientos", "ccaa": "Andalucía", "n": 5168, "sin": 27227100178.15991, "medio": 5268401.737260045, "a1": 2014, "a2": 2025}, {"organo": "ADIF - Presidencia", "nivel": "Administración General del Estado", "grupo": "ADIF", "ccaa": "Estatal / multiterritorial", "n": 25888, "sin": 25612219460.53036, "medio": 989347.1670476808, "a1": 2014, "a2": 2025}, {"organo": "Gerencia Regional de Salud de Castilla y León", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Castilla-La Mancha", "n": 3210, "sin": 25428508331.38999, "medio": 7921653.6857912745, "a1": 2018, "a2": 2025}, {"organo": "Secretaria General del Servicio de Salud de Castilla-La Mancha", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Castilla y León", "n": 3690, "sin": 24672839049.63993, "medio": 6686406.246514887, "a1": 2015, "a2": 2025}, {"organo": "Junta de Contratación del Ejército de Tierra", "nivel": "Administración General del Estado", "grupo": "Ejército de Tierra", "ccaa": "Estatal / multiterritorial", "n": 667, "sin": 23975407200.70006, "medio": 35945138.23193412, "a1": 2012, "a2": 2025}, {"organo": "Junta de Contratación del Ministerio de Defensa", "nivel": "Administración General del Estado", "grupo": "Defensa - Órganos centrales", "ccaa": "Estatal / multiterritorial", "n": 404, "sin": 22591441123.99001, "medio": 55919408.72274755, "a1": 2021, "a2": 2025}, {"organo": "Área de Gobierno de Políticas Sociales, Familia e Igualdad del Ayuntamiento de Madrid", "nivel": "Administración Local", "grupo": "Ayuntamientos", "ccaa": "Madrid", "n": 2142, "sin": 22551722068.86, "medio": 10528348.304789916, "a1": 2023, "a2": 2025}, {"organo": "Dirección de Compras de la Corporación de Radio y Televisión Española S.A.", "nivel": "Administración General del Estado", "grupo": "RTVE", "ccaa": "Estatal / multiterritorial", "n": 18379, "sin": 22338010193.71986, "medio": 1215409.4452211687, "a1": 2012, "a2": 2025}, {"organo": "Dirección General del Instituto Nacional de Ciberseguridad de España, S.A. (INCIBE)", "nivel": "Sector público empresarial y fundacional", "grupo": "Empresas, fundaciones y otras entidades", "ccaa": "No determinada", "n": 3191, "sin": 22136529930.22995, "medio": 6937176.411855202, "a1": 2014, "a2": 2025}, {"organo": "Dirección General de Gestión Económica, Contratación e Infraestructuras de la Conselleria de Sanidad", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "C. Valenciana", "n": 1819, "sin": 21681507659.08, "medio": 11919465.453040132, "a1": 2023, "a2": 2025}, {"organo": "Dirección General de Planificación Económica", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Extremadura", "n": 3618, "sin": 21625786607.87007, "medio": 5977276.563811518, "a1": 2018, "a2": 2025}, {"organo": "Dirección General del Agua", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "ccaa": "Estatal / multiterritorial", "n": 2389, "sin": 20767905575.52003, "medio": 8693137.536843881, "a1": 2018, "a2": 2025}, {"organo": "Conselleria de Hacienda y Modelo Económico - Central de Compras", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "C. Valenciana", "n": 264, "sin": 19218352487.45003, "medio": 72796789.7251895, "a1": 2017, "a2": 2023}, {"organo": "Gerencia de Informática de la Seguridad Social", "nivel": "Seguridad Social y Mutuas", "grupo": "Entidades gestoras de la Seguridad Social", "ccaa": "Estatal / multiterritorial", "n": 2490, "sin": 18619032207.47012, "medio": 7477522.974887598, "a1": 2018, "a2": 2025}, {"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "ccaa": "Estatal / multiterritorial", "n": 22, "sin": 18128274046.76001, "medio": 824012456.6709095, "a1": 2013, "a2": 2017}, {"organo": "Empresa Municipal de Transportes de Madrid, S.A.", "nivel": "Administración Local", "grupo": "Entes dependientes locales", "ccaa": "Madrid", "n": 5971, "sin": 17574892360.94008, "medio": 2943375.0395143325, "a1": 2018, "a2": 2025}, {"organo": "Consejo de Administración de Aguas de las Cuencas Mediterráneas, S.M.E., S.A. (ACUAMED)", "nivel": "Administración General del Estado", "grupo": "Confederaciones Hidrográficas y agua estatal", "ccaa": "Estatal / multiterritorial", "n": 2594, "sin": 16791075401.55003, "medio": 6473043.716865855, "a1": 2018, "a2": 2025}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "nivel": "Seguridad Social y Mutuas", "grupo": "INGESA", "ccaa": "Estatal / multiterritorial", "n": 1264, "sin": 16648880679.47002, "medio": 13171582.816036409, "a1": 2022, "a2": 2025}, {"organo": "Consejo de Administración de Sociedad Mercantil Estatal Aguas de las Cuencas de España, S.A. (ACUAES)", "nivel": "Administración General del Estado", "grupo": "Confederaciones Hidrográficas y agua estatal", "ccaa": "Estatal / multiterritorial", "n": 2258, "sin": 16111830547.50992, "medio": 7135443.112271886, "a1": 2016, "a2": 2025}, {"organo": "Gerencia de Ferrocarrils de la Generalitat Valenciana", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "C. Valenciana", "n": 4240, "sin": 15042195678.51994, "medio": 3547687.6600282877, "a1": 2018, "a2": 2025}, {"organo": "Servicio de Salud de las Illes Balears", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Illes Balears", "n": 13971, "sin": 14663914798.25991, "medio": 1049596.6500794438, "a1": 2017, "a2": 2025}, {"organo": "Vicepresidencia y Conselleria de Igualdad y Políticas Inclusivas", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "C. Valenciana", "n": 1214, "sin": 14405236295.35, "medio": 11865927.755642505, "a1": 2017, "a2": 2025}, {"organo": "Conselleria de Hacienda, Economía y Administración Pública - Central de Compras de la Generalitat Valenciana", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "C. Valenciana", "n": 182, "sin": 14266980127.83, "medio": 78390000.70236264, "a1": 2023, "a2": 2024}, {"organo": "Dirección General de Recursos Económicos del Servicio Canario de la Salud", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Canarias", "n": 2293, "sin": 14180608038.9699, "medio": 6184303.549485346, "a1": 2018, "a2": 2025}, {"organo": "Consejo de Gobierno Insular del Cabildo Insular de Tenerife", "nivel": "Administración Local", "grupo": "Cabildos Insulares", "ccaa": "Canarias", "n": 4891, "sin": 14037394999.74993, "medio": 2870046.0028112717, "a1": 2018, "a2": 2025}, {"organo": "Empresa Nacional de Residuos Radiactivos, S.A., S.M.E. (ENRESA)", "nivel": "Administración General del Estado", "grupo": "Otras empresas y entes estatales", "ccaa": "Estatal / multiterritorial", "n": 5249, "sin": 14028536198.77998, "medio": 2672611.2019013106, "a1": 2018, "a2": 2025}, {"organo": "Consejería de Sanidad del Gobierno de Canarias", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Canarias", "n": 1792, "sin": 13959371063.53999, "medio": 7789827.6024218695, "a1": 2018, "a2": 2025}, {"organo": "Junta de Gobierno del Ayuntamiento de Sevilla", "nivel": "Administración Local", "grupo": "Ayuntamientos", "ccaa": "Andalucía", "n": 7977, "sin": 13366687885.7, "medio": 1675653.4894947975, "a1": 2018, "a2": 2025}, {"organo": "Servicio Cántabro de Salud", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Cantabria", "n": 11998, "sin": 13267573503.64003, "medio": 1105815.4278746482, "a1": 2018, "a2": 2025}, {"organo": "Servicio Aragonés de Salud (SALUD)", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "ccaa": "Aragón", "n": 974, "sin": 13070139268.21999, "medio": 13419034.156283356, "a1": 2018, "a2": 2025}, {"organo": "Jefatura de Asuntos Económicos de la Guardia Civil", "nivel": "Administración General del Estado", "grupo": "Guardia Civil", "ccaa": "Estatal / multiterritorial", "n": 6511, "sin": 12943310457.78003, "medio": 1987914.3691875334, "a1": 2012, "a2": 2025}, {"organo": "Dirección General de Tráfico", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "ccaa": "Estatal / multiterritorial", "n": 5771, "sin": 12762997540.33004, "medio": 2211574.690752043, "a1": 2012, "a2": 2025}, {"organo": "Subsecretaría de la Consellería de Sanidad y Salud Pública", "nivel": "Administración General del Estado", "grupo": "Ministerios y órganos centrales", "ccaa": "C. Valenciana", "n": 1137, "sin": 12409075099.73997, "medio": 10913874.318153007, "a1": 2022, "a2": 2023}, {"organo": "Banco de España", "nivel": "Administración General del Estado", "grupo": "Organismos autónomos y reguladores estatales", "ccaa": "Estatal / multiterritorial", "n": 6146, "sin": 12209215246.27997, "medio": 1986530.3036576586, "a1": 2018, "a2": 2025}, {"organo": "Área de Gobierno de Obras y Equipamientos", "nivel": "Administración Local", "grupo": "Otras entidades locales", "ccaa": "País Vasco", "n": 3519, "sin": 12127666387.09002, "medio": 3446338.8425944927, "a1": 2018, "a2": 2025}, {"organo": "Director Gerente de FREMAP", "nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "ccaa": "Madrid", "n": 12198, "sin": 12120039810.46014, "medio": 993608.7727873537, "a1": 2018, "a2": 2025}], "top_ent": [{"entidad": "Correos", "nivel": "Administración General del Estado", "grupo": "Correos", "org": 12, "lic": 18962, "imp": 335660055683.23956}, {"entidad": "ADIF", "nivel": "Administración General del Estado", "grupo": "ADIF", "org": 15, "lic": 44450, "imp": 310741302501.0099}, {"entidad": "INGESA", "nivel": "Seguridad Social y Mutuas", "grupo": "INGESA", "org": 13, "lic": 8388, "imp": 182344883795.60983}, {"entidad": "MUTUALIDAD DE FUNCIONARIOS CIVILES DEL ESTADO (MUFACE)", "nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "org": 5, "lic": 1008, "imp": 151554002886.99002}, {"entidad": "AENA", "nivel": "Administración General del Estado", "grupo": "AENA", "org": 94, "lic": 62228, "imp": 150521146782.22}, {"entidad": "Carreteras del Estado", "nivel": "Administración General del Estado", "grupo": "Carreteras del Estado", "org": 16, "lic": 13653, "imp": 120629625316.1599}, {"entidad": "Defensa - Órganos centrales", "nivel": "Administración General del Estado", "grupo": "Defensa - Órganos centrales", "org": 23, "lic": 39105, "imp": 109919184018.22997}, {"entidad": "AYUNTAMIENTO DE MADRID", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 7, "lic": 10834, "imp": 89567737648.84998}, {"entidad": "TRAGSA", "nivel": "Administración General del Estado", "grupo": "TRAGSA", "org": 5, "lic": 91820, "imp": 65014056535.991325}, {"entidad": "RACIONALIZACION Y CENTRALIZACION DE LA CONTRATACION-JUNTA DE CONTRATACION CENTRALIZADA", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "org": 1, "lic": 25308, "imp": 60912234234.58972}, {"entidad": "Ejército de Tierra", "nivel": "Administración General del Estado", "grupo": "Ejército de Tierra", "org": 29, "lic": 28025, "imp": 57225894629.080086}, {"entidad": "AJUNTAMENT DE VALENCIA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 4, "lic": 12367, "imp": 55318196320.04948}, {"entidad": "RENFE", "nivel": "Administración General del Estado", "grupo": "RENFE", "org": 17, "lic": 49160, "imp": 54204513983.37999}, {"entidad": "AREA DE GOBIERNO DE MEDIO AMBIENTE Y MOVILIDAD", "nivel": "Administración Local", "grupo": "Otras entidades locales", "org": 1, "lic": 2658, "imp": 52173433104.29005}, {"entidad": "CONSORCIO DE TRANSPORTES DE MALLORCA", "nivel": "Administración Local", "grupo": "Consorcios", "org": 1, "lic": 739, "imp": 49144503566.17007}, {"entidad": "DEPARTAMENTO DE VERTEBRACION DEL TERRITORIO, MOVILIDAD Y VIVIENDA", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 723, "imp": 43444038751.21003}, {"entidad": "GOBIERNO DE ZARAGOZA", "nivel": "Administración Local", "grupo": "Otras entidades locales", "org": 1, "lic": 1697, "imp": 42592561982.85006}, {"entidad": "LA CONSELLERIA DE SANIDAD Y SALUD PUBLICA", "nivel": "Administración General del Estado", "grupo": "Ministerios y órganos centrales", "org": 2, "lic": 3116, "imp": 40365673824.55989}, {"entidad": "ISFAS", "nivel": "Administración General del Estado", "grupo": "ISFAS", "org": 1, "lic": 824, "imp": 36776939535.46995}, {"entidad": "MANCOMUNIDAD DE MUNICIPIOS DEL NOROESTE", "nivel": "Administración Local", "grupo": "Mancomunidades", "org": 3, "lic": 174, "imp": 32037251096.739998}, {"entidad": "AYUNTAMIENTO DE GRANADA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 1, "lic": 5168, "imp": 27227100178.15991}, {"entidad": "REGIONAL DE SALUD DE CASTILLA Y LEON", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 3210, "imp": 25428508331.38999}, {"entidad": "SERVICIO DE SALUD DE CASTILLA-LA MANCHA", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 3690, "imp": 24672839049.63993}, {"entidad": "DEL AGUA", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "org": 3, "lic": 2935, "imp": 23351495631.590034}, {"entidad": "RTVE", "nivel": "Administración General del Estado", "grupo": "RTVE", "org": 1, "lic": 18379, "imp": 22338010193.71986}, {"entidad": "DEL INSTITUTO NACIONAL DE CIBERSEGURIDAD DE ESPANA, S.A. (INCIBE)", "nivel": "Sector público empresarial y fundacional", "grupo": "Empresas, fundaciones y otras entidades", "org": 1, "lic": 3191, "imp": 22136529930.22995}, {"entidad": "GESTION ECONOMICA, CONTRATACION E INFRAESTRUCTURAS DE LA CONSELLERIA DE SANIDAD", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 1819, "imp": 21681507659.08}, {"entidad": "PLANIFICACION ECONOMICA", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 3618, "imp": 21625786607.87007}, {"entidad": "CONSELLERIA DE HACIENDA Y MODELO ECONOMICO - CENTRAL DE COMPRAS", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 264, "imp": 19218352487.45003}, {"entidad": "INFORMATICA DE LA SEGURIDAD SOCIAL", "nivel": "Seguridad Social y Mutuas", "grupo": "Entidades gestoras de la Seguridad Social", "org": 2, "lic": 2529, "imp": 18712820050.31012}, {"entidad": "Instituciones Penitenciarias", "nivel": "Administración General del Estado", "grupo": "Instituciones Penitenciarias", "org": 107, "lic": 13210, "imp": 18616675641.989994}, {"entidad": "EMPRESA MUNICIPAL DE TRANSPORTES DE MADRID, S.A", "nivel": "Administración Local", "grupo": "Entes dependientes locales", "org": 1, "lic": 5971, "imp": 17574892360.94008}, {"entidad": "AGUAS DE LAS CUENCAS MEDITERRANEAS, S.M.E., S.A. (ACUAMED)", "nivel": "Administración General del Estado", "grupo": "Confederaciones Hidrográficas y agua estatal", "org": 1, "lic": 2594, "imp": 16791075401.55003}, {"entidad": "Ejército del Aire y del Espacio", "nivel": "Administración General del Estado", "grupo": "Ejército del Aire y del Espacio", "org": 17, "lic": 35095, "imp": 16128221192.47003}, {"entidad": "SOCIEDAD MERCANTIL ESTATAL AGUAS DE LAS CUENCAS DE ESPANA, S.A. (ACUAES)", "nivel": "Administración General del Estado", "grupo": "Confederaciones Hidrográficas y agua estatal", "org": 1, "lic": 2258, "imp": 16111830547.50992}, {"entidad": "FERROCARRILS DE LA GENERALITAT VALENCIANA", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 2, "lic": 4532, "imp": 15603789374.53994}, {"entidad": "Y CONSELLERIA DE IGUALDAD Y POLITICAS INCLUSIVAS", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 2, "lic": 1241, "imp": 15232561057.5}, {"entidad": "AUTORIDAD PORTUARIA DE VALENCIA", "nivel": "Administración General del Estado", "grupo": "Puertos del Estado y Autoridades Portuarias", "org": 2, "lic": 4591, "imp": 15218106551.559998}, {"entidad": "Armada", "nivel": "Administración General del Estado", "grupo": "Armada", "org": 5, "lic": 10182, "imp": 14755038533.119987}, {"entidad": "CABILDO INSULAR DE TENERIFE", "nivel": "Administración Local", "grupo": "Cabildos Insulares", "org": 65, "lic": 7635, "imp": 14700044191.769928}, {"entidad": "SERVICIO DE SALUD DE LAS ILLES BALEARS", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 13971, "imp": 14663914798.25991}, {"entidad": "AYUNTAMIENTO DE SEVILLA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 7, "lic": 16597, "imp": 14481076211.710001}, {"entidad": "CONSELLERIA DE HACIENDA, ECONOMIA Y ADMINISTRACION PUBLICA - CENTRAL DE COMPRAS DE LA GENERALITAT VALENCIANA", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 182, "imp": 14266980127.83}, {"entidad": "RECURSOS ECONOMICOS DEL SERVICIO CANARIO DE LA SALUD", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 2293, "imp": 14180608038.9699}, {"entidad": "AYUNTAMIENTO DE MALAGA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 43, "lic": 16289, "imp": 14091371450.409952}, {"entidad": "EMPRESA NACIONAL DE RESIDUOS RADIACTIVOS, S.A., S.M.E. (ENRESA)", "nivel": "Administración General del Estado", "grupo": "Otras empresas y entes estatales", "org": 1, "lic": 5249, "imp": 14028536198.77998}, {"entidad": "CONSEJERIA DE SANIDAD DEL GOBIERNO DE CANARIAS", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 1792, "imp": 13959371063.53999}, {"entidad": "FREMAP", "nivel": "Seguridad Social y Mutuas", "grupo": "Mutuas colaboradoras con la Seguridad Social", "org": 2, "lic": 13019, "imp": 13307779259.250141}, {"entidad": "SERVICIO CANTABRO DE SALUD", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 11998, "imp": 13267573503.64003}, {"entidad": "MINISTERIO DE SANIDAD", "nivel": "Administración General del Estado", "grupo": "Ministerios y órganos centrales", "org": 2, "lic": 285, "imp": 13264570616.539999}, {"entidad": "Guardia Civil", "nivel": "Administración General del Estado", "grupo": "Guardia Civil", "org": 87, "lic": 9636, "imp": 13144304217.52003}, {"entidad": "SERVICIO ARAGONES DE SALUD (SALUD)", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 974, "imp": 13070139268.21999}, {"entidad": "ENAIRE / Navegación aérea", "nivel": "Administración General del Estado", "grupo": "ENAIRE / Navegación aérea", "org": 10, "lic": 19116, "imp": 12870389193.48007}, {"entidad": "TRAFICO", "nivel": "Administración General del Estado", "grupo": "Otros organismos de la AGE", "org": 1, "lic": 5771, "imp": 12762997540.33004}, {"entidad": "BANCO DE ESPANA", "nivel": "Administración General del Estado", "grupo": "Organismos autónomos y reguladores estatales", "org": 1, "lic": 6146, "imp": 12209215246.27997}, {"entidad": "AYUNTAMIENTO DE ALMERIA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 2, "lic": 5477, "imp": 12168351565.12999}, {"entidad": "AREA DE GOBIERNO DE OBRAS Y EQUIPAMIENTOS", "nivel": "Administración Local", "grupo": "Otras entidades locales", "org": 1, "lic": 3519, "imp": 12127666387.09002}, {"entidad": "Policía Nacional", "nivel": "Administración General del Estado", "grupo": "Policía Nacional", "org": 9, "lic": 8034, "imp": 12114418478.33}, {"entidad": "AYUNTAMIENTO DE CASTELLON DE LA PLANA", "nivel": "Administración Local", "grupo": "Ayuntamientos", "org": 3, "lic": 4258, "imp": 11857786786.74994}, {"entidad": "CONSELLERIA DE EDUCACION, CULTURA Y DEPORTE", "nivel": "Comunidades Autónomas", "grupo": "Consejerías y entes autonómicos", "org": 1, "lic": 1778, "imp": 11553355201.72002}], "foco": [{"grupo": "Defensa - Órganos centrales", "org": 23, "lic": 39105, "imp": 109919184018.22997}, {"grupo": "Ejército de Tierra", "org": 29, "lic": 28025, "imp": 57225894629.080086}, {"grupo": "ISFAS", "org": 1, "lic": 824, "imp": 36776939535.46995}, {"grupo": "Instituciones Penitenciarias", "org": 107, "lic": 13210, "imp": 18616675641.989994}, {"grupo": "Ejército del Aire y del Espacio", "org": 17, "lic": 35095, "imp": 16128221192.47003}, {"grupo": "Armada", "org": 5, "lic": 10182, "imp": 14755038533.119987}, {"grupo": "Guardia Civil", "org": 87, "lic": 9636, "imp": 13144304217.52003}, {"grupo": "Policía Nacional", "org": 9, "lic": 8034, "imp": 12114418478.33}, {"grupo": "Unidad Militar de Emergencias", "org": 1, "lic": 3843, "imp": 976237176.7699963}], "dup_ej": [{"organo": "ADIF Alta Velocidad - Consejo de Administración", "dir3": "EA0008223", "n": 2515, "sin": 135348033991.2697, "a1": 2016, "a2": 2025}, {"organo": "ADIF Alta Velocidad - Consejo de Administración", "dir3": "EA0003338", "n": 146, "sin": 5751535416.469997, "a1": 2014, "a2": 2016}, {"organo": "Aena. Consejo de Administración", "dir3": "A86212420", "n": 3996, "sin": 119950531045.31, "a1": 2018, "a2": 2025}, {"organo": "Aena. Consejo de Administración", "dir3": NaN, "n": 142, "sin": 1891148654.139999, "a1": 2017, "a2": 2017}, {"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "dir3": "EA0040021", "n": 85, "sin": 133272910299.83, "a1": 2018, "a2": 2025}, {"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "dir3": "E00106104", "n": 22, "sin": 18128274046.76001, "a1": 2013, "a2": 2017}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "dir3": "EA0023102", "n": 820, "sin": 149911338690.8698, "a1": 2018, "a2": 2025}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "dir3": "E00138604", "n": 1264, "sin": 16648880679.47002, "a1": 2022, "a2": 2025}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "dir3": "E03175604", "n": 422, "sin": 8214892874.719999, "a1": 2012, "a2": 2018}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "dir3": "Q2869002B", "n": 114, "sin": 4512350870.260001, "a1": 2022, "a2": 2022}, {"organo": "Empresa de Transformación Agraria S.A.,S.M.E., M.P., (TRAGSA)", "dir3": "A28476208", "n": 82782, "sin": 58634472356.27133, "a1": 2018, "a2": 2025}, {"organo": "Empresa de Transformación Agraria S.A.,S.M.E., M.P., (TRAGSA)", "dir3": NaN, "n": 254, "sin": 274278618.33, "a1": 2017, "a2": 2017}, {"organo": "Subsecretaría de la Consellería de Sanidad y Salud Pública", "dir3": "S4611001A", "n": 1979, "sin": 27956598724.81992, "a1": 2018, "a2": 2025}, {"organo": "Subsecretaría de la Consellería de Sanidad y Salud Pública", "dir3": "A10002983", "n": 1137, "sin": 12409075099.73997, "a1": 2022, "a2": 2023}], "extremos": [{"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "n": 85, "sin": 133272910299.83, "medio": 1567916591.7627058}, {"organo": "Dirección General de la Mutualidad de Funcionarios Civiles del Estado (MUFACE)", "n": 22, "sin": 18128274046.76001, "medio": 824012456.6709095}, {"organo": "Asamblea General de la Mancomunidad de Municipios del Noroeste", "n": 90, "sin": 32027260913.64, "medio": 355858454.596}, {"organo": "Junta General del Consorcio de Residuos Sólidos del Poniente Almeriense", "n": 36, "sin": 8972196890.400005, "medio": 249227691.40000015}, {"organo": "Secretaría de Estado de Función Pública", "n": 49, "sin": 11168650832.24, "medio": 227931649.637551}, {"organo": "Dirección del Instituto Nacional de Gestión Sanitaria (INGESA)", "n": 820, "sin": 149911338690.8698, "medio": 182818705.72057295}, {"organo": "Pleno del Ayuntamiento de Eivissa", "n": 18, "sin": 2934288039.77, "medio": 163016002.20944443}, {"organo": "Ministerio de Sanidad", "n": 44, "sin": 7159615928.299998, "medio": 162718543.82499996}, {"organo": "Consejo de Administración de la Autoridad Portuaria de Valencia", "n": 82, "sin": 11776647856.83999, "medio": 143617656.79073158}, {"organo": "Pleno del Ayuntamiento de Águilas", "n": 18, "sin": 2176783399.99, "medio": 120932411.11055554}, {"organo": "SECRETARIO GENERAL DE LA FEDERACION DE MUNICIPIOS Y PROVINCIAS DE CASTILLA-LA MANCHA", "n": 4, "sin": 481269680.64, "medio": 120317420.16}, {"organo": "Pleno del Ayuntamiento de San Javier", "n": 48, "sin": 4748430157.579997, "medio": 98925628.2829166}], "iva_ej": [{"organo": "Dirección General de Cartera Común de Servicios del Sistema Nacional de Salud y Farmacia", "sin": 1130074029.199999, "con": 1398002347.950003, "ratio": 1.2370891745381276}, {"organo": "Pleno del Ayuntamiento de Elda", "sin": 499340151.43, "con": 618821657.5200002, "ratio": 1.2392787877118063}, {"organo": "Fundación del Patrimonio Natural de Castilla y León", "sin": 474857515.6799995, "con": 574750933.7500006, "ratio": 1.210365035345293}, {"organo": "Gerente de la Gerencia Municipal de Urbanismo del Ayuntamiento de Málaga", "sin": 459957850.9099995, "con": 559153419.7, "ratio": 1.215662301651658}, {"organo": "Presidencia del Consorcio de Aguas de la Zona Gaditana", "sin": 333362451.8699998, "con": 403438255.4299996, "ratio": 1.2102090477404066}, {"organo": "Consejo de Administración de Aigues i Sanejament d'Elx S.A.", "sin": 321389053.5200001, "con": 389073329.7700002, "ratio": 1.2105991959237283}, {"organo": "Consejo Ejecutivo de la Federació D'Entitats Locals de les Illes Balears", "sin": 258195000.0, "con": 326550000.0, "ratio": 1.2647417649450996}, {"organo": "Consejería de Cultura, Turismo y Deporte de la Comunidad Autónoma de Cantabria", "sin": 252914897.6299998, "con": 306235466.5300002, "ratio": 1.2108241523123142}, {"organo": "Departamento de Salud de Vinaroz. Dirección Económica-Gerencia", "sin": 188051658.3999999, "con": 228158065.2100001, "ratio": 1.2132733481386848}, {"organo": "Dirección de la Agencia Estatal Boletín Oficial del Estado", "sin": 169415730.7599998, "con": 205381294.2500004, "ratio": 1.2122917590276823}], "gc": [{"organo": "Jefatura de Asuntos Económicos de la Guardia Civil", "sin": 12943310457.78003, "n": 6511}, {"organo": "Dirección General de la Guardia Civil", "sin": 41315222.54, "n": 168}, {"organo": "Jefatura de Enseñanza. Dirección General Guardia Civil", "sin": 39383959.21, "n": 177}, {"organo": "Dirección del Centro Universitario de la Guardia Civil", "sin": 21196513.46, "n": 14}, {"organo": "Sexta Zona de la Guardia Civil en la Comunidad Valenciana", "sin": 13177359.59000002, "n": 253}, {"organo": "Academia de Cabos y Guardias de la Guardia Civil", "sin": 9467782.260000002, "n": 111}, {"organo": "15ª Zona Guardia Civil Galicia", "sin": 9346521.969999999, "n": 113}, {"organo": "5ª Zona de la Guardia Civil (Murcia)", "sin": 6730752.019999997, "n": 192}, {"organo": "Comandancia Guardia Civil de Tres Cantos", "sin": 6348782.659999995, "n": 68}, {"organo": "Zona de la Guardia Civil Comunidad Autónoma de La Rioja", "sin": 4732711.780000001, "n": 21}, {"organo": "Comandancia Guardia Civil de Cáceres", "sin": 3461653.17, "n": 114}, {"organo": "Comandancia Guardia Civil de Castellón", "sin": 2689171.55, "n": 78}], "extra": {"gc_com": 62, "gc_com_imp": 44425330.31999999, "gc_jae": 12943310457.78003, "med_organo": 95714.20339743588, "media_global": 1239446.4467150432, "pct21": 38.70173475097929}};
+const tt = document.getElementById('tt');
+const nf = new Intl.NumberFormat('es-ES',{useGrouping:'always'});
+const eur = v => {
+  const a = Math.abs(v);
+  if (a >= 1e9) return nf.format(Math.round(v/1e6)) + ' M€';
+  if (a >= 1e6) return (v/1e6).toFixed(1).replace('.',',') + ' M€';
+  if (a >= 1e3) return nf.format(Math.round(v/1e3)) + ' k€';
+  return nf.format(Math.round(v)) + ' €';
+};
+const pct = v => (v).toFixed(1).replace('.',',') + ' %';
+const cap = s => s.length>1 ? s.charAt(0)+s.slice(1).toLowerCase() : s;
+function hover(el, html){
+  el.addEventListener('mousemove', e => { tt.innerHTML = html; tt.style.opacity=1;
+    tt.style.left = Math.min(e.clientX+14, innerWidth-300)+'px'; tt.style.top=(e.clientY+16)+'px'; });
+  el.addEventListener('mouseleave', () => tt.style.opacity=0);
+}
+const SVG='http://www.w3.org/2000/svg';
+const mk=(t,a={})=>{const e=document.createElementNS(SVG,t);for(const k in a)e.setAttribute(k,a[k]);return e;};
+
+/* ---------------- KPIs ---------------- */
+const T=D.tot;
+document.getElementById('kpis').innerHTML = [
+ {v:nf.format(T.org), l:'Órganos en el fichero', n:'Filas del listado original'},
+ {v:nf.format(T.ent), l:'Entidades reales', n:'Tras consolidar cargos y unidades de un mismo ente', a:1},
+ {v:nf.format(T.lic), l:'Licitaciones', n:'Acumuladas 2012-2025'},
+ {v:(T.sin/1e12).toFixed(2).replace('.',',')+' B€', l:'Importe sin IVA', n:'Licitado, no adjudicado ni ejecutado'},
+ {v:'2012-2025', l:'Periodo con datos', n:'El fichero se titula «2012-2026»; no hay ningún registro de 2026', a:1},
+].map(k=>`<div class="kpi ${k.a?'alerta':''}"><div class="v">${k.v}</div><div class="l">${k.l}</div><div class="n">${k.n}</div></div>`).join('');
+
+/* ---------------- TREEMAP ---------------- */
+const COL=['#26506B','#3E7A5E','#B8892B','#8C3B3B','#5A4A7A','#4E7C8A','#7A8B5A'];
+function squarify(items, x, y, w, h){
+  // reparto sencillo por filas equilibradas
+  const out=[]; let idx=0; const total=items.reduce((s,i)=>s+i.v,0);
+  let rx=x, ry=y, rw=w, rh=h, rest=total;
+  while(idx<items.length){
+    const horiz = rw >= rh;
+    const espacio = horiz ? rh : rw;
+    let fila=[], suma=0, best=Infinity;
+    for(let j=idx;j<items.length;j++){
+      const s2=suma+items[j].v;
+      const lado = (s2/rest) * (horiz?rw:rh);
+      const peor = Math.max(...fila.concat([items[j]]).map(it=>{
+        const l2=(it.v/s2)*espacio; return Math.max(lado/l2, l2/lado);
+      }));
+      if(peor<=best || fila.length===0){ fila.push(items[j]); suma=s2; best=peor; } else break;
+    }
+    const lado=(suma/rest)*(horiz?rw:rh);
+    let off = horiz?ry:rx;
+    fila.forEach(it=>{
+      const l2=(it.v/suma)*espacio;
+      out.push(horiz ? {...it,x:rx,y:off,w:lado,h:l2} : {...it,x:off,y:ry,w:l2,h:lado});
+      off+=l2;
+    });
+    if(horiz){ rx+=lado; rw-=lado; } else { ry+=lado; rh-=lado; }
+    rest-=suma; idx+=fila.length;
+  }
+  return out;
+}
+let nivelActual=null;
+function pintaTreemap(){
+  const cont=document.getElementById('treemap'); cont.innerHTML='';
+  const W=1080, H=380;
+  let items;
+  if(nivelActual){
+    items=D.jer.filter(r=>r.nivel===nivelActual).map((r,i)=>({k:r.grupo,v:r.imp,org:r.org,lic:r.lic,c:COL[i%COL.length]}));
+    document.getElementById('tmTitulo').textContent='Grupos institucionales · '+nivelActual;
+    document.getElementById('tmVolver').style.display='inline-block';
+  }else{
+    items=D.por_nivel.map((r,i)=>({k:r.k,v:r.imp,org:r.org,lic:r.lic,ent:r.ent,c:COL[i%COL.length]}));
+    document.getElementById('tmTitulo').textContent='Importe por nivel administrativo · clic para desplegar';
+    document.getElementById('tmVolver').style.display='none';
+  }
+  items.sort((a,b)=>b.v-a.v);
+  const tot=items.reduce((s,i)=>s+i.v,0);
+  const svg=mk('svg',{viewBox:`0 0 ${W} ${H}`,role:'img'});
+  squarify(items,0,0,W,H).forEach(r=>{
+    const g=mk('g',{style:'cursor:'+(nivelActual?'default':'pointer')});
+    g.appendChild(mk('rect',{x:r.x+1,y:r.y+1,width:Math.max(0,r.w-2),height:Math.max(0,r.h-2),fill:r.c,'fill-opacity':.92}));
+    if(r.w>96 && r.h>40){
+      const t=mk('text',{x:r.x+12,y:r.y+24,fill:'#fff','font-size':13,'font-family':'Georgia,serif','font-weight':'700'});
+      let nombre=r.k.length>Math.floor(r.w/8)? r.k.slice(0,Math.floor(r.w/8)-1)+'…' : r.k;
+      t.textContent=nombre; g.appendChild(t);
+      const s=mk('text',{x:r.x+12,y:r.y+42,fill:'#fff','fill-opacity':.82,'font-size':11,'font-family':'ui-monospace,monospace'});
+      s.textContent=eur(r.v)+'  ·  '+pct(r.v/tot*100); g.appendChild(s);
+      if(r.h>72){
+        const u=mk('text',{x:r.x+12,y:r.y+59,fill:'#fff','fill-opacity':.72,'font-size':10.5,'font-family':'ui-monospace,monospace'});
+        u.textContent=nf.format(r.org)+' órganos'; g.appendChild(u);
+      }
+    }
+    hover(g,`<b>${r.k}</b><br>${eur(r.v)} · ${pct(r.v/tot*100)}<br>${nf.format(r.org)} órganos · ${nf.format(r.lic)} licitaciones${r.ent?'<br>'+nf.format(r.ent)+' entidades':''}`);
+    if(!nivelActual) g.addEventListener('click',()=>{nivelActual=r.k;pintaTreemap();});
+    svg.appendChild(g);
+  });
+  cont.appendChild(svg);
+}
+document.getElementById('tmVolver').addEventListener('click',()=>{nivelActual=null;pintaTreemap();});
+pintaTreemap();
+
+/* ---------------- TABLA AGRUPACIÓN ---------------- */
+const EJES=[['grupo','Grupo institucional',D.por_grupo],['nivel','Nivel administrativo',D.por_nivel],
+            ['ambito','Ámbito funcional',D.por_ambito],['ccaa','Territorio',D.por_ccaa],['ent','Entidades consolidadas',D.top_ent]];
+const tabs=document.getElementById('tabs');
+EJES.forEach((e,i)=>{
+  const b=document.createElement('button'); b.className='tab'; b.textContent=e[1];
+  b.setAttribute('role','tab'); b.setAttribute('aria-selected', i===0);
+  b.onclick=()=>{[...tabs.children].forEach(c=>c.setAttribute('aria-selected',false));
+    b.setAttribute('aria-selected',true); pintaTabla(i);};
+  tabs.appendChild(b);
+});
+function pintaTabla(i){
+  const [key,label,datos]=EJES[i];
+  const esEnt = key==='ent';
+  const max=Math.max(...datos.map(r=>esEnt?r.imp:r.imp));
+  const tot=D.tot.sin;
+  const filas=datos.map((r,j)=>{
+    const nombre = esEnt ? cap(r.entidad) : r.k;
+    const org = r.org, lic=r.lic, imp=r.imp;
+    const extra = esEnt ? `<td>${r.grupo}</td>` : `<td class="num">${r.ent!==undefined?nf.format(r.ent):'—'}</td>`;
+    return `<tr><td class="num" style="color:#98A0A8">${j+1}</td><td><b>${nombre}</b></td>${extra}
+      <td class="num">${nf.format(org)}</td><td class="num">${nf.format(lic)}</td>
+      <td class="num barcell" style="min-width:150px"><span style="width:${imp/max*100}%"></span><b>${eur(imp)}</b></td>
+      <td class="num">${pct(imp/tot*100)}</td></tr>`;
+  }).join('');
+  document.getElementById('tablaGrupos').innerHTML=
+    `<thead><tr><th></th><th>${esEnt?'Entidad':label}</th><th ${esEnt?'':'class="num"'}>${esEnt?'Grupo':'Entidades'}</th>
+     <th class="num">Órganos</th><th class="num">Licitaciones</th><th class="num">Importe sin IVA</th><th class="num">% total</th></tr></thead><tbody>${filas}</tbody>`;
+}
+pintaTabla(0);
+
+/* ---------------- FOCO SEGURIDAD ---------------- */
+document.getElementById('foco').innerHTML = D.foco.map(f=>`
+  <div class="panel">
+    <div class="eyebrow">${f.grupo}</div>
+    <div style="font-family:var(--serif);font-size:27px;margin-top:8px">${eur(f.imp)}</div>
+    <div style="font-family:var(--mono);font-size:11.5px;color:var(--tinta2);margin-top:8px">
+      ${nf.format(f.org)} órgano${f.org>1?'s':''} · ${nf.format(f.lic)} licitaciones<br>
+      media ${eur(f.imp/f.lic)} por licitación</div>
+  </div>`).join('');
+
+/* ---------------- BARRAS GENÉRICAS ---------------- */
+function barrasH(cont, datos, opt={}){
+  const el=document.getElementById(cont); el.innerHTML='';
+  const n=datos.length, fila=opt.fila||26, W=opt.W||560, L=opt.lab||210, H=n*fila+10;
+  const max=Math.max(...datos.map(d=>d.v));
+  const svg=mk('svg',{viewBox:`0 0 ${W} ${H}`});
+  datos.forEach((d,i)=>{
+    const y=i*fila;
+    const g=mk('g');
+    const t=mk('text',{x:0,y:y+13,'font-size':opt.fs||11,'font-family':'ui-monospace,monospace',fill:'#5A6068'});
+    const maxc=opt.maxc||32; t.textContent = d.k.length>maxc ? d.k.slice(0,maxc-1)+'…' : d.k; g.appendChild(t);
+    const w=(d.v/max)*(W-L-70);
+    g.appendChild(mk('rect',{x:L,y:y+3,width:Math.max(1,w),height:13,fill:d.c||'#26506B','fill-opacity':.9}));
+    const v=mk('text',{x:L+w+7,y:y+14,'font-size':opt.fs?opt.fs-0.5:10.5,'font-family':'ui-monospace,monospace',fill:'#191C1F'});
+    v.textContent=opt.fmt?opt.fmt(d.v):eur(d.v); g.appendChild(v);
+    hover(g, d.tip||`<b>${d.k}</b><br>${eur(d.v)}`);
+    svg.appendChild(g);
+  });
+  el.appendChild(svg);
+}
+barrasH('ccaaChart', D.por_ccaa.slice(0,14).map((r,i)=>({k:r.k,v:r.imp,c:i===0?'#8C3B3B':'#26506B',
+  tip:`<b>${r.k}</b><br>${eur(r.imp)}<br>${nf.format(r.org)} órganos · ${nf.format(r.ent)} entidades`})), {lab:190});
+(function(){
+  const jae=D.gc[0], resto=D.gc.slice(1), tot=D.foco.find(f=>f.grupo==='Guardia Civil').imp;
+  const el=document.getElementById('gcChart');
+  const cab=document.createElement('div');
+  cab.style.cssText='margin-bottom:16px';
+  cab.innerHTML=`<div style="display:flex;height:26px;border:1px solid var(--linea)">
+      <div style="width:${jae.sin/tot*100}%;background:#3E7A5E"></div>
+      <div style="flex:1;background:#D6DCD3"></div></div>
+    <div style="display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--tinta2);margin-top:6px">
+      <span>Jefatura de Asuntos Económicos · ${eur(jae.sin)} · ${pct(jae.sin/tot*100)}</span>
+      <span>los otros 86 órganos · ${eur(tot-jae.sin)}</span></div>
+    <div class="eyebrow" style="margin-top:18px">Reparto de esos 200 M€ restantes</div>`;
+  el.appendChild(cab);
+  const sub=document.createElement('div'); sub.id='gcResto'; el.appendChild(sub);
+  barrasH('gcResto', resto.map(r=>({k:r.organo, v:r.sin, c:'#3E7A5E',
+    tip:`<b>${r.organo}</b><br>${eur(r.sin)} · ${nf.format(r.n)} licitaciones`})), {W:1040,lab:420,fila:24,fs:12,maxc:52});
+})();
+
+/* ---------------- LORENZ ---------------- */
+(function(){
+  const W=520,H=380,P=42;
+  const svg=mk('svg',{viewBox:`0 0 ${W} ${H}`});
+  const X=v=>P+v*(W-P-16), Y=v=>H-P-v*(H-P-18);
+  svg.appendChild(mk('line',{x1:X(0),y1:Y(0),x2:X(1),y2:Y(1),stroke:'#B9BEB6','stroke-dasharray':'4 4'}));
+  const pts=D.lorenz.map(p=>`${X(p[0])},${Y(p[1])}`).join(' ');
+  svg.appendChild(mk('polygon',{points:`${X(0)},${Y(0)} ${pts} ${X(1)},${Y(0)}`,fill:'#26506B','fill-opacity':.13}));
+  svg.appendChild(mk('polyline',{points:pts,fill:'none',stroke:'#26506B','stroke-width':2.2}));
+  [[0.01,D.conc.top1pct,'1 % de órganos',175,150],[0.05,D.conc.top5pct,'5 % de órganos',235,92],[0.10,D.conc.top10pct,'10 % de órganos',300,40]].forEach(([x,y,l,lx,ly])=>{
+    svg.appendChild(mk('line',{x1:X(x)+4,y1:Y(y/100),x2:lx-6,y2:ly-4,stroke:'#C9A9A9','stroke-width':1}));
+    svg.appendChild(mk('circle',{cx:X(x),cy:Y(y/100),r:4,fill:'#8C3B3B'}));
+    const t=mk('text',{x:lx,y:ly,'font-size':11.5,'font-family':'ui-monospace,monospace',fill:'#8C3B3B'});
+    t.textContent=`${l} → ${pct(y)}`; svg.appendChild(t);
+  });
+  [0,.25,.5,.75,1].forEach(v=>{
+    const a=mk('text',{x:X(v),y:H-P+18,'font-size':10,'text-anchor':'middle','font-family':'ui-monospace,monospace',fill:'#5A6068'});
+    a.textContent=(v*100)+'%'; svg.appendChild(a);
+    const b=mk('text',{x:P-8,y:Y(v)+4,'font-size':10,'text-anchor':'end','font-family':'ui-monospace,monospace',fill:'#5A6068'});
+    b.textContent=(v*100)+'%'; svg.appendChild(b);
+  });
+  const xl=mk('text',{x:X(.5),y:H-6,'font-size':10.5,'text-anchor':'middle','font-family':'ui-monospace,monospace',fill:'#5A6068'});
+  xl.textContent='ÓRGANOS ACUMULADOS (mayor a menor)'; svg.appendChild(xl);
+  const yl=mk('text',{x:12,y:H/2,'font-size':10.5,'text-anchor':'middle','font-family':'ui-monospace,monospace',fill:'#5A6068',transform:`rotate(-90 12 ${H/2})`});
+  yl.textContent='IMPORTE ACUMULADO'; svg.appendChild(yl);
+  const g=mk('text',{x:X(.52),y:Y(.28),'font-size':14,'font-family':'Georgia,serif',fill:'#191C1F'});
+  g.textContent='Gini 0,964'; svg.appendChild(g);
+  document.getElementById('lorenz').appendChild(svg);
+})();
+
+/* ---------------- TIEMPO ---------------- */
+(function(){
+  const W=540,H=330,P=44;
+  const svg=mk('svg',{viewBox:`0 0 ${W} ${H}`});
+  const max=Math.max(...D.act.map(a=>a.org));
+  const bw=(W-P-14)/D.act.length;
+  D.act.forEach((a,i)=>{
+    const x=P+i*bw, h=(a.org/max)*(H-P-30);
+    const g=mk('g');
+    g.appendChild(mk('rect',{x:x+3,y:H-P-h,width:bw-6,height:h,fill:'#26506B','fill-opacity':.28}));
+    const ha=(a.altas/max)*(H-P-30);
+    g.appendChild(mk('rect',{x:x+3,y:H-P-ha,width:bw-6,height:ha,fill: a.y===2018?'#8C3B3B':'#26506B'}));
+    const t=mk('text',{x:x+bw/2,y:H-P+15,'font-size':9.5,'text-anchor':'middle','font-family':'ui-monospace,monospace',fill:'#5A6068'});
+    t.textContent=String(a.y).slice(2); g.appendChild(t);
+    hover(g,`<b>${a.y}</b><br>${nf.format(a.org)} órganos activos<br>${nf.format(a.altas)} altas`);
+    svg.appendChild(g);
+  });
+  const l1=mk('text',{x:P,y:16,'font-size':10.5,'font-family':'ui-monospace,monospace',fill:'#26506B'});
+  l1.textContent='■ altas del año'; svg.appendChild(l1);
+  const l2=mk('text',{x:P+96,y:16,'font-size':10.5,'font-family':'ui-monospace,monospace',fill:'#7E93A3'});
+  l2.textContent='■ órganos activos'; svg.appendChild(l2);
+  const a18=D.act.find(a=>a.y===2018);
+  const n=mk('text',{x:P+(W-P-14)/14*6.2,y:H-P-((a18.altas/max)*(H-P-30))-8,'font-size':10.5,'font-family':'ui-monospace,monospace',fill:'#8C3B3B'});
+  n.textContent='LCSP 2017 →'; n.setAttribute('text-anchor','end'); svg.appendChild(n);
+  document.getElementById('tiempoChart').appendChild(svg);
+})();
+
+/* ---------------- TOP ÓRGANOS ---------------- */
+(function(){
+  const max=D.top_org[0].sin;
+  document.getElementById('tablaTop').innerHTML=
+   '<thead><tr><th></th><th>Órgano</th><th class="num">Licitaciones</th><th class="num">Importe</th></tr></thead><tbody>'+
+   D.top_org.slice(0,25).map((r,i)=>`<tr><td class="num" style="color:#98A0A8">${i+1}</td>
+    <td><b title="${r.organo.replace(/"/g,'')}">${r.organo.length>52?r.organo.slice(0,51)+'…':r.organo}</b><br><span class="chip">${r.grupo}</span></td>
+    <td class="num">${nf.format(r.n)}</td>
+    <td class="num barcell"><span style="width:${r.sin/max*100}%"></span><b>${eur(r.sin)}</b></td></tr>`).join('')+'</tbody>';
+})();
+
+/* ---------------- INCIDENCIAS ---------------- */
+const I=D.inc;
+const INC=[
+ {sev:'alta',t:'01 · El recuento de órganos no es un recuento de organizaciones',
+  m:[`${nf.format(I.dup_nombre.filas)} filas`,`${nf.format(I.dup_nombre.nombres)} nombres repetidos`,`${eur(I.dup_nombre.imp)} afectados`],
+  p:`Hay 1.199 denominaciones que aparecen dos o más veces, casi siempre porque el mismo órgano se registró con identificadores distintos (uno vacío y otro con DIR3, o dos DIR3 sucesivos tras un cambio orgánico). El INGESA aparece cuatro veces, con cuatro identificadores y periodos que se solapan (2018-2025, 2022-2025, 2012-2018 y 2022), de modo que sus importes pueden estar contados dos veces. Sumar por nombre y sumar por identificador dan resultados distintos, y ninguno de los dos es el número de organizaciones: tras consolidar quedan 10.683 entidades frente a los 17.870 registros.`,
+  f:'Consolide por entidad antes de contar. La columna «Entidad consolidada» del Excel ya hace esa agregación; la marca «Nombre duplicado» aísla los casos.'},
+ {sev:'alta',t:'02 · La columna de NIF está vacía y la de DIR3 mezcla dos cosas',
+  m:[`${nf.format(I.id['NIF/CIF'])} registros con NIF en el campo DIR3`,`${nf.format(I.id['Ausente'])} sin identificador`,`${nf.format(I.id['Malformado / no reconocido'])} malformados`],
+  p:`«NIF detectado» está vacía en las 17.870 filas, mientras que «DIR3 detectado» contiene indistintamente códigos DIR3 (E04931401, L01280796) y NIF de entidades (A28476208 de Tragsa, G64172513 de una mutua). Ambos tienen nueve caracteres, así que ninguna validación de longitud los separa. Además hay identificadores imposibles: «01290075» sin letra, «l01090912» en minúscula, «ES3511001», «CC0000078».`,
+  f:'El Excel añade «Tipo de identificador» resolviendo cada caso con el patrón DIR3 y, en su defecto, con el dígito de control del NIF. Reasigne el NIF a su columna antes de cruzar con el inventario DIR3.'},
+ {sev:'alta',t:'03 · El mismo código identifica a entidades distintas',
+  m:[`${nf.format(I.dir3_multi)} códigos compartidos`,`${nf.format(I.dir3_multi_filas)} filas implicadas`,`${nf.format(I.ent_multi)} entidades con varios códigos`],
+  p:`532 identificadores aparecen asociados a más de una entidad. El caso más visible son los ayuntamientos: 109 códigos L01 dan cobertura a municipios diferentes —L01070645 aparece a la vez en órganos de Calvià y de Manacor—, lo que rompe cualquier agregación territorial hecha por código. En sentido inverso, 219 entidades usan varios identificadores a lo largo del periodo.`,
+  f:'No use el identificador como clave primaria sin depurar. Para lo local, el par nombre-de-municipio extraído del texto es hoy más fiable que el DIR3 del fichero.'},
+ {sev:'alta',t:'04 · El importe agregado no puede leerse como gasto público',
+  m:['4,47 B€ en 14 años','≈ 3 años de PIB español','sin deduplicar acuerdos marco'],
+  p:`El total supera con holgura cualquier estimación de contratación pública española del periodo, que ronda entre el 10 % y el 14 % del PIB anual. La explicación no es un error de suma —los totales cuadran con el detalle— sino qué se está sumando: valores estimados máximos de acuerdos marco y conciertos, licitaciones divididas en lotes contabilizadas varias veces, prórrogas incluidas en el valor y expedientes desistidos o desiertos que nunca se adjudicaron.`,
+  f:'Trátelo como volumen licitado y como indicador de actividad relativa entre órganos, nunca como gasto. Para gasto ejecutado hay que ir a los datos de adjudicación, que este fichero no contiene.'},
+ {sev:'alta',t:'05 · El periodo declarado no es el periodo con datos',
+  m:['título: 2012-2026','último dato: 2025',`${nf.format(I.inactivo.n)} órganos inactivos desde 2019 o antes`],
+  p:`El nombre del fichero y la hoja «Resumen» anuncian 2026 como año final, pero no existe ni un solo registro con actividad en 2026, y menos aún en 2027. En el otro extremo, el 12,4 % de los órganos no licita desde 2019: son unidades extinguidas, renombradas o absorbidas que siguen engrosando el inventario y diluyen cualquier media por órgano.`,
+  f:'Fije la ventana real 2012-2025 en los títulos y añada un estado activo/inactivo. La marca «Inactivo desde 2019 o antes» del Excel permite separarlos en un clic.'},
+ {sev:'media',t:'06 · Doscientos órganos concentran el 42 % del importe con el 1,7 % de las licitaciones',
+  m:[`${nf.format(I.medio_extremo.n)} órganos con media > 10 M€`,`${pct(I.medio_extremo.pct_imp)} del importe`,`${pct(I.medio_extremo.pct_lic)} de las licitaciones`],
+  p:`MUFACE registra 85 licitaciones por 133.273 M€ —1.568 M€ de media por expediente— e INGESA 820 por 149.911 M€. Son cifras coherentes con conciertos sanitarios y acuerdos marco plurinacionales valorados por su techo máximo, pero convierten la media aritmética en un estadístico inservible: la media general sale a 1,24 M€ por licitación, mientras que la mediana de los órganos se queda en 96 k€, trece veces menos.`,
+  f:'Analice siempre con mediana y percentiles, y trate estos 212 órganos como una categoría aparte de «grandes compras centralizadas».'},
+ {sev:'media',t:'07 · El IVA implícito es imposible en más de mil registros',
+  m:[`${nf.format(I.iva_alto.n)} por encima del 21 %`,`${nf.format(I.iva_nulo.n)} exactamente al 0 %`,`${nf.format(I.iva_bajo)} por debajo del 4 %`],
+  p:`Dividiendo importe con IVA entre importe sin IVA aparecen ratios de hasta 1,653, es decir un 65 % de impuesto, imposible con los tipos vigentes. En sentido contrario, 490 órganos declaran importes idénticos con y sin IVA pese a tener importe positivo: no es exención, es IVA no informado. Solo el 38,7 % de los registros cae exactamente en el 21 %.`,
+  f:'Use siempre el importe sin IVA para comparar. El campo con IVA solo es fiable cuando el ratio cae en 1,04 / 1,10 / 1,21.'},
+ {sev:'media',t:'08 · Órganos que licitan sin importe',
+  m:[`${nf.format(I.importe_cero.n)} órganos`,`${nf.format(I.importe_cero.lic)} licitaciones a 0 €`,`${nf.format(I.una_licitacion)} órganos con una sola licitación`],
+  p:`95 órganos acumulan licitaciones pero importe cero, algo que solo tiene sentido en anuncios previos, contratos menores sin presupuesto publicado o expedientes mal cargados. Otros 892 aparecen con una única licitación en catorce años, un patrón típico de alta administrativa errónea o de órgano creado para un expediente concreto.`,
+  f:'Excluya los importes cero del denominador al calcular medias y revise si las altas de un solo expediente deben mantenerse como órgano.'},
+ {sev:'baja',t:'09 · Los nombres no están normalizados',
+  m:[`${nf.format(I.nombre_con_anio)} nombres empiezan por un año`,'cargos y órganos mezclados','denominaciones históricas conviven'],
+  p:`Conviven «2023_Tenencia de Alcaldía de Policía Local… de Cullera» con la misma tenencia sin prefijo; «Dirección de Adquisiciones del Mando de Apoyo Logístico del Ejército del Aire» con la versión «…y del Espacio» posterior al cambio de denominación de 2022; y Tragsa con y sin «S.M.E., M.P.». El campo mezcla además cargos —alcaldía, presidencia, gerencia— con unidades administrativas, de modo que el listado describe quién firma, no qué organización compra.`,
+  f:'La columna «Nombre normalizado» del fichero original solo quita acentos y puntuación: no resuelve variantes. El Excel adjunto añade la entidad consolidada, que sí las une.'},
+ {sev:'baja',t:'10 · El pico de 2018 es normativo, no económico',
+  m:['5.162 altas en 2018','29 % del inventario','Ley 9/2017, en vigor el 9-3-2018'],
+  p:`Casi un tercio de los órganos aparece por primera vez en 2018. No es un salto de la contratación pública: es la entrada en vigor de la LCSP, que extendió la obligación de publicar en la Plataforma a todo el sector público, incluidas entidades locales pequeñas y sector público empresarial. Cualquier serie temporal que arranque antes de 2018 compara universos distintos.`,
+  f:'Para comparaciones interanuales, use 2019-2024 como ventana homogénea y trate 2012-2017 como cobertura parcial.'},
+];
+document.getElementById('incidencias').innerHTML = INC.map(i=>`
+ <div class="inc ${i.sev}">
+   <h3>${i.t}</h3>
+   <div class="meta">${i.m.map(x=>`<span class="chip ${i.sev==='alta'?'rojo':(i.sev==='media'?'ambar':'')}">${x}</span>`).join('')}</div>
+   <p>${i.p}</p>
+   <div class="fix"><b>Qué hacer</b> · ${i.f}</div>
+ </div>`).join('');
+
+/* ---------------- TABLAS DE EJEMPLO ---------------- */
+document.getElementById('tablaDup').innerHTML =
+ '<thead><tr><th>Órgano</th><th>Identificador</th><th class="num">Licit.</th><th class="num">Importe</th><th class="num">Periodo</th></tr></thead><tbody>'+
+ D.dup_ej.map(r=>`<tr><td title="${r.organo.replace(/"/g,'')}">${r.organo.length>44?r.organo.slice(0,43)+'…':r.organo}</td><td style="font-family:var(--mono);font-size:11.5px">${r.dir3||'—'}</td>
+  <td class="num">${nf.format(r.n)}</td><td class="num">${eur(r.sin)}</td><td class="num">${r.a1}-${r.a2}</td></tr>`).join('')+'</tbody>';
+document.getElementById('tablaExt').innerHTML =
+ '<thead><tr><th>Órgano</th><th class="num">Licit.</th><th class="num">Importe</th><th class="num">Media</th></tr></thead><tbody>'+
+ D.extremos.map(r=>`<tr><td title="${r.organo.replace(/"/g,'')}">${r.organo.length>46?r.organo.slice(0,45)+'…':r.organo}</td><td class="num">${nf.format(r.n)}</td>
+  <td class="num">${eur(r.sin)}</td><td class="num" style="color:#8C3B3B">${eur(r.medio)}</td></tr>`).join('')+'</tbody>';
+</script>
+</body>
+</html>
