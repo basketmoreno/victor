@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual de defensa ciudadana · Constitución, artículo por artículo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EBEEF3;
+  --panel:#FFFFFF;
+  --ink:#0D1017;
+  --ink-2:#3C4453;
+  --ink-3:#6B7484;
+  --line:#D3D9E2;
+  --line-2:#E6EAF0;
+  --blue:#1B34D8;
+  --blue-soft:#E9ECFD;
+  --amber:#9A6400;
+  --amber-soft:#FBF0DC;
+  --red:#B3261E;
+  --red-soft:#FBEAE8;
+  --green:#0B6E4F;
+  --green-soft:#E4F2EC;
+  --rail:52px;
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:112px;}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  font-size:16.5px;line-height:1.58;-webkit-font-smoothing:antialiased;
+}
+::selection{background:#C9D0FA;}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+/* ---------- utility type ---------- */
+.mono{font-family:'IBM Plex Mono',monospace;}
+.label{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-3);font-weight:500;
+}
+
+/* ---------- masthead ---------- */
+.masthead{background:var(--ink);color:#fff;padding:14px 0;}
+.mast-in{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+.mast-in .mark{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.mast-in .mark b{color:#fff;font-weight:600;}
+.dot{width:7px;height:7px;background:#5C74FF;display:inline-block;}
+.mast-in .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;color:#8791A6;letter-spacing:.06em;}
+
+/* ---------- hero ---------- */
+.hero{padding:64px 0 44px;border-bottom:1px solid var(--line);}
+.hero h1{
+  font-family:'Bricolage Grotesque',sans-serif;font-weight:800;
+  font-size:clamp(2.3rem,6.2vw,4.4rem);line-height:.98;letter-spacing:-.035em;
+  margin:0 0 22px;max-width:17ch;
+}
+.hero h1 span{color:var(--blue);}
+.hero .lede{font-size:clamp(1rem,2vw,1.18rem);color:var(--ink-2);max-width:62ch;margin:0 0 34px;}
+
+.search-box{background:var(--panel);border:1px solid var(--line);border-radius:4px;max-width:660px;overflow:hidden;}
+.search-box .sb-label{
+  padding:11px 16px 0;display:block;
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-3);
+}
+.search-box input{
+  width:100%;border:0;padding:6px 16px 15px;font-size:1.15rem;font-family:'IBM Plex Sans',sans-serif;
+  color:var(--ink);background:transparent;outline:none;
+}
+.search-box input::placeholder{color:#9AA3B2;}
+.sb-hints{display:flex;gap:7px;flex-wrap:wrap;padding:0 14px 14px;}
+.sb-hints button{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;background:var(--blue-soft);color:var(--blue);
+  border:0;border-radius:3px;padding:5px 9px;cursor:pointer;transition:background .15s;
+}
+.sb-hints button:hover{background:#D8DEFB;}
+.search-count{margin-top:12px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-3);min-height:18px;}
+
+/* ---------- deadline strip ---------- */
+.deadlines{padding:44px 0 8px;}
+.dl-title{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(1.5rem,3vw,2.2rem);letter-spacing:-.03em;margin:0 0 6px;}
+.dl-sub{color:var(--ink-2);max-width:62ch;margin:0 0 20px;font-size:1rem;}
+.dl-cat{margin-top:8px;}
+.dl-cat-label{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;
+  text-transform:uppercase;font-weight:600;padding:8px 0 10px;display:block;
+}
+.dl-cat-label.c-police{color:var(--red);}
+.dl-cat-label.c-work{color:#6548B6;}
+.dl-cat-label.c-home{color:var(--amber);}
+.dl-cat-label.c-buy{color:var(--blue);}
+.dl-cat-label.c-admin{color:var(--green);}
+.dl-cat-label.c-money{color:#B35D00;}
+.dl-cat-label.c-data{color:#0070AF;}
+.dl-cat-label.c-family{color:#8A3060;}
+.dl-cat-label.c-health{color:#0B6E4F;}
+.dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);}
+.dl{background:var(--panel);padding:16px 16px 18px;}
+.dl .n{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:1.8rem;line-height:1;letter-spacing:-.03em;color:var(--blue);}
+.dl .n small{font-size:.82rem;font-weight:600;letter-spacing:0;}
+.dl .n.red{color:var(--red);}
+.dl .n.amber{color:var(--amber);}
+.dl .n.green{color:var(--green);}
+.dl .n.purple{color:#6548B6;}
+.dl p{margin:7px 0 0;font-size:13.5px;color:var(--ink-2);line-height:1.45;}
+
+/* ---------- sticky filters ---------- */
+.filters{position:sticky;top:0;z-index:60;background:rgba(235,238,243,.94);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);}
+.filters-in{max-width:1140px;margin:0 auto;padding:10px 24px;display:flex;gap:6px;overflow-x:auto;align-items:center;}
+.filters button{
+  font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:.03em;
+  background:transparent;border:1px solid var(--line);color:var(--ink-2);
+  padding:6px 12px;border-radius:3px;cursor:pointer;white-space:nowrap;transition:all .15s;
+}
+.filters button:hover{border-color:var(--ink-3);color:var(--ink);}
+.filters button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff;}
+
+/* ---------- section headers ---------- */
+.sec{padding:56px 0 10px;}
+.sec-head{border-top:2px solid var(--ink);padding-top:16px;margin-bottom:32px;display:flex;gap:28px;flex-wrap:wrap;align-items:flex-start;}
+.sec-head .idx{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;color:var(--blue);padding-top:6px;white-space:nowrap;}
+.sec-head .txt{flex:1;min-width:260px;}
+.sec-head h2{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(1.6rem,3.6vw,2.5rem);line-height:1.05;letter-spacing:-.03em;margin:0 0 10px;}
+.sec-head p{margin:0;color:var(--ink-2);max-width:64ch;}
+
+/* ---------- article ledger ---------- */
+.ledger{border-top:1px solid var(--line);}
+.art{display:grid;grid-template-columns:var(--rail) 1fr;gap:0;border-bottom:1px solid var(--line);background:var(--panel);}
+.art.hide{display:none;}
+.art-rail{border-right:1px solid var(--line-2);padding:20px 0 20px;text-align:center;background:#F7F9FC;}
+.art-rail .num{
+  font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:1.05rem;color:var(--ink);
+  display:block;letter-spacing:-.02em;
+}
+.art-rail .tema{
+  display:block;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:9px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);
+  writing-mode:vertical-rl;transform:rotate(180deg);margin-left:auto;margin-right:auto;
+}
+.art-main{padding:20px 24px 22px;min-width:0;}
+.art-main h3{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:1.24rem;letter-spacing:-.02em;margin:0 0 10px;line-height:1.2;}
+.quote{
+  margin:0 0 12px;padding-left:14px;border-left:2px solid var(--line);
+  font-size:14.5px;color:var(--ink-3);font-style:italic;
+}
+.plain{margin:0 0 4px;color:var(--ink);}
+.plain b{font-weight:600;}
+.laws{margin:14px 0 0;display:flex;gap:6px;flex-wrap:wrap;}
+.law-chip{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;background:#F1F3F8;border:1px solid var(--line-2);
+  color:var(--ink-2);padding:4px 8px;border-radius:3px;
+}
+
+/* ---------- cases ---------- */
+.cases{margin-top:18px;border-top:1px dashed var(--line);padding-top:6px;}
+.cases > .label{display:block;margin:10px 0 8px;}
+details.case{border:1px solid var(--line-2);border-radius:3px;margin-bottom:7px;background:#FCFDFF;}
+details.case[open]{border-color:var(--line);background:var(--panel);}
+details.case > summary{
+  cursor:pointer;padding:11px 14px;font-weight:500;font-size:15.2px;list-style:none;
+  display:flex;gap:11px;align-items:flex-start;
+}
+details.case > summary::-webkit-details-marker{display:none;}
+details.case > summary::before{
+  content:"+";font-family:'IBM Plex Mono',monospace;color:var(--blue);font-weight:600;
+  flex:none;line-height:1.5;
+}
+details.case[open] > summary::before{content:"–";}
+details.case > summary:hover{background:#F5F7FC;}
+.case-body{padding:2px 14px 16px 36px;}
+.lane{margin-bottom:14px;}
+.lane:last-child{margin-bottom:0;}
+.lane .lane-h{
+  display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.lane-law .lane-h{color:var(--blue);}
+.lane-do .lane-h{color:var(--green);}
+.lane-warn .lane-h{color:var(--red);}
+.lane p{margin:0 0 7px;font-size:15px;color:var(--ink-2);}
+.lane p:last-child{margin-bottom:0;}
+.lane ol{margin:0;padding-left:19px;font-size:15px;color:var(--ink-2);}
+.lane ol li{margin-bottom:5px;}
+.lane ul{margin:0;padding-left:19px;font-size:15px;color:var(--ink-2);}
+.lane-warn{background:var(--red-soft);border-left:2px solid var(--red);padding:11px 13px;border-radius:0 3px 3px 0;}
+.lane-warn p{color:#7C201A;}
+.timechips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px;}
+.tchip{
+  font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.05em;
+  padding:4px 8px;border-radius:3px;background:var(--amber-soft);color:var(--amber);border:1px solid #EFDFC0;
+}
+.tchip.now{background:var(--red-soft);color:var(--red);border-color:#F0D2CF;}
+.tchip.ok{background:var(--green-soft);color:var(--green);border-color:#CDE5DB;}
+
+/* ---------- compact article rows ---------- */
+.art.slim .art-main{padding:15px 24px 16px;}
+.art.slim h3{font-size:1.05rem;margin-bottom:6px;}
+.art.slim .plain{font-size:15.3px;color:var(--ink-2);}
+
+/* ---------- rest of constitution ---------- */
+.titles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);}
+.tcard{background:var(--panel);padding:18px 20px 20px;}
+.tcard .label{display:block;margin-bottom:7px;color:var(--blue);}
+.tcard h4{font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:1.02rem;margin:0 0 7px;letter-spacing:-.01em;}
+.tcard p{margin:0;font-size:14.5px;color:var(--ink-2);}
+
+/* ---------- law index ---------- */
+.lawrow{
+  display:grid;grid-template-columns:230px 1fr;gap:26px;padding:18px 0;border-bottom:1px solid var(--line);
+  align-items:baseline;
+}
+.lawrow .ln{font-weight:600;font-size:15.5px;line-height:1.3;}
+.lawrow .ln em{display:block;font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:11px;color:var(--blue);margin-top:5px;letter-spacing:.03em;}
+.lawrow .lb p{margin:0 0 6px;font-size:15.2px;color:var(--ink-2);}
+.lawrow .lb .gives{color:var(--ink);font-size:15px;}
+.lawrow .lb .gives b{color:var(--green);font-weight:600;}
+
+/* ---------- glossary ---------- */
+.glos{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:0 44px;}
+.gt{padding:14px 0;border-bottom:1px solid var(--line-2);}
+.gt dt{font-weight:600;font-size:15.5px;margin-bottom:4px;}
+.gt dd{margin:0;color:var(--ink-2);font-size:14.8px;}
+
+/* ---------- callout ---------- */
+.callout{
+  border:1px solid var(--line);border-left:3px solid var(--blue);background:var(--panel);
+  padding:18px 22px;border-radius:0 3px 3px 0;margin:26px 0 0;font-size:15.3px;color:var(--ink-2);
+}
+.callout b{color:var(--ink);}
+
+/* ---------- footer ---------- */
+footer{margin-top:64px;background:var(--ink);color:#98A1B3;padding:42px 0 56px;font-size:14px;}
+footer h5{font-family:'Bricolage Grotesque',sans-serif;color:#fff;font-weight:600;font-size:1.05rem;margin:0 0 10px;}
+footer p{max-width:74ch;margin:0 0 12px;}
+footer b{color:#DDE3EE;}
+.emergency{display:flex;gap:1px;background:#232833;border:1px solid #232833;margin:0 0 28px;flex-wrap:wrap;}
+.emergency div{background:#151A23;padding:14px 18px;flex:1;min-width:150px;}
+.emergency .e-n{font-family:'IBM Plex Mono',monospace;color:#7C90FF;font-size:1.25rem;font-weight:600;}
+.emergency .e-t{font-size:13px;color:#98A1B3;margin-top:3px;}
+
+@media(max-width:640px){
+  :root{--rail:44px;}
+  .art-rail .tema{display:none;}
+  .art-main{padding:16px 16px 18px;}
+  .case-body{padding-left:16px;}
+  .lawrow{grid-template-columns:1fr;gap:6px;}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto;}*{transition:none!important;}}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;}
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="wrap mast-in">
+    <div class="mark"><span class="dot"></span><b>MANUAL DE DEFENSA CIUDADANA</b></div>
+    <div class="meta">ES · Constitución 1978 · Título I + leyes de desarrollo</div>
+  </div>
+</div>
+
+<header class="hero">
+  <div class="wrap">
+    <h1>No basta con tener derechos. Hay que saber <span>cuál se activa</span> en cada situación.</h1>
+    <p class="lede">Cada artículo de la Constitución se abre aquí en los casos reales que ampara: qué ley concreta se aplica, qué tienes que hacer y en qué plazo. Escrito en castellano normal, sin tecnicismos.</p>
+
+    <div class="search-box">
+      <label class="sb-label" for="q">Busca tu situación</label>
+      <input id="q" type="search" autocomplete="off" placeholder="me han okupado el piso, me han despedido, robo, multa, datos…">
+      <div class="sb-hints">
+        <button type="button" data-q="okupa">okupación</button>
+        <button type="button" data-q="robo">robo en casa</button>
+        <button type="button" data-q="despido">despido</button>
+        <button type="button" data-q="detención">te detienen</button>
+        <button type="button" data-q="alquiler">alquiler</button>
+        <button type="button" data-q="datos">tus datos</button>
+        <button type="button" data-q="garantía">garantía/compras</button>
+        <button type="button" data-q="multa">multa</button>
+      </div>
+    </div>
+    <div class="search-count" id="count"></div>
+  </div>
+</header>
+
+<section class="deadlines wrap">
+  <h2 class="dl-title">Plazos importantes</h2>
+  <p class="dl-sub">Perder un plazo puede costarte más que perder un juicio. Aquí van los que más gente deja pasar por no conocerlos, ordenados por tema.</p>
+
+  <!-- POLICÍA Y JUSTICIA -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-police">Policía y justicia</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n red">72<small>h</small></div><p>Máximo que pueden tenerte detenido sin llevarte ante un juez o soltarte. Pide habeas corpus si se excede.</p></div>
+      <div class="dl"><div class="n red">24<small>h</small></div><p>Lo que tiene el juez para resolver un habeas corpus desde que lo pides.</p></div>
+      <div class="dl"><div class="n red">6<small>h</small></div><p>Máximo que pueden retenerte en comisaría solo para identificarte si no llevas DNI encima.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Hábiles para presentar un recurso de amparo ante el Tribunal Constitucional.</p></div>
+      <div class="dl"><div class="n">4<small> meses</small></div><p>Para presentar una demanda ante el Tribunal Europeo de Derechos Humanos (Estrasburgo), desde la última resolución firme.</p></div>
+      <div class="dl"><div class="n">6<small> meses</small></div><p>Prescripción de los delitos leves (antiguas faltas): injurias, amenazas leves, hurtos menores de 400 €.</p></div>
+      <div class="dl"><div class="n">1<small> año</small></div><p>Para denunciar un delito de lesiones leves. También para reclamar al Estado por funcionamiento anormal de la justicia.</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Prescripción de delitos con pena de hasta 5 años (robos, estafas, amenazas graves). Delitos más graves prescriben más tarde o no prescriben.</p></div>
+    </div>
+  </div>
+
+  <!-- TRABAJO -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-work">Trabajo</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n red">20<small> días</small></div><p>Hábiles para impugnar un despido. Es caducidad: pasado el plazo, el despido queda firme aunque sea ilegal. La papeleta de conciliación lo interrumpe.</p></div>
+      <div class="dl"><div class="n red">15<small> días</small></div><p>Hábiles para solicitar el paro en el SEPE tras quedarte sin trabajo. Si te retrasas, pierdes los días que pasen.</p></div>
+      <div class="dl"><div class="n amber">1<small> año</small></div><p>Para reclamar salarios no pagados, horas extra o diferencias salariales. Más atrás en el tiempo, prescriben.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para la reclamación previa si te deniegan una prestación de Seguridad Social (paro, baja, pensión).</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Desde que se desestima la reclamación previa para presentar demanda ante el juzgado de lo social.</p></div>
+      <div class="dl"><div class="n">15<small> días</small></div><p>De preaviso que debes dar a tu empresa si te vas voluntariamente (salvo que el convenio diga otro plazo).</p></div>
+      <div class="dl"><div class="n">12<small> meses</small></div><p>Tiempo de cotización mínimo para cobrar el paro. Con menos de 12 meses no se genera derecho a prestación contributiva.</p></div>
+    </div>
+  </div>
+
+  <!-- VIVIENDA -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-home">Vivienda y propiedad</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n red">48<small>h</small></div><p>Las primeras horas tras una okupación son decisivas: cuanto antes actúes, más probable que se considere flagrancia y la policía desaloje.</p></div>
+      <div class="dl"><div class="n">5<small> días</small></div><p>Lo que tienen los ocupantes ilegales para justificar un título válido en el desahucio exprés. Si no lo presentan, se ordena el lanzamiento.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Preaviso que debe darte el inquilino antes de irse si lleva menos de 6 meses en el contrato.</p></div>
+      <div class="dl"><div class="n">2<small> meses</small></div><p>Preaviso que el casero debe darte si quiere recuperar la vivienda por necesidad propia (estando previsto en contrato).</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Duración mínima obligatoria del alquiler si el casero es persona física (7 años si es empresa). Aunque el contrato diga 1 año.</p></div>
+      <div class="dl"><div class="n amber">6<small> meses</small></div><p>Para liquidar y pagar el Impuesto de Sucesiones al heredar. Prorrogable otros 6 meses si lo pides antes de que acabe.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Lo que tiene el casero para devolverte la fianza tras entregar las llaves. Después, genera intereses.</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Prescripción para reclamar la fianza no devuelta (acción personal del Código Civil).</p></div>
+    </div>
+  </div>
+
+  <!-- CONSUMO Y COMPRAS -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-buy">Consumo y compras</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n">14<small> días</small></div><p>Para devolver una compra online o a distancia sin dar ninguna explicación. Si no te informaron de este derecho, sube a 12 meses.</p></div>
+      <div class="dl"><div class="n">3<small> años</small></div><p>Garantía legal de un producto nuevo (desde 2022). Reclamas a la tienda, no al fabricante.</p></div>
+      <div class="dl"><div class="n">2<small> años</small></div><p>Dentro de la garantía, se presume que el defecto ya existía al comprarlo. Es la tienda quien tiene que demostrar lo contrario.</p></div>
+      <div class="dl"><div class="n green">1<small> día</small></div><p>Hábil: lo que tiene el banco para reembolsarte un cargo no autorizado en tu tarjeta, desde que lo notificas.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para que el Servicio de Atención al Cliente del banco conteste tu reclamación. Si no, acude al Banco de España.</p></div>
+      <div class="dl"><div class="n">14<small> días</small></div><p>Para que la tienda te devuelva el dinero tras comunicar el desistimiento, incluido el coste del envío inicial.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Plazo máximo de entrega en compras online si no se pactó otro. Si se pasa, puedes anular y exigir el reembolso.</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Para reclamar la indemnización por un vuelo cancelado o retrasado (Reglamento europeo 261/2004).</p></div>
+    </div>
+  </div>
+
+  <!-- DATOS Y PRIVACIDAD -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-data">Datos personales y privacidad</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n">30<small> días</small></div><p>Lo que tiene una empresa para darte copia de todos tus datos (derecho de acceso RGPD). Ampliable a 90 días si es complejo, pero avisándote.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para rectificar, suprimir o portar tus datos tras tu solicitud. El mismo plazo.</p></div>
+      <div class="dl"><div class="n">72<small>h</small></div><p>Lo que tiene una empresa para notificar una brecha de seguridad a la AEPD desde que la detecta. Si te afecta gravemente, a ti también.</p></div>
+      <div class="dl"><div class="n green">0<small> €</small></div><p>Reclamar ante la AEPD es gratis. No necesitas abogado, se hace online y la Agencia puede multar con millones.</p></div>
+      <div class="dl"><div class="n">4<small> años</small></div><p>Prescripción de la acción civil para reclamar por intromisión en tu honor, intimidad o imagen (LO 1/1982).</p></div>
+    </div>
+  </div>
+
+  <!-- ADMINISTRACIÓN Y MULTAS -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-admin">Administración, multas y recursos</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n amber">20<small> días</small></div><p>Naturales para presentar alegaciones a una multa de tráfico. Pagar con descuento renuncia a recurrir.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para recurso de reposición ante la misma Administración que dictó el acto (potestativo en la mayoría de casos).</p></div>
+      <div class="dl"><div class="n">2<small> meses</small></div><p>Para recurso contencioso-administrativo ante el juzgado, si no estás de acuerdo con la resolución administrativa.</p></div>
+      <div class="dl"><div class="n">3<small> meses</small></div><p>Si la Administración no contesta, se entiende silencio negativo. A partir de ahí corre el plazo para recurrir (6 meses).</p></div>
+      <div class="dl"><div class="n">1<small> año</small></div><p>Para reclamar indemnización al Estado por funcionamiento anormal de un servicio público (Ley 40/2015).</p></div>
+      <div class="dl"><div class="n">4<small> años</small></div><p>Prescripción del derecho de Hacienda a comprobar tu declaración de la renta. Pasados 4 años, ejercicio cerrado.</p></div>
+      <div class="dl"><div class="n green">10<small> días</small></div><p>Hábiles para presentar alegaciones antes de que se resuelva un expediente sancionador (trámite de audiencia).</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para pedir la rectificación de tu certificado de empadronamiento si contiene datos erróneos.</p></div>
+    </div>
+  </div>
+
+  <!-- DINERO E IMPUESTOS -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-money">Dinero e impuestos</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n amber">7<small> días</small></div><p>Para avisar a tu seguro de un siniestro (robo, incendio, daño). Pasado el plazo, pueden rechazar la cobertura.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para solicitar un aplazamiento de deuda tributaria antes de que se inicie el apremio (recargo del 5 al 20 %).</p></div>
+      <div class="dl"><div class="n">15<small> años</small></div><p>Prescripción para reclamar una deuda civil ordinaria (préstamos entre particulares, por ejemplo). 5 años desde la reforma de 2015.</p></div>
+      <div class="dl"><div class="n green">SMI</div><p>El Salario Mínimo Interprofesional es inembargable. Por encima se embarga por tramos progresivos.</p></div>
+    </div>
+  </div>
+
+  <!-- FAMILIA Y SALUD -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-family">Familia</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n red">72<small>h</small></div><p>Lo que puede tardar una orden de protección por violencia de género en dictarse. Puede ser aún más rápido.</p></div>
+      <div class="dl"><div class="n">3<small> meses</small></div><p>Mínimo desde el matrimonio para pedir el divorcio. No hace falta si hay violencia.</p></div>
+      <div class="dl"><div class="n">30<small> días</small></div><p>Para inscribir un nacimiento en el Registro Civil (ampliable si hay causa justificada).</p></div>
+      <div class="dl"><div class="n">16<small> sem.</small></div><p>Permiso de nacimiento y cuidado del menor para cada progenitor. Intransferible y retribuido al 100 %.</p></div>
+      <div class="dl"><div class="n amber">2<small> meses</small></div><p>Consecutivos impagados de pensión de alimentos para que sea delito (o 4 no consecutivos).</p></div>
+    </div>
+  </div>
+
+  <!-- SALUD -->
+  <div class="dl-cat">
+    <span class="dl-cat-label c-health">Salud</span>
+    <div class="dl-grid">
+      <div class="dl"><div class="n red">1<small> año</small></div><p>Para reclamar a la Administración sanitaria por daño causado por mala praxis médica en sanidad pública.</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Para reclamar por mala praxis en sanidad privada (responsabilidad contractual).</p></div>
+      <div class="dl"><div class="n green">0<small> €</small></div><p>Pedir tu historia clínica es gratuito y es tu derecho. No pueden negarse ni cobrarte.</p></div>
+      <div class="dl"><div class="n">5<small> años</small></div><p>Mínimo que deben conservar tu historia clínica desde la última asistencia (algunas CCAA más).</p></div>
+    </div>
+  </div>
+
+</section>
+
+<nav class="filters" aria-label="Filtrar por tema">
+  <div class="filters-in">
+    <button type="button" data-tema="all" aria-pressed="true">Todos los artículos</button>
+    <button type="button" data-tema="casos" aria-pressed="false">Solo con casos prácticos</button>
+    <button type="button" data-tema="privacidad" aria-pressed="false">Privacidad y hogar</button>
+    <button type="button" data-tema="justicia" aria-pressed="false">Justicia y policía</button>
+    <button type="button" data-tema="igualdad" aria-pressed="false">Igualdad</button>
+    <button type="button" data-tema="trabajo" aria-pressed="false">Trabajo</button>
+    <button type="button" data-tema="consumo" aria-pressed="false">Consumo y dinero</button>
+    <button type="button" data-tema="vivienda" aria-pressed="false">Vivienda</button>
+    <button type="button" data-tema="libertades" aria-pressed="false">Libertades</button>
+    <button type="button" data-tema="social" aria-pressed="false">Salud y familia</button>
+    <button type="button" data-tema="publico" aria-pressed="false">Vida pública</button>
+  </div>
+</nav>
+
+<main class="wrap">
+
+<section class="sec" id="constitucion">
+  <div class="sec-head">
+    <div class="idx">SECCIÓN 01</div>
+    <div class="txt">
+      <h2>La Constitución, artículo por artículo</h2>
+      <p>Los artículos 10 a 55 son el catálogo de derechos. Cada uno viene con las leyes que lo hacen exigible y, en los que más se usan en la vida real, con los casos concretos: qué pasa según la situación exacta, porque el mismo artículo activa leyes distintas según los detalles.</p>
+    </div>
+  </div>
+
+  <div class="ledger" id="ledger">
+
+  <!-- ART 10 -->
+  <article class="art" data-tema="libertades" data-k="dignidad derechos humanos tratados europa tedh estrasburgo interpretacion">
+    <div class="art-rail"><span class="num">10</span><span class="tema">Base</span></div>
+    <div class="art-main">
+      <h3>Dignidad de la persona</h3>
+      <p class="quote">La dignidad de la persona y los derechos inviolables que le son inherentes son fundamento del orden político y de la paz social.</p>
+      <p class="plain">Es la piedra sobre la que se apoya todo lo demás: ninguna ley puede tratarte como un objeto. Y añade algo muy útil: los derechos se interpretan conforme a los tratados internacionales que España ha firmado, así que <b>el Convenio Europeo de Derechos Humanos también te protege aquí</b>.</p>
+      <div class="laws"><span class="law-chip">CEDH (Roma, 1950)</span><span class="law-chip">Carta de DDFF de la UE</span><span class="law-chip">Declaración Universal DDHH</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Has perdido en todos los tribunales españoles y crees que se ha vulnerado un derecho tuyo</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Este artículo abre la puerta a Estrasburgo: el Tribunal Europeo de Derechos Humanos (TEDH) puede condenar a España si se ha vulnerado el Convenio Europeo.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Agotar antes toda la vía española, incluido el recurso de amparo ante el Tribunal Constitucional.</li>
+                <li>Presentar la demanda ante el TEDH, gratis y en formulario oficial, invocando el artículo del Convenio vulnerado.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">TEDH: 4 meses desde la última resolución firme</span><span class="tchip ok">Sin coste de tasas</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 11 -->
+  <article class="art slim" data-tema="publico" data-k="nacionalidad española apatrida doble nacionalidad">
+    <div class="art-rail"><span class="num">11</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Nacionalidad</h3>
+      <p class="plain">Ningún español de origen puede ser privado de su nacionalidad. Es decir: si naciste español, el Estado no te puede "expulsar" de la nacionalidad como castigo. Los que la adquieren después sí pueden perderla en supuestos tasados.</p>
+      <div class="laws"><span class="law-chip">Código Civil, arts. 17–26</span><span class="law-chip">Ley 20/2011 del Registro Civil</span></div>
+    </div>
+  </article>
+
+  <!-- ART 12 -->
+  <article class="art slim" data-tema="publico" data-k="mayoria de edad 18 años menores emancipacion">
+    <div class="art-rail"><span class="num">12</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Mayoría de edad a los 18</h3>
+      <p class="plain">A los 18 eres legalmente adulto: puedes votar, firmar contratos, casarte y responder de tus actos por tu cuenta. Antes, tus padres o tutores actúan por ti (con excepciones: a partir de los 16 emancipado, o los 14 para hacer testamento).</p>
+      <div class="laws"><span class="law-chip">Código Civil</span><span class="law-chip">LO 5/2000 responsabilidad penal del menor</span></div>
+    </div>
+  </article>
+
+  <!-- ART 13 -->
+  <article class="art" data-tema="igualdad" data-k="extranjeros inmigracion residencia arraigo asilo refugiado extradicion">
+    <div class="art-rail"><span class="num">13</span><span class="tema">Igualdad</span></div>
+    <div class="art-main">
+      <h3>Derechos de los extranjeros</h3>
+      <p class="plain">Los extranjeros tienen en España los mismos derechos fundamentales básicos que los españoles (vida, integridad, tutela judicial, sanidad de urgencia, educación de menores). Lo que sí se reserva a nacionales es el voto en elecciones generales, con excepciones en las municipales por acuerdos con otros países.</p>
+      <div class="laws"><span class="law-chip">LO 4/2000 de Extranjería</span><span class="law-chip">RD 557/2011 Reglamento</span><span class="law-chip">Ley 12/2009 de asilo</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Llevas años en España sin papeles y quieres regularizar tu situación</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El arraigo (social, laboral, familiar o formativo) del Reglamento de Extranjería permite obtener residencia acreditando tiempo de estancia y vínculos, aunque hayas entrado de forma irregular.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Empadronarte cuanto antes: el padrón es la prueba principal del tiempo que llevas aquí, y empadronarse no depende de tener papeles.</li>
+                <li>Reunir contrato o informe de inserción social del ayuntamiento según el tipo de arraigo.</li>
+                <li>Solicitar cita en la Oficina de Extranjería de tu provincia.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>El régimen de arraigo se reformó recientemente y los requisitos de plazos cambian. Confirma siempre la versión vigente del reglamento antes de presentar nada.</p>
+            </div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te paran por la calle y te piden la documentación por tu aspecto</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Las identificaciones basadas únicamente en el color de piel o el origen étnico están prohibidas: lo dice la Ley 15/2022 de igualdad de trato y lo ha reiterado el Tribunal Constitucional. La policía debe poder justificar un motivo objetivo.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Identifícate, pero pide el número de identificación profesional del agente.</li>
+                <li>Anota hora, lugar y testigos.</li>
+                <li>Presenta queja ante la Inspección de Personal y Servicios de Seguridad o denuncia por discriminación.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 14 -->
+  <article class="art" data-tema="igualdad" data-k="igualdad discriminacion racismo lgtbi sexo edad local alquiler acoso">
+    <div class="art-rail"><span class="num">14</span><span class="tema">Igualdad</span></div>
+    <div class="art-main">
+      <h3>Igualdad ante la ley y no discriminación</h3>
+      <p class="quote">Los españoles son iguales ante la ley, sin que pueda prevalecer discriminación alguna por razón de nacimiento, raza, sexo, religión, opinión o cualquier otra condición o circunstancia personal o social.</p>
+      <p class="plain">La ley te trata igual que a cualquiera. Y ojo al final: <b>"cualquier otra condición"</b> es una puerta abierta, así que también cubre orientación sexual, identidad de género, discapacidad, enfermedad, edad o situación económica.</p>
+      <div class="laws"><span class="law-chip">Ley 15/2022 de igualdad de trato</span><span class="law-chip">LO 3/2007 de igualdad</span><span class="law-chip">Ley 4/2023 LGTBI</span><span class="law-chip">CP art. 510 (delitos de odio)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>No te dejan entrar en un local o no te alquilan un piso por tu origen, orientación o aspecto</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La Ley 15/2022 prohíbe expresamente denegar bienes y servicios por motivos discriminatorios, e incluye una regla decisiva: <b>la carga de la prueba se invierte</b>. Si aportas indicios razonables, es el local o el casero quien tiene que demostrar que no discriminó.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Guarda pruebas en el momento: capturas del anuncio ("no se alquila a…"), mensajes, testigos, grabación si es posible.</li>
+                <li>Pide la hoja de reclamaciones si es un establecimiento: es obligatorio tenerla.</li>
+                <li>Denuncia ante Consumo, ante la oficina antidiscriminación de tu comunidad, o directamente en el juzgado.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Sanciones administrativas para el infractor</span><span class="tchip ok">Puedes reclamar indemnización</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Cobras menos que un compañero por el mismo trabajo</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El artículo 28 del Estatuto de los Trabajadores obliga a igual retribución por trabajo de igual valor. El RD 902/2020 obliga a las empresas a llevar un <b>registro salarial</b> desglosado por sexo, y tienes derecho a acceder a él a través de tu representación legal.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide el registro retributivo de la empresa (por comité, delegado sindical, o directamente si no hay representación).</li>
+                <li>Denuncia ante la Inspección de Trabajo, que es gratuita y puede sancionar.</li>
+                <li>Demanda de reclamación de cantidad ante el juzgado de lo social.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Reclamación de salarios: 1 año hacia atrás</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Recibes insultos o amenazas por tu raza, religión, orientación o discapacidad</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Si hay incitación al odio o humillación, deja de ser un asunto civil y pasa a ser <b>delito de odio</b> (art. 510 del Código Penal). Además, cometer un delito por motivos discriminatorios es una agravante que sube la pena (art. 22.4 CP).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Captura todo con fecha y URL visible; si es online, no borres nada.</li>
+                <li>Denuncia en comisaría o ante el Fiscal de delitos de odio de tu provincia.</li>
+                <li>Si es en redes, reporta también a la plataforma en paralelo.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 15 -->
+  <article class="art" data-tema="social" data-k="vida integridad agresion violencia genero maltrato lesiones eutanasia sanidad consentimiento negligencia">
+    <div class="art-rail"><span class="num">15</span><span class="tema">Vida</span></div>
+    <div class="art-main">
+      <h3>Derecho a la vida y a la integridad física y moral</h3>
+      <p class="quote">Todos tienen derecho a la vida y a la integridad física y moral, sin que, en ningún caso, puedan ser sometidos a tortura ni a penas o tratos inhumanos o degradantes.</p>
+      <p class="plain">Nadie puede dañarte físicamente ni humillarte, ni el Estado ni un particular. También protege tu cuerpo frente a intervenciones no consentidas: <b>nadie puede operarte, medicarte ni tocarte sin tu permiso</b>.</p>
+      <div class="laws"><span class="law-chip">CP arts. 138–156 (homicidio y lesiones)</span><span class="law-chip">LO 1/2004 violencia de género</span><span class="law-chip">Ley 41/2002 autonomía del paciente</span><span class="law-chip">LO 3/2021 eutanasia</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te agreden por la calle</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Es delito de lesiones (art. 147 CP) si necesitas tratamiento médico más allá de una primera cura; si no, es delito leve. Si usan un arma o hay ensañamiento, la pena sube (art. 148 CP). Defenderte proporcionalmente está amparado por la legítima defensa (art. 20.4 CP).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Ve a urgencias y pide el <b>parte de lesiones</b>: sin él, después es muy difícil probar el daño.</li>
+                <li>Fotografía las lesiones con fecha, durante varios días.</li>
+                <li>Denuncia. Puedes pedir además indemnización por los días de baja y secuelas dentro del mismo procedimiento penal.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Delito leve: denuncia en 1 año</span><span class="tchip">Lesiones graves: prescriben mucho más tarde</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Sufres maltrato de tu pareja o expareja</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La LO 1/2004 crea juzgados específicos y la <b>orden de protección</b>, que puede dictarse en menos de 72 horas e incluye a la vez medidas penales (alejamiento) y civiles (uso de la vivienda, custodia, pensión). Un solo golpe o una amenaza ya constituyen delito, no hace falta que sea repetido.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>016: atención 24h, gratuito y no deja rastro en la factura. En emergencia, 112.</li>
+                <li>Puedes solicitar la orden de protección en comisaría, en el juzgado, en servicios sociales o en la oficina de víctimas: no necesitas abogado para pedirla.</li>
+                <li>Tienes derecho a abogado de oficio especializado desde el primer momento, con independencia de tus ingresos.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">016 / 112</span><span class="tchip ok">Asistencia jurídica gratuita inmediata</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te van a hacer una intervención médica y no te explican nada</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La Ley 41/2002 exige <b>consentimiento informado</b>: te tienen que explicar riesgos y alternativas de forma comprensible, y por escrito si es cirugía o procedimiento invasivo. Puedes negarte a un tratamiento aunque el médico lo recomiende, y puedes dejar firmadas tus instrucciones previas (testamento vital).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide el documento de consentimiento y tiempo para leerlo; nadie puede hacerte firmarlo entrando a quirófano.</li>
+                <li>Solicita copia de tu historia clínica: es tuya y te la deben entregar.</li>
+                <li>Si hay daño por mala praxis, reclamación patrimonial a la Administración sanitaria o demanda civil si es sanidad privada.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Sanidad pública: 1 año para reclamar el daño</span><span class="tchip">Historia clínica: acceso gratuito</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 16 -->
+  <article class="art" data-tema="libertades" data-k="religion ideologia creencias culto objecion conciencia">
+    <div class="art-rail"><span class="num">16</span><span class="tema">Libertad</span></div>
+    <div class="art-main">
+      <h3>Libertad ideológica, religiosa y de culto</h3>
+      <p class="plain">Puedes creer lo que quieras, o nada, y practicarlo. Nadie puede obligarte a declarar sobre tus creencias, tu ideología o tu voto: <b>ni en una entrevista de trabajo, ni en un formulario, ni ante la policía</b>. España no tiene religión oficial, aunque coopera con algunas confesiones.</p>
+      <div class="laws"><span class="law-chip">LO 7/1980 de libertad religiosa</span><span class="law-chip">LOPDGDD (dato especialmente protegido)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>En una entrevista de trabajo te preguntan por tu religión, tu ideología o si estás afiliado a un sindicato</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Son <b>categorías especiales de datos</b> según el RGPD: recogerlos está prohibido salvo excepciones muy tasadas. Además, preguntarlo para decidir una contratación es discriminación laboral.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Puedes negarte a contestar sin que eso te perjudique legalmente.</li>
+                <li>Denuncia ante la Inspección de Trabajo y/o reclama ante la AEPD si quedó registrado por escrito.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 17 -->
+  <article class="art" data-tema="justicia" data-k="detencion policia comisaria abogado declarar habeas corpus identificacion cacheo esposas 72 horas">
+    <div class="art-rail"><span class="num">17</span><span class="tema">Justicia</span></div>
+    <div class="art-main">
+      <h3>Libertad personal y garantías de la detención</h3>
+      <p class="quote">La detención preventiva no podrá durar más del tiempo estrictamente necesario […] y, en todo caso, en el plazo máximo de setenta y dos horas, el detenido deberá ser puesto en libertad o a disposición de la autoridad judicial.</p>
+      <p class="plain">No te pueden privar de libertad sin motivo legal. Y si te detienen, la ley te da un paquete de derechos que <b>se te tienen que leer en el acto y de forma comprensible</b>.</p>
+      <div class="laws"><span class="law-chip">LECrim art. 520 (derechos del detenido)</span><span class="law-chip">LO 6/1984 de habeas corpus</span><span class="law-chip">LO 4/2015 de seguridad ciudadana</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te detienen</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El art. 520 LECrim te garantiza: saber de qué se te acusa y por qué te detienen, <b>guardar silencio</b>, no declarar contra ti mismo, abogado (de oficio si no tienes), intérprete, aviso a un familiar, médico y acceso al atestado antes de declarar.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>No declares nada hasta hablar a solas con tu abogado. Es tu derecho y no perjudica tu caso.</li>
+                <li>No firmes ningún documento que no entiendas o con el que no estés de acuerdo.</li>
+                <li>Pide asistencia médica si te han hecho daño: queda constancia oficial.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Máximo 72 horas</span><span class="tchip">Terrorismo: prorrogable 48h más con autorización judicial</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Crees que la detención es ilegal o te están reteniendo de más</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El <b>habeas corpus</b> (LO 6/1984). Es un procedimiento urgente: obliga a que un juez te vea y decida en el acto si tu detención es legal.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Puedes pedirlo tú, tu abogado, tu cónyuge, un familiar, o el Ministerio Fiscal.</li>
+                <li>No hace falta abogado ni procurador para solicitarlo, y basta con manifestarlo ante quien te custodia: están obligados a tramitarlo.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">El juez debe resolver en 24 horas</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te identifican o te cachean por la calle sin estar detenido</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Identificar no es detener. La LO 4/2015 permite pedirte la documentación cuando hay indicios de infracción, y llevarte a comisaría solo si no puedes identificarte, con un máximo de <b>6 horas</b> para diligencias de identificación. El registro corporal debe respetar tu intimidad y hacerlo, siempre que sea posible, un agente de tu mismo sexo.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Colabora e identifícate: negarte es en sí una infracción sancionable.</li>
+                <li>Pide el número de placa y anota los datos.</li>
+                <li>Si consideras que hubo abuso, recurre la sanción en vía administrativa antes de que sea firme.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Alegaciones a la sanción: normalmente 15–20 días</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 18 -->
+  <article class="art" data-tema="privacidad" data-k="robo casa domicilio okupa okupacion allanamiento hurto ladron camara vecino casero entrar policia registro movil whatsapp fotos intimas ruido intimidad honor imagen datos">
+    <div class="art-rail"><span class="num">18</span><span class="tema">Privacidad</span></div>
+    <div class="art-main">
+      <h3>Honor, intimidad, propia imagen, domicilio y comunicaciones</h3>
+      <p class="quote">Se garantiza el derecho al honor, a la intimidad personal y familiar y a la propia imagen. El domicilio es inviolable. Ninguna entrada o registro podrá hacerse en él sin consentimiento del titular o resolución judicial, salvo en caso de flagrante delito. Se garantiza el secreto de las comunicaciones.</p>
+      <p class="plain">Es el artículo que más se usa en la vida diaria. Reúne cinco protecciones distintas: tu reputación, tu vida privada, tu cara, tu casa y tus mensajes. Y aquí se ve claro por qué hay que bajar al detalle: <b>"que entren en tu casa" activa leyes muy diferentes según quién entre, cuándo y para qué</b>.</p>
+      <div class="laws"><span class="law-chip">LO 1/1982 honor e imagen</span><span class="law-chip">CP arts. 202, 234–242, 245</span><span class="law-chip">RGPD + LO 3/2018</span><span class="law-chip">Ley 5/2018 (desahucio exprés)</span></div>
+
+      <div class="cases">
+        <p class="label">Casos prácticos · el mismo artículo, ocho situaciones distintas</p>
+
+        <details class="case">
+          <summary>Entran a robar en tu casa <b>estando tú dentro</b></summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Se acumulan varios delitos. Si fuerzan la entrada, es <b>robo con fuerza en casa habitada</b> (art. 241 CP), castigado con 2 a 5 años, mucho más que un robo en un local. Si además hay violencia o te amenazan, es <b>robo con violencia o intimidación</b> (art. 242 CP), agravado precisamente por ser una vivienda habitada. Y la entrada en sí puede constituir <b>allanamiento de morada</b> (art. 202 CP).</p>
+              <p>Tu reacción defensiva puede quedar cubierta por la <b>legítima defensa</b> (art. 20.4 CP), que exige agresión ilegítima, necesidad racional del medio empleado y que tú no hayas provocado la situación. Entrar en tu casa de noche se considera de por sí agresión ilegítima.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Llama al 112 y prioriza salir o encerrarte: la ley protege la vida por encima de las cosas.</li>
+                <li>No toques nada después: la policía científica necesita el escenario intacto.</li>
+                <li>Si hubo forcejeo, urgencias y parte de lesiones.</li>
+                <li>Denuncia y pide copia. La necesitas para el seguro.</li>
+                <li>Comunica el siniestro a tu aseguradora.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>La legítima defensa tiene límites: si el ladrón huye y le persigues y le agredes, ya no hay defensa sino agresión, y puedes acabar tú imputado. La proporcionalidad es lo que se juzga.</p>
+            </div>
+            <div class="timechips"><span class="tchip now">112 inmediato</span><span class="tchip">Seguro: 7 días para avisar</span><span class="tchip">Pena: 2 a 5 años</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Entran a robar en tu casa <b>estando tú fuera</b></summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Aquí hay un matiz que casi nadie conoce: a efectos penales, <b>tu casa sigue siendo "casa habitada" aunque en ese momento no haya nadie dentro</b>. Basta con que sea tu morada habitual. Por eso se aplica igualmente el art. 241 CP con su pena agravada, y no el robo común.</p>
+              <p>Si no forzaron nada (por ejemplo, entraron por una puerta que quedó abierta y solo se llevaron cosas), puede calificarse como <b>hurto</b> (art. 234 CP), con pena menor. La diferencia entre hurto y robo está en si hubo fuerza en las cosas o violencia en las personas.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>No entres si sospechas que siguen dentro: llama al 112 desde fuera.</li>
+                <li>Fotografía los daños y la cerradura forzada antes de arreglar nada.</li>
+                <li>Haz una lista detallada de lo sustraído con facturas, números de serie e IMEI de los móviles.</li>
+                <li>Bloquea tarjetas y solicita el bloqueo del IMEI a tu operadora.</li>
+                <li>Denuncia (puedes iniciarla online, pero luego hay que ratificarla presencialmente).</li>
+                <li>Si te han robado el DNI, denúncialo expresamente: te protege frente a contratos firmados a tu nombre.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Seguro: 7 días</span><span class="tchip ok">Denuncia online disponible</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Te <b>okupan</b> la vivienda</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Todo depende de qué vivienda sea, y esto lo cambia absolutamente todo:</p>
+              <ul>
+                <li><b>Si es tu vivienda habitual o una segunda residencia que usas</b> (aunque estés de vacaciones): es <b>allanamiento de morada</b>, art. 202 CP, un delito grave. La policía puede actuar de inmediato porque el delito es flagrante mientras permanecen dentro, y desalojarlos sin esperar a un juicio.</li>
+                <li><b>Si es un piso vacío, heredado o de inversión</b> que no constituye morada: es <b>usurpación</b>, art. 245.2 CP, castigada solo con multa. Aquí la policía normalmente no desaloja sin orden judicial, y hay que ir a los tribunales.</li>
+              </ul>
+              <p>Para el segundo caso, la Ley 5/2018 creó el llamado <b>desahucio exprés</b>: un juicio civil rápido (art. 250.1.4º de la Ley de Enjuiciamiento Civil) en el que los ocupantes tienen solo 5 días para justificar un título válido, y si no lo tienen se ordena el lanzamiento. Desde 2025 también se han incorporado estos delitos al procedimiento de <b>juicio rápido</b> penal, lo que acorta mucho los tiempos.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Llama al 112 en cuanto lo detectes. <b>Las primeras 48 horas son decisivas</b>: cuanto antes, más fácil es que se considere flagrante.</li>
+                <li>Acredita en el acto que es tu morada: escritura o contrato, empadronamiento, facturas de suministros a tu nombre, fotos con tus cosas dentro.</li>
+                <li>Denuncia siempre por escrito, aunque la policía no desaloje. Sin denuncia no hay procedimiento.</li>
+                <li>Demanda civil de desahucio por precario o tutela sumaria de la posesión si no se desaloja de inmediato.</li>
+                <li>Avisa a tu compañía de suministros para que no se sigan generando consumos a tu nombre.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>No entres tú por la fuerza, no cortes el agua ni la luz, y no contrates a un "desokupa" que use la coacción. Si lo haces, puedes acabar denunciado por coacciones (art. 172 CP) o allanamiento, y perder la razón que tenías. La vía es siempre policial o judicial.</p>
+              <p>Ojo también: un inquilino que deja de pagar <b>no es un okupa</b>. Ahí no cabe denuncia penal, solo desahucio por falta de pago (procedimiento civil de la LAU).</p>
+            </div>
+            <div class="timechips"><span class="tchip now">Actúa en las primeras 48h</span><span class="tchip">Desahucio exprés: 5 días para que aleguen</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Tu <b>casero</b> entra en el piso alquilado sin avisar</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Que sea el propietario no le da derecho a entrar: mientras dure el alquiler, <b>la morada es tuya</b>. Entrar sin tu consentimiento es allanamiento de morada (art. 202 CP), exactamente igual que si fuera un extraño. Cambiar la cerradura o cortarte los suministros para forzarte a salir es <b>coacciones</b> (art. 172 CP).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Comunícale por escrito (burofax o mensaje que deje rastro) que no autorizas entradas sin cita previa.</li>
+                <li>Si insiste o ya ha entrado, denuncia y aporta las pruebas.</li>
+                <li>Si te ha cortado luz o agua, es urgente: puedes pedir medidas cautelares además de denunciar.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Allanamiento: 6 meses a 2 años</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>La <b>policía</b> quiere entrar en tu casa sin orden judicial</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Solo hay tres puertas legales de entrada: tu consentimiento, una <b>resolución judicial</b> escrita y motivada, o <b>delito flagrante</b> (que se esté cometiendo en ese momento). Fuera de eso, la entrada es nula, y con ella todas las pruebas obtenidas: es la llamada "prueba ilícita" (art. 11 de la Ley Orgánica del Poder Judicial).</p>
+              <p>Un olor a marihuana o una sospecha genérica no equivalen por sí solos a delito flagrante según reiterada jurisprudencia.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pregunta con calma si tienen orden judicial y pide verla.</li>
+                <li>Si no la tienen, puedes negar el consentimiento de forma expresa y clara. No te resistas físicamente: solo dilo con testigos.</li>
+                <li>Que conste en el acta que no consentiste. Ese detalle es lo que después anula la prueba.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Si consientes, aunque sea por miedo o por no discutir, la entrada pasa a ser legal y ya no podrás impugnarla después.</p>
+            </div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Un vecino instala una <b>cámara</b> que enfoca tu puerta, tu ventana o tu jardín</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Una cámara privada solo puede grabar espacio propio. Si capta zonas comunes, la vía pública o tu propiedad, vulnera el RGPD y tu intimidad. Si graba dentro de tu casa, puede ser además <b>delito de descubrimiento y revelación de secretos</b> (art. 197 CP).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Fotografía la posición y el ángulo de la cámara.</li>
+                <li>Requiérelo por escrito, y si es en una comunidad, llévalo a junta de propietarios.</li>
+                <li>Reclama ante la <b>AEPD</b>: es gratuito, se hace online y la Agencia puede sancionar y ordenar retirarla.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">AEPD: reclamación gratuita</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Difunden <b>fotos o vídeos íntimos</b> tuyos sin permiso</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El art. 197.7 CP castiga difundir imágenes íntimas obtenidas con consentimiento pero divulgadas sin él: <b>aunque tú se las enviaras voluntariamente a esa persona, difundirlas es delito</b>. Se suma la LO 1/1982 para reclamar indemnización civil y el derecho de supresión del RGPD para borrarlas.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>No borres las pruebas: captura con URL, fecha y usuario visible.</li>
+                <li>Usa el <b>Canal Prioritario de la AEPD</b>, pensado para retirar en horas contenido sexual o violento difundido sin consentimiento.</li>
+                <li>Denuncia penalmente y reclama daños por la vía civil.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Canal Prioritario AEPD: urgente</span><span class="tchip">Agravado si es pareja o expareja</span></div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>Alguien lee tus <b>mensajes</b>, o tu empresa revisa tu correo y tu móvil</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El secreto de las comunicaciones cubre WhatsApp, correo y llamadas por igual. Acceder a ellos sin permiso es delito (art. 197 CP), <b>incluso si es tu pareja</b>. Instalarte un programa espía es un agravante.</p>
+              <p>En el trabajo, la empresa puede supervisar los medios que te da, pero solo si te ha informado antes de forma clara de los criterios de uso y control (art. 87 LOPDGDD). Sin esa información previa, el control es ilícito.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Cambia contraseñas y activa verificación en dos pasos; revisa sesiones abiertas.</li>
+                <li>Guarda evidencias del acceso no autorizado (avisos de inicio de sesión, capturas).</li>
+                <li>Denuncia, o reclama ante la AEPD si es tu empresa quien te controla sin política previa.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+
+        <details class="case">
+          <summary>El ruido de un local o un vecino hace tu casa inhabitable</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Puede sorprender, pero el ruido excesivo y continuado se considera una vulneración del derecho a la intimidad domiciliaria de este mismo artículo 18: así lo han declarado el Tribunal Constitucional y el Tribunal Europeo de Derechos Humanos. Si es muy grave y persistente, puede ser incluso <b>delito contra el medio ambiente</b> (art. 325 CP).</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide mediciones sonométricas oficiales al ayuntamiento y guarda el registro de cada denuncia.</li>
+                <li>Reclama por escrito a la comunidad de propietarios: la Ley de Propiedad Horizontal permite prohibir actividades molestas.</li>
+                <li>Si el ayuntamiento no actúa, cabe demanda por inactividad administrativa y reclamación de daños.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">La constancia documental es la clave del caso</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 19 -->
+  <article class="art slim" data-tema="libertades" data-k="circulacion residencia pasaporte salir de españa empadronamiento">
+    <div class="art-rail"><span class="num">19</span><span class="tema">Libertad</span></div>
+    <div class="art-main">
+      <h3>Libertad de circulación y residencia</h3>
+      <p class="plain">Puedes vivir donde quieras dentro de España, moverte libremente y entrar o salir del país. No te pueden retirar el pasaporte por motivos políticos ni impedirte fijar tu residencia en otra comunidad. Empadronarte es un derecho, no un favor del ayuntamiento, y no depende de tener contrato de alquiler a tu nombre.</p>
+      <div class="laws"><span class="law-chip">Ley 7/1985 de Bases de Régimen Local (padrón)</span><span class="law-chip">Libre circulación UE</span></div>
+    </div>
+  </article>
+
+  <!-- ART 20 -->
+  <article class="art" data-tema="libertades" data-k="expresion difamacion calumnias injurias reseña google opinion prensa censura grabar policia">
+    <div class="art-rail"><span class="num">20</span><span class="tema">Libertad</span></div>
+    <div class="art-main">
+      <h3>Libertad de expresión e información</h3>
+      <p class="plain">Puedes opinar, crear, publicar e informar sin censura previa: <b>nadie puede revisar lo que vas a decir antes de que lo digas</b>. Pero no es ilimitado: choca con el honor y la intimidad de los demás, y la diferencia la marca si estás dando una opinión o afirmando un hecho falso.</p>
+      <div class="laws"><span class="law-chip">CP arts. 205–216 (calumnia e injuria)</span><span class="law-chip">LO 1/1982</span><span class="law-chip">Ley 34/2002 servicios de la sociedad de la información</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Alguien difunde mentiras sobre ti o te difama públicamente</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Si te atribuyen falsamente un delito, es <b>calumnia</b>; si dañan tu dignidad de otro modo, <b>injuria</b>. Tienes dos vías: la penal (querella) o la civil por la LO 1/1982, normalmente más práctica porque busca indemnización y rectificación. Existe además la Ley Orgánica 2/1984 de <b>derecho de rectificación</b>: un medio debe publicar tu versión sobre hechos inexactos que te aludan.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Captura y, si es importante, levanta acta notarial del contenido.</li>
+                <li>Requiere la retirada por burofax; en internet, avisa también al prestador del servicio.</li>
+                <li>Rectificación en 7 días si es un medio; después, demanda civil o querella.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Rectificación: 7 días naturales</span><span class="tchip">Acción civil de honor: 4 años</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te reclaman por dejar una reseña negativa de un negocio</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Una opinión crítica sobre un servicio, aunque sea dura, está protegida por este artículo. La línea se cruza cuando afirmas hechos falsos o insultas gratuitamente. Los tribunales suelen amparar la crítica veraz del consumidor.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Ciñe la reseña a hechos que puedas probar y a valoraciones personales, sin insultos.</li>
+                <li>Conserva tickets, fotos y conversaciones que respalden lo que cuentas.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>¿Puedes grabar a la policía en la vía pública?</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Grabar una actuación policial en un espacio público está amparado por la libertad de información, siempre que no interfieras en la actuación. Lo que la LO 4/2015 sanciona es la <b>difusión</b> de imágenes que pongan en peligro a los agentes o el éxito de una operación, no el hecho de grabar en sí.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Mantén distancia y no obstaculices.</li>
+                <li>No te pueden obligar a borrar el material ni a entregar el móvil sin resolución judicial.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 21 -->
+  <article class="art slim" data-tema="publico" data-k="manifestacion reunion protesta concentracion delegacion gobierno">
+    <div class="art-rail"><span class="num">21</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Derecho de reunión y manifestación</h3>
+      <p class="plain">Puedes manifestarte pacíficamente y sin armas. <b>No necesitas permiso: basta con comunicarlo</b> a la Delegación del Gobierno entre 30 y 10 días antes (menos si hay causa urgente). Solo pueden prohibirla por razones fundadas de alteración del orden público con peligro para personas o bienes, y esa decisión es recurrible.</p>
+      <div class="laws"><span class="law-chip">LO 9/1983 reguladora del derecho de reunión</span><span class="law-chip">LO 4/2015</span></div>
+    </div>
+  </article>
+
+  <!-- ART 22 -->
+  <article class="art slim" data-tema="publico" data-k="asociacion ong club partido registro">
+    <div class="art-rail"><span class="num">22</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Derecho de asociación</h3>
+      <p class="plain">Puedes crear o unirte a asociaciones, ONG, clubes o partidos, y nadie puede obligarte a pertenecer a ninguno. Se inscriben en un registro solo a efectos de publicidad, no de autorización. Solo son ilegales las que persiguen fines delictivos o son secretas o paramilitares, y <b>solo un juez puede disolverlas</b>.</p>
+      <div class="laws"><span class="law-chip">LO 1/2002 del derecho de asociación</span></div>
+    </div>
+  </article>
+
+  <!-- ART 23 -->
+  <article class="art slim" data-tema="publico" data-k="voto elecciones sufragio oposiciones cargo publico funcionario">
+    <div class="art-rail"><span class="num">23</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Participación política y acceso a cargos públicos</h3>
+      <p class="plain">Votar, presentarte a las elecciones y opositar en igualdad de condiciones. De aquí sale que las oposiciones se rijan por <b>mérito y capacidad</b>: si un proceso selectivo público se amaña o cambia las reglas a mitad, se puede impugnar.</p>
+      <div class="laws"><span class="law-chip">LO 5/1985 del Régimen Electoral General</span><span class="law-chip">RDL 5/2015 Estatuto Básico del Empleado Público</span></div>
+    </div>
+  </article>
+
+  <!-- ART 24 -->
+  <article class="art" data-tema="justicia" data-k="juicio abogado justicia gratuita demanda denuncia victima presuncion inocencia dilaciones plazo">
+    <div class="art-rail"><span class="num">24</span><span class="tema">Justicia</span></div>
+    <div class="art-main">
+      <h3>Tutela judicial efectiva y garantías del proceso</h3>
+      <p class="quote">Todas las personas tienen derecho a obtener la tutela efectiva de los jueces y tribunales en el ejercicio de sus derechos e intereses legítimos, sin que, en ningún caso, pueda producirse indefensión.</p>
+      <p class="plain">Es el derecho a que un juez te escuche de verdad. Incluye: juez ordinario predeterminado por la ley, abogado, ser informado de la acusación, un proceso público sin dilaciones indebidas, usar las pruebas que necesites, <b>no declarar contra ti mismo</b> y la presunción de inocencia.</p>
+      <div class="laws"><span class="law-chip">Ley 1/1996 de asistencia jurídica gratuita</span><span class="law-chip">Ley 4/2015 Estatuto de la víctima</span><span class="law-chip">LEC y LECrim</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Necesitas ir a juicio pero no puedes pagar un abogado</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La Ley 1/1996 da derecho a <b>justicia gratuita</b> (abogado, procurador, peritos y exención de tasas) si tus ingresos no superan ciertos múltiplos del IPREM, que se calculan según el número de miembros de la unidad familiar. Hay casos en los que se concede <b>con independencia de los ingresos</b>: víctimas de violencia de género, terrorismo, trata, y menores o personas con discapacidad víctimas de abuso.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Solicítalo en el Colegio de Abogados de tu zona o en el Servicio de Orientación Jurídica del juzgado.</li>
+                <li>Aporta declaración de la renta, vida laboral y libro de familia.</li>
+                <li>Pide el reconocimiento antes de agotar plazos: solicitarlo suspende el cómputo mientras se resuelve.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">Gratuito, incluidas las tasas</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Eres víctima de un delito y no sabes qué derechos tienes en el proceso</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La Ley 4/2015 te reconoce derecho a entender y ser entendida, a que te informen del estado de la causa, a que te notifiquen si el agresor sale de prisión, a evitar el contacto visual con él en el juicio y a acceder a las Oficinas de Asistencia a las Víctimas, que son gratuitas.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Solicita expresamente ser informada de las resoluciones: si no lo pides, a veces no te llegan.</li>
+                <li>Personarte como acusación particular te da voz propia además del fiscal.</li>
+                <li>Reclama la indemnización dentro del proceso penal; no hace falta un juicio civil aparte.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Tu procedimiento lleva años parado</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El derecho a un proceso <b>sin dilaciones indebidas</b>. Si el retraso es anormal y no es culpa tuya, puedes reclamar al Ministerio de Justicia por funcionamiento anormal de la Administración de Justicia (Ley 40/2015); en lo penal, opera además como atenuante.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Presenta un escrito pidiendo el impulso del procedimiento: deja constancia de que reclamaste.</li>
+                <li>Queja ante el Consejo General del Poder Judicial.</li>
+                <li>Reclamación patrimonial al Ministerio de Justicia.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Reclamación patrimonial: 1 año</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 25 -->
+  <article class="art" data-tema="justicia" data-k="legalidad penal multa sancion administrativa recurso prision reinsercion">
+    <div class="art-rail"><span class="num">25</span><span class="tema">Justicia</span></div>
+    <div class="art-main">
+      <h3>Principio de legalidad penal y sancionadora</h3>
+      <p class="plain">Solo te pueden castigar por algo que ya era infracción cuando lo hiciste, y con la pena prevista entonces. Las leyes penales no se aplican hacia atrás salvo que te favorezcan. También dice que las penas de prisión deben orientarse a la reinserción y que <b>la Administración no puede imponer penas de cárcel</b>: solo un juez.</p>
+      <div class="laws"><span class="law-chip">CP (LO 10/1995)</span><span class="law-chip">Ley 39/2015 procedimiento administrativo</span><span class="law-chip">Ley 40/2015 régimen jurídico</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te llega una multa que consideras injusta</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>En el procedimiento sancionador también rige la presunción de inocencia: la Administración tiene que probar los hechos y motivar la sanción. Y si el expediente caduca o la infracción prescribe, la multa decae. La notificación defectuosa es uno de los motivos de anulación más frecuentes.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Mira la fecha de notificación: de ahí salen todos los plazos.</li>
+                <li>Presenta alegaciones dentro del plazo indicado en la propia multa (en tráfico suelen ser 20 días naturales).</li>
+                <li>Si se desestiman, recurso de reposición y después vía contencioso-administrativa.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Pagar con el descuento por pronto pago equivale a renunciar a recurrir. Decide primero si vas a alegar.</p>
+            </div>
+            <div class="timechips"><span class="tchip now">Alegaciones: 20 días naturales (tráfico)</span><span class="tchip">Reposición: 1 mes</span><span class="tchip">Contencioso: 2 meses</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 26 -->
+  <article class="art slim" data-tema="justicia" data-k="tribunales de honor colegios profesionales">
+    <div class="art-rail"><span class="num">26</span><span class="tema">Justicia</span></div>
+    <div class="art-main">
+      <h3>Prohibición de los Tribunales de Honor</h3>
+      <p class="plain">Se prohíben los tribunales de honor en la Administración civil y en las organizaciones profesionales. Traducido: <b>ningún colegio profesional o cuerpo puede juzgarte por tu "honorabilidad"</b> al margen de un procedimiento con garantías.</p>
+    </div>
+  </article>
+
+  <!-- ART 27 -->
+  <article class="art" data-tema="social" data-k="educacion colegio escuela beca acoso escolar bullying matricula centro">
+    <div class="art-rail"><span class="num">27</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Derecho a la educación y libertad de enseñanza</h3>
+      <p class="plain">La enseñanza básica es <b>obligatoria y gratuita</b>, y este sí es un derecho plenamente exigible ante los tribunales, a diferencia de otros derechos sociales. Los padres pueden elegir centro y una formación acorde a sus convicciones, y se reconoce la libertad de crear centros docentes.</p>
+      <div class="laws"><span class="law-chip">LO 2/2006 de Educación (modificada por LO 3/2020)</span><span class="law-chip">LO 8/2021 protección de la infancia</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Tu hijo sufre acoso escolar y el centro no actúa</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La LO 8/2021 (LOPIVI) obliga a todos los centros a tener protocolos de actuación y un <b>coordinador de bienestar</b>. El centro responde si no activa el protocolo, y puede haber responsabilidad patrimonial de la Administración educativa por el daño causado.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Comunícalo por escrito y con registro de entrada a la dirección del centro: el correo verbal no deja rastro.</li>
+                <li>Exige por escrito la activación del protocolo antiacoso y pide copia de las actuaciones.</li>
+                <li>Si no responden, escrito a la Inspección Educativa de tu comunidad.</li>
+                <li>En casos graves, denuncia; si el acosador es menor de 14 años no hay responsabilidad penal, pero sí responden civilmente sus padres.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Todo por escrito y con registro</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 28 -->
+  <article class="art" data-tema="trabajo" data-k="sindicato huelga afiliacion servicios minimos represalia">
+    <div class="art-rail"><span class="num">28</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Libertad sindical y derecho de huelga</h3>
+      <p class="plain">Puedes afiliarte a un sindicato o no afiliarte a ninguno. Y puedes ir a la huelga: durante la huelga <b>tu contrato queda en suspenso, no se extingue</b>. Descontarte más de lo debido, sustituirte por otro trabajador (esquirolaje) o tomar represalias es una vulneración de derechos fundamentales.</p>
+      <div class="laws"><span class="law-chip">LO 11/1985 de Libertad Sindical</span><span class="law-chip">RDL 17/1977 de relaciones de trabajo</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te penalizan por hacer huelga o por afiliarte</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Un despido o sanción por ejercer estos derechos es <b>nulo</b>, no solo improcedente. La diferencia es enorme: nulo significa readmisión obligatoria con los salarios dejados de percibir, más indemnización por daños.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Guarda toda comunicación que relacione la sanción con la huelga o la afiliación.</li>
+                <li>Demanda por vulneración de derechos fundamentales: es un procedimiento preferente y urgente.</li>
+                <li>Denuncia paralela a la Inspección de Trabajo.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Despido: 20 días hábiles</span><span class="tchip ok">Si es nulo: readmisión + salarios</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 29 -->
+  <article class="art slim" data-tema="publico" data-k="peticion administracion escrito ayuntamiento transparencia informacion publica">
+    <div class="art-rail"><span class="num">29</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Derecho de petición</h3>
+      <p class="plain">Puedes dirigirte por escrito a cualquier autoridad para pedir o proponer algo, y están obligados a acusar recibo y contestar. Su primo hermano moderno es el <b>derecho de acceso a la información pública</b> de la Ley 19/2013: puedes pedir contratos, presupuestos o informes de cualquier administración sin justificar por qué los quieres.</p>
+      <div class="laws"><span class="law-chip">LO 4/2001 del derecho de petición</span><span class="law-chip">Ley 19/2013 de transparencia</span></div>
+    </div>
+  </article>
+
+  <!-- ART 30 -->
+  <article class="art slim" data-tema="publico" data-k="defensa españa objecion conciencia proteccion civil emergencia servicio militar">
+    <div class="art-rail"><span class="num">30</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Defensa de España y objeción de conciencia</h3>
+      <p class="plain">Reconoce el deber de defender España y el derecho a la objeción de conciencia. El servicio militar obligatorio está suspendido desde 2001, así que en la práctica este artículo se aplica hoy sobre todo a los deberes de los ciudadanos en casos de <b>grave riesgo, catástrofe o calamidad pública</b>.</p>
+      <div class="laws"><span class="law-chip">Ley 17/2015 del Sistema Nacional de Protección Civil</span></div>
+    </div>
+  </article>
+
+  <!-- ART 31 -->
+  <article class="art" data-tema="consumo" data-k="impuestos hacienda irpf embargo confiscatorio recurso tributario aplazamiento">
+    <div class="art-rail"><span class="num">31</span><span class="tema">Dinero</span></div>
+    <div class="art-main">
+      <h3>Deber de contribuir y sistema tributario justo</h3>
+      <p class="plain">Todos pagamos impuestos según nuestra capacidad económica, con un sistema progresivo que <b>en ningún caso puede tener alcance confiscatorio</b>. Del otro lado, como contribuyente tienes derechos frente a Hacienda: a ser informado, a no aportar documentos que ya obren en poder de la Administración y a recurrir.</p>
+      <div class="laws"><span class="law-chip">Ley 58/2003 General Tributaria</span><span class="law-chip">LEC art. 607 (límites al embargo)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te embargan la nómina o la cuenta</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Existe un mínimo inembargable: <b>el importe del Salario Mínimo Interprofesional es intocable</b>, y a partir de ahí se embarga por tramos porcentuales crecientes. Si el dinero embargado en la cuenta procede de una nómina o pensión, se aplican los mismos límites, y hay reducciones adicionales por cargas familiares.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Acredita ante el juzgado o la Agencia Tributaria el origen del dinero de la cuenta.</li>
+                <li>Solicita el levantamiento parcial del embargo por superar los límites legales.</li>
+                <li>Valora pedir aplazamiento o fraccionamiento de la deuda tributaria.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">SMI inembargable</span><span class="tchip">Recurso de reposición: 1 mes</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 32 -->
+  <article class="art" data-tema="social" data-k="matrimonio divorcio pareja de hecho custodia separacion gananciales">
+    <div class="art-rail"><span class="num">32</span><span class="tema">Familia</span></div>
+    <div class="art-main">
+      <h3>Matrimonio en igualdad</h3>
+      <p class="plain">Derecho a casarse con plena igualdad jurídica. Desde 2005 el matrimonio entre personas del mismo sexo tiene exactamente los mismos efectos. Y desde 2005 también existe el <b>divorcio sin causa</b>: no tienes que alegar ningún motivo ni pasar por una separación previa.</p>
+      <div class="laws"><span class="law-chip">Código Civil arts. 44 y ss.</span><span class="law-chip">Ley 15/2005 del divorcio</span><span class="law-chip">Ley 15/2015 de jurisdicción voluntaria</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te separas y hay hijos o vivienda de por medio</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Si hay acuerdo, el <b>convenio regulador</b> permite un divorcio de mutuo acuerdo rápido, incluso ante notario cuando no hay hijos menores. Si no hay acuerdo, decide el juez guiándose por el interés superior del menor. Puedes pedir el divorcio pasados 3 meses desde el matrimonio, sin plazo alguno si hay violencia.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Reúne documentación económica de ambos: es lo que determina pensiones y uso de la vivienda.</li>
+                <li>Considera la mediación familiar antes del juicio: más barata y más rápida.</li>
+                <li>Si hay riesgo de que se lleven a los menores fuera, pide medidas cautelares urgentes.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Las parejas de hecho no equivalen a matrimonio: no hay pensión compensatoria automática ni derechos sucesorios en la mayoría de comunidades. Inscribirse en el registro autonómico cambia bastante las cosas.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 33 -->
+  <article class="art" data-tema="vivienda" data-k="propiedad herencia expropiacion legitima testamento hipoteca desahucio">
+    <div class="art-rail"><span class="num">33</span><span class="tema">Vivienda</span></div>
+    <div class="art-main">
+      <h3>Propiedad privada y herencia</h3>
+      <p class="quote">Nadie podrá ser privado de sus bienes y derechos sino por causa justificada de utilidad pública o interés social, mediante la correspondiente indemnización y de conformidad con lo dispuesto por las leyes.</p>
+      <p class="plain">Lo tuyo es tuyo y puedes dejarlo en herencia, pero la propiedad tiene <b>función social</b>: puede limitarse por urbanismo, medio ambiente o interés general. Y si te expropian, tiene que ser por interés público y <b>pagándote un justiprecio</b>.</p>
+      <div class="laws"><span class="law-chip">Código Civil (propiedad y sucesiones)</span><span class="law-chip">Ley de Expropiación Forzosa de 1954</span><span class="law-chip">Ley 49/1960 de Propiedad Horizontal</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te expropian un terreno o una vivienda</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La expropiación exige declaración de utilidad pública, procedimiento con audiencia y pago del justiprecio. Si no estás de acuerdo con la valoración, puedes discutirla ante el <b>Jurado Provincial de Expropiación</b> y después en vía contencioso-administrativa. Si pasan años sin pagarte, se generan intereses de demora.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Presenta tu propia hoja de aprecio con tasación pericial independiente: es tu mejor arma.</li>
+                <li>No firmes el acta de mutuo acuerdo sin comparar la valoración.</li>
+                <li>Recurre la fijación del justiprecio si lo consideras bajo.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Recibes una herencia y no sabes si aceptarla</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Puedes aceptarla, renunciarla o aceptarla <b>a beneficio de inventario</b>, que es la opción clave: así solo respondes de las deudas del fallecido hasta donde alcancen los bienes heredados, y no con tu patrimonio propio. En derecho común existe además la legítima: una parte de la herencia reservada a hijos y descendientes que no se puede quitar libremente.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide el certificado de últimas voluntades y el de contratos de seguros de cobertura de fallecimiento.</li>
+                <li>Antes de aceptar, comprueba deudas: pide información a bancos y Hacienda.</li>
+                <li>Ten en cuenta el Impuesto de Sucesiones, que varía enormemente según la comunidad autónoma.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Impuesto de Sucesiones: 6 meses (prorrogable)</span><span class="tchip ok">Beneficio de inventario protege tu patrimonio</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 34 -->
+  <article class="art slim" data-tema="publico" data-k="fundacion interes general">
+    <div class="art-rail"><span class="num">34</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Derecho de fundación</h3>
+      <p class="plain">Puedes destinar un patrimonio de forma permanente a un fin de interés general creando una fundación. Como las asociaciones, solo un juez puede disolverlas.</p>
+      <div class="laws"><span class="law-chip">Ley 50/2002 de Fundaciones</span></div>
+    </div>
+  </article>
+
+  <!-- ART 35 -->
+  <article class="art" data-tema="trabajo" data-k="trabajo despido finiquito nomina salario horas extra contrato acoso laboral paro improcedente">
+    <div class="art-rail"><span class="num">35</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Derecho al trabajo y a una remuneración suficiente</h3>
+      <p class="plain">Derecho a trabajar, a elegir profesión, a promocionar y a un salario suficiente, sin discriminación por sexo. De aquí cuelga todo el derecho laboral: <b>los mínimos del Estatuto de los Trabajadores no se pueden rebajar por contrato</b>, aunque tú lo firmes.</p>
+      <div class="laws"><span class="law-chip">RDL 2/2015 Estatuto de los Trabajadores</span><span class="law-chip">Ley 36/2011 jurisdicción social</span><span class="law-chip">Ley 31/1995 prevención de riesgos</span><span class="law-chip">Ley 20/2007 Estatuto del Trabajo Autónomo</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te despiden</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Hay tres calificaciones posibles y cambian mucho el resultado:</p>
+              <ul>
+                <li><b>Procedente</b>: causa acreditada. Si es objetivo, 20 días de salario por año trabajado.</li>
+                <li><b>Improcedente</b>: la causa no se prueba o falla la forma. 33 días por año (45 días por el tiempo trabajado antes de 2012), y elige la empresa entre readmitirte o indemnizarte.</li>
+                <li><b>Nulo</b>: vulnera derechos fundamentales, o afecta a embarazo, permisos de cuidado o represalia por reclamar. Readmisión obligatoria más salarios de tramitación.</li>
+              </ul>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Firma la carta poniendo <b>"no conforme"</b> junto a tu firma: firmar solo acredita que la recibiste, no que la aceptes.</li>
+                <li>No firmes el finiquito sin revisarlo, o fírmalo también como "no conforme". Un finiquito firmado sin reservas puede cerrarte la puerta.</li>
+                <li>Presenta la papeleta de conciliación ante el organismo de mediación de tu comunidad. <b>Este es el paso que interrumpe el plazo.</b></li>
+                <li>Solicita el paro en el SEPE aunque vayas a impugnar.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Los 20 días son <b>hábiles</b> (no cuentan sábados, domingos ni festivos), y se cuentan desde el día siguiente al despido. Es un plazo de caducidad: si se pasa, no hay marcha atrás aunque tengas toda la razón.</p>
+            </div>
+            <div class="timechips"><span class="tchip now">20 días hábiles para impugnar</span><span class="tchip">Paro: 15 días hábiles para solicitarlo</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>No te pagan, te pagan tarde o te deben horas extra</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Puedes reclamar cantidades del <b>último año</b>. Si el impago es grave y reiterado, puedes pedir la <b>extinción indemnizada del contrato</b> (art. 50 ET): te vas tú, pero cobrando como un despido improcedente. El registro horario es obligatorio desde 2019, y su ausencia perjudica a la empresa en el juicio.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Guarda nóminas, mensajes, cuadrantes y cualquier prueba de la jornada real.</li>
+                <li>Denuncia a Inspección de Trabajo, que es gratuita y anónima frente a la empresa.</li>
+                <li>Papeleta de conciliación y demanda de reclamación de cantidad.</li>
+                <li>Si la empresa es insolvente, acude al <b>FOGASA</b>, que cubre parte de lo adeudado.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Salarios: prescriben en 1 año</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Sufres acoso laboral o tu jefe te presiona para que te vayas</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El acoso vulnera tu integridad moral (art. 15 CE) y puede ser <b>delito</b> (art. 173 CP). En vía laboral permite pedir la extinción indemnizada del contrato más indemnización por daños morales, sin necesidad de esperar a que te despidan.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Documenta con fechas: correos, testigos, cambios de funciones, partes médicos.</li>
+                <li>Activa el protocolo de acoso de la empresa por escrito; tenerlo es obligatorio.</li>
+                <li>Denuncia a Inspección de Trabajo y valora la baja médica: el parte es prueba del daño.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>No firmes una baja voluntaria. Si te vas tú por escrito, pierdes indemnización y derecho al paro. Si te presionan para firmarla, no firmes y consulta antes.</p>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 36 -->
+  <article class="art slim" data-tema="trabajo" data-k="colegios profesionales colegiacion medico abogado arquitecto">
+    <div class="art-rail"><span class="num">36</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Colegios profesionales</h3>
+      <p class="plain">Regula las profesiones colegiadas. Para ti tiene un uso práctico muy concreto: si un médico, abogado, arquitecto o administrador de fincas actúa mal, además de demandarle puedes <b>presentar queja deontológica ante su colegio</b>, que es gratuito y puede sancionarle.</p>
+      <div class="laws"><span class="law-chip">Ley 2/1974 de Colegios Profesionales</span></div>
+    </div>
+  </article>
+
+  <!-- ART 37 -->
+  <article class="art slim" data-tema="trabajo" data-k="convenio colectivo negociacion comite empresa">
+    <div class="art-rail"><span class="num">37</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Negociación colectiva y conflicto colectivo</h3>
+      <p class="plain">Garantiza los convenios colectivos, que tienen <b>fuerza vinculante</b>: se aplican a toda la plantilla del sector o empresa aunque no estés afiliado a ningún sindicato. Merece la pena leer el convenio que te aplica, porque suele mejorar bastante los mínimos legales en vacaciones, pluses y permisos.</p>
+      <div class="laws"><span class="law-chip">Estatuto de los Trabajadores, Título III</span></div>
+    </div>
+  </article>
+
+  <!-- ART 38 -->
+  <article class="art slim" data-tema="consumo" data-k="libertad de empresa autonomo negocio competencia">
+    <div class="art-rail"><span class="num">38</span><span class="tema">Dinero</span></div>
+    <div class="art-main">
+      <h3>Libertad de empresa</h3>
+      <p class="plain">Puedes emprender y montar un negocio en el marco de la economía de mercado. Como contrapeso, existen normas de competencia y de protección al consumidor: la libertad de empresa <b>no ampara pactar precios ni engañar al cliente</b>.</p>
+      <div class="laws"><span class="law-chip">Ley 15/2007 de Defensa de la Competencia</span><span class="law-chip">Ley 3/1991 de Competencia Desleal</span></div>
+    </div>
+  </article>
+
+  <!-- ART 39 -->
+  <article class="art" data-tema="social" data-k="familia hijos pension alimentos impago custodia menores filiacion">
+    <div class="art-rail"><span class="num">39</span><span class="tema">Familia</span></div>
+    <div class="art-main">
+      <h3>Protección de la familia y de la infancia</h3>
+      <p class="plain">Los hijos son <b>iguales ante la ley con independencia de su filiación</b>: hayan nacido dentro o fuera del matrimonio, tienen los mismos derechos. Los padres deben prestarles asistencia mientras sean menores, y en el resto de casos que proceda.</p>
+      <div class="laws"><span class="law-chip">Código Civil (patria potestad y alimentos)</span><span class="law-chip">LO 8/2021 protección de la infancia</span><span class="law-chip">CP art. 227 (impago de pensiones)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>El otro progenitor no paga la pensión de alimentos</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Dejar de pagar dos mensualidades consecutivas o cuatro no consecutivas es <b>delito</b> (art. 227 CP). Además puedes ejecutar la sentencia por vía civil, con embargo de nómina, cuentas o devolución de Hacienda. Existe también el <b>Fondo de Garantía del Pago de Alimentos</b>, que adelanta cantidades cuando el obligado no paga.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Reclama por escrito y guarda el impago documentado.</li>
+                <li>Presenta demanda de ejecución de la sentencia: es más rápido que un juicio nuevo.</li>
+                <li>Valora la denuncia penal en paralelo si el impago es prolongado.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Que no pague no te autoriza a impedir las visitas. Son obligaciones independientes y bloquearlas puede volverse en tu contra.</p>
+            </div>
+            <div class="timechips"><span class="tchip">Delito desde 2 mensualidades seguidas</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 40 -->
+  <article class="art slim" data-tema="trabajo" data-k="jornada vacaciones descanso pleno empleo formacion">
+    <div class="art-rail"><span class="num">40</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Progreso social, jornada y descanso</h3>
+      <p class="plain">Manda a los poderes públicos velar por el pleno empleo, limitar la jornada, garantizar el <b>descanso necesario</b> y las vacaciones periódicas retribuidas. Se concreta en 40 horas semanales de media, 12 horas de descanso entre jornadas, día y medio de descanso semanal y un mínimo de 30 días naturales de vacaciones al año.</p>
+      <div class="laws"><span class="law-chip">Estatuto de los Trabajadores, arts. 34–38</span><span class="law-chip">LOPDGDD art. 88 (desconexión digital)</span></div>
+    </div>
+  </article>
+
+  <!-- ART 41 -->
+  <article class="art" data-tema="social" data-k="seguridad social paro pension jubilacion baja incapacidad ingreso minimo vital">
+    <div class="art-rail"><span class="num">41</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Seguridad Social</h3>
+      <p class="plain">Obliga a mantener un sistema público de Seguridad Social que dé prestaciones suficientes ante situaciones de necesidad, <b>especialmente el desempleo</b>. Es lo que hay detrás del paro, las pensiones, las bajas y el ingreso mínimo vital.</p>
+      <div class="laws"><span class="law-chip">RDL 8/2015 Ley General de la Seguridad Social</span><span class="law-chip">Ley 19/2021 del Ingreso Mínimo Vital</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Te deniegan el paro, una baja o una pensión</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Antes de ir al juzgado hay un paso obligatorio y gratuito: la <b>reclamación previa</b> ante la entidad gestora (SEPE, INSS o mutua). Muchísimas denegaciones se resuelven ahí sin llegar a juicio.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Presenta la reclamación previa dentro del plazo indicado en la resolución.</li>
+                <li>Adjunta informes médicos actualizados si se trata de incapacidad: el peso de la prueba está ahí.</li>
+                <li>Si te la deniegan, demanda ante el juzgado de lo social, donde no necesitas abogado obligatoriamente.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Reclamación previa: 30 días</span><span class="tchip">Demanda social: 30 días desde la denegación</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 42 -->
+  <article class="art slim" data-tema="social" data-k="emigrantes españoles en el extranjero retorno consulado">
+    <div class="art-rail"><span class="num">42</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Españoles en el extranjero</h3>
+      <p class="plain">El Estado debe velar por los derechos de los españoles que viven fuera y facilitar su retorno. En la práctica: asistencia consular, voto desde el exterior y programas de retorno.</p>
+      <div class="laws"><span class="law-chip">Ley 40/2006 del Estatuto de la Ciudadanía Española en el Exterior</span></div>
+    </div>
+  </article>
+
+  <!-- ART 43 -->
+  <article class="art" data-tema="social" data-k="salud sanidad medico lista de espera tarjeta sanitaria urgencias segunda opinion">
+    <div class="art-rail"><span class="num">43</span><span class="tema">Salud</span></div>
+    <div class="art-main">
+      <h3>Protección de la salud</h3>
+      <p class="plain">Es la base de la sanidad pública. Ojo al matiz: <b>es un principio rector</b>, así que no puedes exigir ante un juez "cualquier tratamiento ya", pero sí obliga al Estado a sostener un sistema que te atienda, y las leyes que lo desarrollan sí crean derechos concretos y exigibles.</p>
+      <div class="laws"><span class="law-chip">Ley 14/1986 General de Sanidad</span><span class="law-chip">Ley 16/2003 de cohesión y calidad del SNS</span><span class="law-chip">Ley 41/2002 autonomía del paciente</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Llevas meses en lista de espera</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Casi todas las comunidades autónomas tienen normas de <b>tiempos máximos de respuesta</b> para intervenciones, consultas y pruebas. Superarlos suele dar derecho a que te ofrezcan otro centro, incluso privado concertado, con cargo al sistema público.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide por escrito tu certificado de inclusión en lista de espera con la fecha exacta.</li>
+                <li>Consulta el decreto de garantía de plazos de tu comunidad y reclama al superarlo.</li>
+                <li>Reclamación formal ante el servicio de atención al paciente y, si no responden, ante el Defensor del Pueblo autonómico.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Plazos máximos: varían por comunidad</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 44 -->
+  <article class="art slim" data-tema="social" data-k="cultura ciencia acceso investigacion">
+    <div class="art-rail"><span class="num">44</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Acceso a la cultura y a la ciencia</h3>
+      <p class="plain">Los poderes públicos deben promover el acceso a la cultura y la investigación científica. Se traduce en bibliotecas públicas, museos con acceso gratuito en ciertos horarios y política de ciencia abierta.</p>
+      <div class="laws"><span class="law-chip">Ley 14/2011 de la Ciencia</span></div>
+    </div>
+  </article>
+
+  <!-- ART 45 -->
+  <article class="art" data-tema="publico" data-k="medio ambiente contaminacion ruido vertidos denuncia seprona">
+    <div class="art-rail"><span class="num">45</span><span class="tema">Entorno</span></div>
+    <div class="art-main">
+      <h3>Medio ambiente adecuado</h3>
+      <p class="plain">Derecho a disfrutar de un medio ambiente adecuado y deber de conservarlo. Aquí hay una herramienta poco conocida y muy potente: la <b>acción popular ambiental</b>, que permite a cualquier persona o asociación denunciar e incluso litigar en defensa del medio ambiente sin tener que demostrar un interés personal directo.</p>
+      <div class="laws"><span class="law-chip">Ley 27/2006 de acceso a la información ambiental</span><span class="law-chip">Ley 26/2007 de responsabilidad medioambiental</span><span class="law-chip">CP arts. 325 y ss.</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Una empresa contamina o vierte cerca de tu zona</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Puedes pedir información ambiental a la Administración y te la deben dar (Ley 27/2006), y denunciar sin ser parte afectada. Los vertidos graves son delito contra el medio ambiente, y rige el principio de <b>quien contamina, paga</b>.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Documenta con fotos, vídeos, fechas y localización.</li>
+                <li>Denuncia al SEPRONA de la Guardia Civil o a la agencia ambiental autonómica.</li>
+                <li>Solicita el expediente y las autorizaciones ambientales de la empresa: son información pública.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Información ambiental: 1 mes para responderte</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 46 -->
+  <article class="art slim" data-tema="publico" data-k="patrimonio historico artistico monumento bic">
+    <div class="art-rail"><span class="num">46</span><span class="tema">Entorno</span></div>
+    <div class="art-main">
+      <h3>Patrimonio histórico y artístico</h3>
+      <p class="plain">Obliga a conservar el patrimonio cultural. Si un edificio o yacimiento protegido está en riesgo, cualquier ciudadano puede solicitar su declaración como Bien de Interés Cultural o denunciar su deterioro.</p>
+      <div class="laws"><span class="law-chip">Ley 16/1985 del Patrimonio Histórico Español</span></div>
+    </div>
+  </article>
+
+  <!-- ART 47 -->
+  <article class="art" data-tema="vivienda" data-k="vivienda alquiler casero fianza subida renta desahucio inquilino contrato prorroga zona tensionada">
+    <div class="art-rail"><span class="num">47</span><span class="tema">Vivienda</span></div>
+    <div class="art-main">
+      <h3>Derecho a una vivienda digna</h3>
+      <p class="quote">Todos los españoles tienen derecho a disfrutar de una vivienda digna y adecuada. Los poderes públicos promoverán las condiciones necesarias […] regulando la utilización del suelo de acuerdo con el interés general para impedir la especulación.</p>
+      <p class="plain">Suena rotundo, pero conviene entenderlo bien: <b>es un principio rector, no un derecho que puedas reclamar sin más ante un juez</b>. No puedes ir a un juzgado a exigir que te den una casa. Sí obliga a los poderes públicos a poner medios, y sí se concreta en leyes que crean derechos exigibles de verdad, sobre todo en el alquiler.</p>
+      <div class="laws"><span class="law-chip">Ley 29/1994 de Arrendamientos Urbanos</span><span class="law-chip">Ley 12/2023 por el derecho a la vivienda</span><span class="law-chip">RDL 1/2007 (cláusulas abusivas)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>El casero quiere echarte antes de tiempo o no renovarte</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La LAU impone una <b>duración mínima obligatoria</b> para el arrendador: prórrogas anuales hasta 5 años si es persona física, o 7 si es persona jurídica, aunque el contrato firmado diga menos. Después hay prórroga tácita adicional. El casero solo puede recuperar la vivienda antes por necesidad propia o de familiares de primer grado, y siempre que estuviera previsto en el contrato y avisando con 2 meses.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Responde por burofax invocando la prórroga obligatoria de la LAU.</li>
+                <li>Sigue pagando puntualmente y conserva los justificantes: es tu mejor defensa.</li>
+                <li>Si te presiona con cortes de suministros o cambios de cerradura, denuncia por coacciones.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Preaviso del inquilino para irse: 30 días</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te suben el alquiler de golpe</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La renta solo puede actualizarse si está pactado en el contrato y una vez al año, con el índice legalmente aplicable en cada momento. La Ley 12/2023 permite además <b>topar las subidas en zonas declaradas tensionadas</b>, y traslada al propietario los gastos de gestión inmobiliaria y de formalización del contrato.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Comprueba si tu municipio está declarado zona tensionada: depende de tu comunidad autónoma, no todas lo aplican.</li>
+                <li>Responde por escrito discutiendo la subida y sigue pagando la renta antigua para no incurrir en impago.</li>
+                <li>Consulta a la oficina municipal de vivienda, que suele mediar gratis.</li>
+              </ol>
+            </div>
+            <div class="lane lane-warn"><span class="lane-h">Cuidado</span>
+              <p>Dejar de pagar como forma de protesta es la peor opción: convierte un caso que ganarías en un desahucio por impago que perderías.</p>
+            </div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>El casero no te devuelve la fianza</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>La fianza legal es de <b>una mensualidad</b> en vivienda, debe depositarse en el organismo autonómico correspondiente y devolverse al terminar, salvo desperfectos que superen el desgaste normal por el uso. Si se retrasa más de un mes, devenga intereses.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Haz fotos y vídeo con fecha el día que entregas las llaves, y firma un acta de entrega.</li>
+                <li>Reclama por burofax con acuse de recibo.</li>
+                <li>Si no paga, demanda de juicio verbal (por debajo de 2.000 € no necesitas abogado ni procurador).</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">Menos de 2.000 €: sin abogado</span><span class="tchip">Reclamación: 5 años</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 48 -->
+  <article class="art slim" data-tema="social" data-k="juventud jovenes participacion">
+    <div class="art-rail"><span class="num">48</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Participación de la juventud</h3>
+      <p class="plain">Los poderes públicos deben promover las condiciones para que los jóvenes participen en el desarrollo político, social, económico y cultural. Es el fundamento de las políticas de emancipación juvenil y de los consejos de juventud.</p>
+    </div>
+  </article>
+
+  <!-- ART 49 -->
+  <article class="art" data-tema="social" data-k="discapacidad accesibilidad dependencia grado certificado ajustes razonables">
+    <div class="art-rail"><span class="num">49</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Derechos de las personas con discapacidad</h3>
+      <p class="plain">Reformado en 2024 para eliminar el lenguaje antiguo y consagrar la <b>autonomía y la inclusión</b> como principio. Obliga a políticas de accesibilidad universal y a la protección específica de estos derechos.</p>
+      <div class="laws"><span class="law-chip">RDL 1/2013 derechos de las personas con discapacidad</span><span class="law-chip">Ley 8/2021 (apoyos a la capacidad jurídica)</span><span class="law-chip">Ley 39/2006 de dependencia</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Un negocio, transporte o servicio no es accesible</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>No hacer <b>ajustes razonables</b> de accesibilidad se considera discriminación, no una simple falta de cortesía. La ley prevé sanciones y también indemnización por el daño moral, y la carga de la prueba se invierte a favor de quien denuncia.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Documenta la barrera y pide la hoja de reclamaciones.</li>
+                <li>Denuncia ante Consumo o ante la oficina de atención a la discapacidad de tu comunidad.</li>
+                <li>Las asociaciones de personas con discapacidad pueden actuar en tu nombre en juicio.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 50 -->
+  <article class="art slim" data-tema="social" data-k="tercera edad mayores pension revalorizacion residencia">
+    <div class="art-rail"><span class="num">50</span><span class="tema">Social</span></div>
+    <div class="art-main">
+      <h3>Personas mayores</h3>
+      <p class="plain">Garantiza pensiones adecuadas y periódicamente actualizadas, y servicios sociales de salud, vivienda y ocio. Es la base constitucional de la revalorización anual de las pensiones y del sistema de residencias y centros de día.</p>
+      <div class="laws"><span class="law-chip">Ley General de la Seguridad Social</span><span class="law-chip">Ley 39/2006 de dependencia</span></div>
+    </div>
+  </article>
+
+  <!-- ART 51 -->
+  <article class="art" data-tema="consumo" data-k="consumidor compra garantia devolucion online estafa banco clausula abusiva hoja de reclamaciones vuelo cancelado suministro">
+    <div class="art-rail"><span class="num">51</span><span class="tema">Consumo</span></div>
+    <div class="art-main">
+      <h3>Defensa de los consumidores y usuarios</h3>
+      <p class="plain">Obliga a los poderes públicos a proteger la seguridad, la salud y los <b>legítimos intereses económicos</b> de los consumidores. Es el artículo con más aplicación práctica del día a día: parte de la idea de que tú eres la parte débil del contrato, y por eso te da ventajas frente a la empresa.</p>
+      <div class="laws"><span class="law-chip">RDL 1/2007 Ley General para la Defensa de Consumidores y Usuarios</span><span class="law-chip">Ley 7/1998 de condiciones generales de la contratación</span><span class="law-chip">Reglamento (CE) 261/2004 (vuelos)</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Compras algo y sale defectuoso</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Garantía legal de <b>3 años</b> en productos nuevos comprados desde 2022 (2 años para los anteriores). Durante los <b>dos primeros años se presume</b> que el defecto ya existía al comprarlo: es la tienda quien tiene que demostrar lo contrario, no tú. Y reclamas siempre <b>al vendedor</b>, no al fabricante.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Guarda el ticket, pero si lo has perdido vale el extracto bancario como prueba de compra.</li>
+                <li>Reclama por escrito pidiendo reparación o sustitución; si fallan, tienes derecho a rebaja o devolución.</li>
+                <li>Hoja de reclamaciones y, después, Junta Arbitral de Consumo, que es gratuita y sin abogado.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">3 años de garantía</span><span class="tchip">2 años de presunción a tu favor</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Compras online y quieres devolverlo</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p><b>Desistimiento</b>: 14 días naturales desde que recibes el producto para devolverlo sin dar ninguna explicación. Si la tienda no te informó de este derecho, el plazo se amplía a <b>12 meses</b>. Excepciones: productos personalizados, perecederos, entradas con fecha, o contenido digital ya descargado.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Comunica el desistimiento por escrito dentro del plazo: lo que cuenta es la fecha de comunicación, no la de devolución del paquete.</li>
+                <li>Te deben reembolsar en 14 días desde que lo comunicas, incluido el coste del envío inicial.</li>
+                <li>Si no lo hacen, reclamación a Consumo y, si pagaste con tarjeta, solicita el <b>chargeback</b> al banco.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">14 días naturales</span><span class="tchip">Sin informarte: 12 meses</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Sufres una estafa o un cargo no autorizado en la tarjeta</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>En pagos no autorizados el banco debe <b>reembolsarte de inmediato</b>, a más tardar al final del día hábil siguiente a que lo notifiques, salvo que demuestre que hubo negligencia grave por tu parte (RDL 19/2018 de servicios de pago). La carga de probar tu negligencia es del banco.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Notifica al banco en cuanto lo detectes y bloquea la tarjeta: la rapidez es determinante.</li>
+                <li>Denuncia en la policía y quédate con copia.</li>
+                <li>Reclama por escrito al Servicio de Atención al Cliente del banco; si no responde en 1 mes, acude al Banco de España.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Notifica el mismo día</span><span class="tchip">Banco de España: tras 1 mes sin respuesta</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Te cancelan o retrasan un vuelo</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El Reglamento europeo 261/2004 fija indemnizaciones fijas de <b>250, 400 o 600 €</b> según la distancia, más derecho a comida, alojamiento y transporte mientras esperas. No hay que probar ningún daño: la cuantía es automática, salvo circunstancias extraordinarias como el mal tiempo.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Pide en el mostrador un justificante escrito del motivo del retraso o cancelación.</li>
+                <li>Guarda todos los tickets de gastos: son reembolsables.</li>
+                <li>Reclama a la aerolínea y, si no responde, ante AESA (gratuito).</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip">Reclamación: hasta 5 años</span><span class="tchip ok">AESA es gratis</span></div>
+          </div>
+        </details>
+        <details class="case">
+          <summary>Descubres una cláusula abusiva en tu hipoteca o contrato</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>Una cláusula no negociada individualmente que cause un desequilibrio importante en tu perjuicio es <b>nula de pleno derecho aunque la hayas firmado</b>, y la nulidad no prescribe. Es lo que ocurrió con las cláusulas suelo y los gastos de formalización de hipoteca.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Reclamación previa al servicio de atención al cliente de la entidad: es obligatoria antes de demandar.</li>
+                <li>Si te la deniegan, demanda ante el juzgado especializado en cláusulas abusivas.</li>
+                <li>Comprueba si hay una acción colectiva en marcha de una asociación de consumidores: sale mucho más barato.</li>
+              </ol>
+            </div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 52 -->
+  <article class="art slim" data-tema="trabajo" data-k="organizaciones profesionales patronal">
+    <div class="art-rail"><span class="num">52</span><span class="tema">Trabajo</span></div>
+    <div class="art-main">
+      <h3>Organizaciones profesionales</h3>
+      <p class="plain">Prevé la regulación de las organizaciones que defiendan intereses económicos propios, exigiendo que su estructura interna y funcionamiento sean democráticos.</p>
+    </div>
+  </article>
+
+  <!-- ART 53 -->
+  <article class="art" data-tema="justicia" data-k="garantias amparo tribunal constitucional principio rector proteccion niveles">
+    <div class="art-rail"><span class="num">53</span><span class="tema">Clave</span></div>
+    <div class="art-main">
+      <h3>Garantías: cómo se defienden todos los anteriores</h3>
+      <p class="plain">Este es el artículo que explica <b>por qué no todos los derechos valen lo mismo</b>, y merece leerlo con calma porque evita muchas frustraciones. Hay tres niveles:</p>
+      <p class="plain"><b>1. Máxima protección (arts. 14 a 29 + objeción de conciencia).</b> Vinculan a todos los poderes, solo se regulan por ley orgánica, tienen un procedimiento judicial preferente y urgente, y permiten llegar al Tribunal Constitucional por recurso de amparo.</p>
+      <p class="plain"><b>2. Protección media (arts. 30 a 38).</b> Vinculan a los poderes públicos y se regulan por ley, pero no dan acceso al amparo constitucional.</p>
+      <p class="plain"><b>3. Principios rectores (arts. 39 a 52).</b> Vivienda, salud, medio ambiente, pensiones… Solo pueden alegarse ante los tribunales <b>de acuerdo con las leyes que los desarrollen</b>. Por eso no puedes exigir directamente "una vivienda" citando el artículo 47, pero sí puedes exigir lo que dice la ley de arrendamientos.</p>
+      <div class="laws"><span class="law-chip">LO 2/1979 del Tribunal Constitucional</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Quieres llevar tu caso al Tribunal Constitucional</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El <b>recurso de amparo</b> procede solo por vulneración de los derechos de los artículos 14 a 29 (y la objeción de conciencia). Exige haber agotado la vía judicial ordinaria y haber invocado el derecho fundamental en el proceso previo, tan pronto se conociera la vulneración.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Invoca expresamente el derecho fundamental desde el primer escrito del procedimiento: si no, el amparo se inadmite.</li>
+                <li>Agota los recursos, incluido el incidente de nulidad de actuaciones cuando proceda.</li>
+                <li>Presenta el amparo con abogado y procurador, justificando su especial trascendencia constitucional.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip now">Amparo: 30 días hábiles</span><span class="tchip">Abogado y procurador obligatorios</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 54 -->
+  <article class="art" data-tema="publico" data-k="defensor del pueblo queja administracion gratis">
+    <div class="art-rail"><span class="num">54</span><span class="tema">Público</span></div>
+    <div class="art-main">
+      <h3>Defensor del Pueblo</h3>
+      <p class="plain">Es el alto comisionado de las Cortes para defender tus derechos supervisando a la Administración. Muy infrautilizado: <b>es gratuito, no necesitas abogado y puede dirigirse a él cualquier persona</b>, española o no, mayor o menor de edad, incluso interna en un centro penitenciario.</p>
+      <div class="laws"><span class="law-chip">LO 3/1981 del Defensor del Pueblo</span></div>
+      <div class="cases">
+        <p class="label">Casos prácticos</p>
+        <details class="case">
+          <summary>Una administración te ignora, te maltrata o funciona mal</summary>
+          <div class="case-body">
+            <div class="lane lane-law"><span class="lane-h">Qué te ampara</span>
+              <p>El Defensor puede investigar cualquier organismo público, pedirle explicaciones, formular recomendaciones e incluso interponer recursos de inconstitucionalidad y de amparo. También existen defensores autonómicos con las mismas funciones en su ámbito.</p>
+            </div>
+            <div class="lane lane-do"><span class="lane-h">Qué hacer</span>
+              <ol>
+                <li>Presenta la queja online o por escrito, explicando los hechos y aportando la documentación.</li>
+                <li>No sustituye a los tribunales: si hay un plazo judicial corriendo, presenta también el recurso correspondiente.</li>
+              </ol>
+            </div>
+            <div class="timechips"><span class="tchip ok">Gratuito y sin abogado</span><span class="tchip">Queja: dentro del año siguiente a los hechos</span></div>
+          </div>
+        </details>
+      </div>
+    </div>
+  </article>
+
+  <!-- ART 55 -->
+  <article class="art slim" data-tema="justicia" data-k="suspension derechos estado de alarma excepcion sitio terrorismo">
+    <div class="art-rail"><span class="num">55</span><span class="tema">Justicia</span></div>
+    <div class="art-main">
+      <h3>Suspensión de derechos</h3>
+      <p class="plain">Regula los únicos supuestos en que ciertos derechos pueden suspenderse: estados de excepción y de sitio, y de forma individual en investigaciones de bandas armadas o terrorismo, siempre con control judicial y parlamentario. Importante: <b>el estado de alarma no permite suspender derechos fundamentales</b>, solo limitarlos.</p>
+      <div class="laws"><span class="law-chip">LO 4/1981 de los estados de alarma, excepción y sitio</span></div>
+    </div>
+  </article>
+
+  </div>
+</section>
+
+<section class="sec" id="resto">
+  <div class="sec-head">
+    <div class="idx">SECCIÓN 02</div>
+    <div class="txt">
+      <h2>El resto de la Constitución, en una página</h2>
+      <p>Los derechos viven en el Título I, que es el que acabas de recorrer. Los otros 114 artículos organizan el Estado: quién manda, quién controla a quién y cómo se cambia la propia Constitución. No te dan derechos directos, pero explican a qué puerta llamar.</p>
+    </div>
+  </div>
+  <div class="titles">
+    <div class="tcard"><span class="label">Arts. 1–9</span><h4>Título Preliminar</h4><p>España es un Estado social y democrático de Derecho. La soberanía reside en el pueblo. Aquí está la regla de oro: <b>los poderes públicos están sometidos a la ley igual que tú</b>, y se garantiza la irretroactividad de las normas sancionadoras.</p></div>
+    <div class="tcard"><span class="label">Arts. 56–65</span><h4>Título II · La Corona</h4><p>Funciones del Rey, sucesión y refrendo. Sus actos deben ir refrendados por el Gobierno, que es quien responde políticamente de ellos.</p></div>
+    <div class="tcard"><span class="label">Arts. 66–96</span><h4>Título III · Las Cortes Generales</h4><p>Congreso y Senado: cómo se aprueban las leyes, los presupuestos y los tratados. De aquí sale la <b>iniciativa legislativa popular</b>: 500.000 firmas permiten proponer una ley.</p></div>
+    <div class="tcard"><span class="label">Arts. 97–107</span><h4>Título IV · El Gobierno</h4><p>Funciones del Gobierno y la Administración, que debe servir con objetividad al interés general. Base de la responsabilidad patrimonial del Estado cuando su funcionamiento te causa un daño.</p></div>
+    <div class="tcard"><span class="label">Arts. 108–116</span><h4>Título V · Gobierno y Cortes</h4><p>Control del Gobierno: preguntas, interpelaciones, moción de censura y cuestión de confianza. También los estados de alarma, excepción y sitio.</p></div>
+    <div class="tcard"><span class="label">Arts. 117–127</span><h4>Título VI · El Poder Judicial</h4><p>Jueces independientes, inamovibles y sometidos solo a la ley. Consagra la <b>gratuidad de la justicia</b> para quien acredite insuficiencia de recursos y la acción popular.</p></div>
+    <div class="tcard"><span class="label">Arts. 128–136</span><h4>Título VII · Economía y Hacienda</h4><p>Subordinación de la riqueza al interés general, planificación económica y presupuestos. Crea el Tribunal de Cuentas, que fiscaliza el gasto público.</p></div>
+    <div class="tcard"><span class="label">Arts. 137–158</span><h4>Título VIII · Organización territorial</h4><p>Municipios, provincias y comunidades autónomas, y el reparto de competencias. Explica por qué tus derechos en sanidad, educación o vivienda <b>varían según dónde vivas</b>.</p></div>
+    <div class="tcard"><span class="label">Arts. 159–165</span><h4>Título IX · Tribunal Constitucional</h4><p>Composición y competencias: recursos de inconstitucionalidad, cuestiones de inconstitucionalidad y recursos de amparo, tu última instancia interna.</p></div>
+    <div class="tcard"><span class="label">Arts. 166–169</span><h4>Título X · Reforma constitucional</h4><p>Cómo se cambia la Constitución. Reformar los derechos fundamentales exige el procedimiento agravado: mayoría de dos tercios, disolución de las Cortes, nuevas elecciones y referéndum.</p></div>
+  </div>
+  <div class="callout"><b>Por qué importa el Título VIII:</b> muchas competencias están transferidas. Los tiempos máximos de lista de espera, las ayudas al alquiler, las becas o la declaración de zonas tensionadas dependen de tu comunidad autónoma. Antes de reclamar, comprueba siempre la norma autonómica además de la estatal.</div>
+</section>
+
+<section class="sec" id="leyes">
+  <div class="sec-head">
+    <div class="idx">SECCIÓN 03</div>
+    <div class="txt">
+      <h2>Las leyes que te defienden</h2>
+      <p>La Constitución dice qué derechos tienes; estas normas son las que los hacen exigibles. Aquí están reunidas con lo que regulan y, sobre todo, con lo que te dan a ti en concreto.</p>
+    </div>
+  </div>
+
+  <div class="lawrow"><div class="ln">Constitución Española<em>1978 · norma suprema</em></div><div class="lb"><p>Por encima no hay nada. Ninguna ley puede contradecirla y, si lo hace, el Tribunal Constitucional la anula.</p><p class="gives"><b>Te da:</b> el catálogo de derechos y las garantías para defenderlos (amparo, habeas corpus, tutela judicial).</p></div></div>
+
+  <div class="lawrow"><div class="ln">Convenio Europeo de Derechos Humanos<em>Roma, 1950 · TEDH</em></div><div class="lb"><p>Tratado del Consejo de Europa, aplicable en España por el art. 10.2 CE.</p><p class="gives"><b>Te da:</b> una instancia más allá de los tribunales españoles, en Estrasburgo, cuando todo lo interno se ha agotado.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Reglamento General de Protección de Datos<em>RGPD · UE 2016/679</em></div><div class="lb"><p>Norma europea de aplicación directa. Vale frente a cualquier empresa que trate datos de personas que están en la UE, esté la empresa donde esté.</p><p class="gives"><b>Te da:</b> acceso, rectificación, supresión, oposición, limitación y portabilidad de tus datos, con respuesta en 1 mes.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Protección de Datos y garantía de derechos digitales<em>LO 3/2018 · LOPDGDD</em></div><div class="lb"><p>Adapta el RGPD a España y añade un título entero de derechos digitales.</p><p class="gives"><b>Te da:</b> desconexión digital fuera del horario, intimidad frente a dispositivos y cámaras en el trabajo, y testamento digital.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Protección del honor, la intimidad y la propia imagen<em>LO 1/1982</em></div><div class="lb"><p>Desarrolla el artículo 18 en el plano civil, definiendo qué es una intromisión ilegítima.</p><p class="gives"><b>Te da:</b> exigir la retirada de contenidos y reclamar indemnización por daño moral, que se presume cuando hay intromisión.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Código Penal<em>LO 10/1995</em></div><div class="lb"><p>Define qué conductas son delito y con qué pena. También regula la legítima defensa y el estado de necesidad.</p><p class="gives"><b>Te da:</b> protección penal como víctima y la certeza de que solo se castiga lo tipificado en la ley.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Enjuiciamiento Criminal<em>LECrim, 1882 · muy reformada</em></div><div class="lb"><p>Cómo se investiga y se juzga un delito.</p><p class="gives"><b>Te da:</b> los derechos del detenido del art. 520: silencio, abogado, intérprete, médico y aviso a familiares.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Habeas Corpus<em>LO 6/1984</em></div><div class="lb"><p>Procedimiento urgentísimo frente a detenciones ilegales.</p><p class="gives"><b>Te da:</b> que un juez revise tu detención en 24 horas, sin necesidad de abogado para pedirlo.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Estatuto de la víctima del delito<em>Ley 4/2015</em></div><div class="lb"><p>Reúne en un solo texto los derechos de quien sufre un delito.</p><p class="gives"><b>Te da:</b> información del estado de la causa, evitar el contacto con el agresor en el juicio y asistencia gratuita en las Oficinas de Víctimas.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Asistencia jurídica gratuita<em>Ley 1/1996</em></div><div class="lb"><p>Regula el turno de oficio y la exención de costes procesales.</p><p class="gives"><b>Te da:</b> abogado, procurador y peritos gratis según ingresos, y con independencia de ellos en violencia de género, terrorismo o trata.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Estatuto de los Trabajadores<em>RDL 2/2015</em></div><div class="lb"><p>La ley marco del trabajo por cuenta ajena.</p><p class="gives"><b>Te da:</b> salario mínimo, jornada limitada, 30 días naturales de vacaciones, permisos, y la indemnización por despido.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Prevención de Riesgos Laborales<em>Ley 31/1995</em></div><div class="lb"><p>Obliga a la empresa a garantizar tu seguridad y salud en el trabajo.</p><p class="gives"><b>Te da:</b> derecho a interrumpir la actividad y abandonar el puesto ante riesgo grave e inminente, sin que puedan sancionarte.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Libertad Sindical<em>LO 11/1985</em></div><div class="lb"><p>Desarrolla el derecho a afiliarse y a la actividad sindical.</p><p class="gives"><b>Te da:</b> que cualquier represalia por afiliarte o ir a la huelga sea nula, no solo improcedente.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley General para la Defensa de Consumidores y Usuarios<em>RDL 1/2007</em></div><div class="lb"><p>El texto de referencia de todo lo que compras y contratas.</p><p class="gives"><b>Te da:</b> 14 días de desistimiento online, 3 años de garantía, nulidad de cláusulas abusivas e inversión de la carga de la prueba.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Servicios de pago<em>RDL 19/2018</em></div><div class="lb"><p>Regula transferencias, tarjetas y pagos electrónicos.</p><p class="gives"><b>Te da:</b> reembolso inmediato de cargos no autorizados, salvo que el banco pruebe negligencia grave por tu parte.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Arrendamientos Urbanos<em>Ley 29/1994 · LAU</em></div><div class="lb"><p>Alquileres de vivienda y de local.</p><p class="gives"><b>Te da:</b> prórroga obligatoria hasta 5 o 7 años, límite de una mensualidad de fianza y protección frente a subidas fuera de plazo.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley por el derecho a la vivienda<em>Ley 12/2023</em></div><div class="lb"><p>Medidas sobre precios, grandes tenedores y desahucios.</p><p class="gives"><b>Te da:</b> posibles topes de renta en zonas tensionadas y traslado al propietario de los gastos de agencia inmobiliaria.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Medidas frente a la ocupación ilegal<em>Ley 5/2018</em></div><div class="lb"><p>Modificó la Ley de Enjuiciamiento Civil para crear un procedimiento rápido de recuperación de la posesión.</p><p class="gives"><b>Te da:</b> el "desahucio exprés": los ocupantes tienen 5 días para acreditar un título válido o se ordena el lanzamiento.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de Propiedad Horizontal<em>Ley 49/1960</em></div><div class="lb"><p>Comunidades de vecinos: cuotas, obras, juntas y actividades molestas.</p><p class="gives"><b>Te da:</b> impugnar acuerdos de la junta y exigir el cese de actividades molestas, insalubres o peligrosas.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley integral para la igualdad de trato y no discriminación<em>Ley 15/2022</em></div><div class="lb"><p>Prohíbe la discriminación por causas muy amplias en el acceso a bienes, servicios, vivienda y empleo.</p><p class="gives"><b>Te da:</b> inversión de la carga de la prueba: basta con aportar indicios y es el otro quien debe demostrar que no discriminó.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Igualdad efectiva de mujeres y hombres<em>LO 3/2007</em></div><div class="lb"><p>Igualdad en el empleo, la política y la vida social.</p><p class="gives"><b>Te da:</b> igual retribución por trabajo de igual valor, planes de igualdad y protección reforzada en embarazo y cuidados.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Medidas contra la violencia de género<em>LO 1/2004</em></div><div class="lb"><p>Ley integral con juzgados especializados.</p><p class="gives"><b>Te da:</b> orden de protección en menos de 72 horas, con medidas penales y civiles a la vez, y asistencia jurídica inmediata.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Protección integral a la infancia frente a la violencia<em>LO 8/2021 · LOPIVI</em></div><div class="lb"><p>Obliga a centros educativos, deportivos y de ocio a prevenir la violencia sobre menores.</p><p class="gives"><b>Te da:</b> protocolos obligatorios y coordinador de bienestar en cada colegio, y ampliación de los plazos de prescripción.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Autonomía del paciente<em>Ley 41/2002</em></div><div class="lb"><p>Regula la información clínica y el consentimiento.</p><p class="gives"><b>Te da:</b> consentimiento informado, acceso a tu historia clínica, segunda opinión y testamento vital.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de dependencia<em>Ley 39/2006</em></div><div class="lb"><p>Sistema de atención a personas en situación de dependencia.</p><p class="gives"><b>Te da:</b> valoración del grado y derecho a prestaciones o servicios según ese grado.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Procedimiento administrativo común<em>Ley 39/2015</em></div><div class="lb"><p>Cómo tramita la Administración y cómo te relacionas con ella.</p><p class="gives"><b>Te da:</b> plazos, silencio administrativo, derecho a no aportar documentos que ya tenga y a recurrir cualquier resolución.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Régimen jurídico del sector público<em>Ley 40/2015</em></div><div class="lb"><p>Organización y responsabilidad de las administraciones.</p><p class="gives"><b>Te da:</b> reclamar indemnización si el funcionamiento de un servicio público te causa un daño. Plazo: 1 año.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Ley de transparencia<em>Ley 19/2013</em></div><div class="lb"><p>Publicidad activa y acceso a la información pública.</p><p class="gives"><b>Te da:</b> pedir contratos, subvenciones o informes de cualquier administración sin justificar para qué los quieres.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Protección de la seguridad ciudadana<em>LO 4/2015</em></div><div class="lb"><p>Actuación policial: identificaciones, registros y sanciones.</p><p class="gives"><b>Te da:</b> límites a la identificación (máximo 6 horas en dependencias) y al registro corporal, y el derecho a recurrir toda sanción.</p></div></div>
+
+  <div class="lawrow"><div class="ln">Código Civil<em>1889 · vigente y reformado</em></div><div class="lb"><p>El gran manual de la vida privada: contratos, propiedad, familia, herencias y responsabilidad por daños.</p><p class="gives"><b>Te da:</b> las reglas de fondo cuando compras, alquilas, heredas o alguien te causa un daño (art. 1902).</p></div></div>
+</section>
+
+<section class="sec" id="glosario">
+  <div class="sec-head">
+    <div class="idx">SECCIÓN 04</div>
+    <div class="txt">
+      <h2>Del legaleo al castellano</h2>
+      <p>Los términos que más aparecen cuando reclamas algo, traducidos a como los diría cualquiera. Muchos errores caros vienen de no entender una de estas palabras a tiempo.</p>
+    </div>
+  </div>
+  <div class="glos">
+    <dl class="gt"><dt>Tutela judicial efectiva</dt><dd>Que un juez te escuche de verdad y resuelva, no que te den largas.</dd></dl>
+    <dl class="gt"><dt>Presunción de inocencia</dt><dd>Eres inocente hasta que lo prueben. Tú no tienes que demostrar nada.</dd></dl>
+    <dl class="gt"><dt>Carga de la prueba</dt><dd>A quién le toca demostrar los hechos. En discriminación y consumo suele tocarle a la otra parte, que es una ventaja enorme.</dd></dl>
+    <dl class="gt"><dt>Prescripción</dt><dd>El tiempo pasado el cual ya no se puede reclamar ni perseguir algo. Se puede interrumpir reclamando por escrito.</dd></dl>
+    <dl class="gt"><dt>Caducidad</dt><dd>Como la prescripción pero sin remedio: no se interrumpe. Los 20 días del despido son caducidad, por eso son tan peligrosos.</dd></dl>
+    <dl class="gt"><dt>Nulo / anulable</dt><dd>Nulo es como si nunca hubiera existido. Anulable vale hasta que alguien lo impugna a tiempo.</dd></dl>
+    <dl class="gt"><dt>Flagrante delito</dt><dd>Pillar a alguien cometiéndolo en ese momento, con las manos en la masa.</dd></dl>
+    <dl class="gt"><dt>Allanamiento de morada</dt><dd>Entrar o quedarse en la casa de otro contra su voluntad. Es delito, también si lo hace el casero.</dd></dl>
+    <dl class="gt"><dt>Usurpación</dt><dd>Ocupar un inmueble vacío que no es morada de nadie. Es la okupación "leve": solo multa.</dd></dl>
+    <dl class="gt"><dt>Precario</dt><dd>Quien ocupa algo sin pagar ni tener contrato, con o sin permiso inicial del dueño. Se resuelve con un desahucio civil.</dd></dl>
+    <dl class="gt"><dt>Lanzamiento</dt><dd>El desalojo físico ordenado por el juzgado, con fecha y hora señaladas.</dd></dl>
+    <dl class="gt"><dt>Burofax</dt><dd>Carta certificada con contenido acreditado. Es la forma barata de dejar constancia legal de que reclamaste y cuándo.</dd></dl>
+    <dl class="gt"><dt>Papeleta de conciliación</dt><dd>El escrito previo obligatorio antes de demandar en lo laboral. Es lo que frena el reloj de los 20 días.</dd></dl>
+    <dl class="gt"><dt>Reclamación previa</dt><dd>El paso obligatorio y gratuito antes de demandar a la Seguridad Social o al SEPE.</dd></dl>
+    <dl class="gt"><dt>Despido improcedente</dt><dd>La empresa no prueba la causa. Te indemniza (33 días por año) o te readmite, y elige ella.</dd></dl>
+    <dl class="gt"><dt>Despido nulo</dt><dd>Vulnera un derecho fundamental. Readmisión obligatoria más los salarios que dejaste de cobrar.</dd></dl>
+    <dl class="gt"><dt>Finiquito</dt><dd>Liquidación de lo pendiente al terminar el contrato. Firmarlo sin poner "no conforme" puede cerrarte reclamaciones.</dd></dl>
+    <dl class="gt"><dt>Derecho de desistimiento</dt><dd>Devolver una compra online en 14 días sin dar explicaciones.</dd></dl>
+    <dl class="gt"><dt>Cláusula abusiva</dt><dd>Letra pequeña que te desequilibra el contrato. Es nula aunque la firmaras, y esa nulidad no caduca.</dd></dl>
+    <dl class="gt"><dt>Chargeback</dt><dd>Pedir al banco que revierta un cargo de tarjeta por fraude o por no recibir lo comprado.</dd></dl>
+    <dl class="gt"><dt>Justiprecio</dt><dd>El precio justo que te deben pagar si te expropian. Se puede discutir y suele subir.</dd></dl>
+    <dl class="gt"><dt>Beneficio de inventario</dt><dd>Aceptar una herencia respondiendo de las deudas solo hasta donde llegue lo heredado.</dd></dl>
+    <dl class="gt"><dt>Legítima</dt><dd>La parte de la herencia reservada por ley a hijos y descendientes, que no puedes repartir libremente.</dd></dl>
+    <dl class="gt"><dt>Principio rector</dt><dd>Un objetivo que guía al Estado (vivienda, salud) pero que solo puedes exigir a través de las leyes que lo desarrollan.</dd></dl>
+    <dl class="gt"><dt>Recurso de amparo</dt><dd>La última puerta interna: el Tribunal Constitucional, solo para los derechos de los artículos 14 a 29.</dd></dl>
+    <dl class="gt"><dt>Habeas corpus</dt><dd>El botón de emergencia para que un juez revise una detención en 24 horas.</dd></dl>
+    <dl class="gt"><dt>Silencio administrativo</dt><dd>Qué pasa si la Administración no contesta a tiempo. A veces cuenta como sí, a menudo como no. Nunca lo des por hecho: pregunta.</dd></dl>
+    <dl class="gt"><dt>Vía administrativa / contenciosa</dt><dd>Primero recurres ante la propia Administración; si insiste, vas al juzgado contencioso-administrativo.</dd></dl>
+    <dl class="gt"><dt>Ley orgánica</dt><dd>Ley reforzada para derechos fundamentales y materias clave. Necesita mayoría absoluta del Congreso.</dd></dl>
+    <dl class="gt"><dt>Real Decreto Ley</dt><dd>Norma que dicta el Gobierno por urgencia y que el Congreso debe convalidar en 30 días.</dd></dl>
+    <dl class="gt"><dt>Reglamento (UE)</dt><dd>Norma europea que se aplica tal cual en España, sin necesidad de adaptarla. El RGPD es uno.</dd></dl>
+    <dl class="gt"><dt>Directiva (UE)</dt><dd>Norma europea que fija un objetivo y que cada país convierte en ley propia (eso es "transponer").</dd></dl>
+    <dl class="gt"><dt>Jurisprudencia</dt><dd>Cómo interpretan los tribunales la ley al aplicarla. A veces cambia el resultado más que el texto legal.</dd></dl>
+    <dl class="gt"><dt>Acción popular</dt><dd>Poder denunciar o litigar sin ser el perjudicado directo. Existe en lo penal y en medio ambiente.</dd></dl>
+    <dl class="gt"><dt>Medidas cautelares</dt><dd>Lo que un juez ordena mientras dura el proceso para que no sea demasiado tarde cuando llegue la sentencia.</dd></dl>
+    <dl class="gt"><dt>BOE</dt><dd>Boletín Oficial del Estado. Una norma no existe legalmente hasta que se publica ahí.</dd></dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="emergency">
+      <div><div class="e-n">112</div><div class="e-t">Emergencias generales</div></div>
+      <div><div class="e-n">016</div><div class="e-t">Violencia de género · 24h · no deja rastro</div></div>
+      <div><div class="e-n">091 / 062</div><div class="e-t">Policía Nacional · Guardia Civil</div></div>
+      <div><div class="e-n">900 20 20 10</div><div class="e-t">Atención a víctimas de delitos</div></div>
+      <div><div class="e-n">017</div><div class="e-t">Ciberseguridad y estafas online</div></div>
+    </div>
+    <h5>Antes de usar esto</h5>
+    <p>Esta guía es informativa y divulgativa. <b>No es asesoramiento jurídico</b> y no sustituye a un profesional. La ley tiene matices, excepciones y jurisprudencia que un texto general no puede recoger, y cada caso concreto depende de sus detalles.</p>
+    <p>Los plazos, importes y requisitos <b>cambian con las reformas legales</b> y muchos varían según tu comunidad autónoma. Antes de actuar, comprueba la versión consolidada vigente en el BOE y la normativa autonómica que te aplique.</p>
+    <p>Fuentes: Constitución Española de 1978 · Códigos Civil y Penal · Estatuto de los Trabajadores · RDL 1/2007 de consumidores · LAU · Reglamento (UE) 2016/679 y LO 3/2018 · leyes citadas en cada ficha.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var input = document.getElementById('q');
+  var count = document.getElementById('count');
+  var arts  = Array.prototype.slice.call(document.querySelectorAll('#ledger .art'));
+  var btns  = Array.prototype.slice.call(document.querySelectorAll('.filters button'));
+  var tema  = 'all';
+
+  var data = arts.map(function(a){
+    return {
+      el: a,
+      tema: a.getAttribute('data-tema') || '',
+      hasCases: !!a.querySelector('details.case'),
+      text: ((a.getAttribute('data-k') || '') + ' ' + a.textContent).toLowerCase()
+        .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    };
+  });
+
+  function norm(s){
+    return s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim();
+  }
+
+  function apply(){
+    var terms = norm(input.value).split(/\s+/).filter(Boolean);
+    var shown = 0;
+    data.forEach(function(d){
+      var okTema = (tema === 'all') || (tema === 'casos' ? d.hasCases : d.tema === tema);
+      var okText = terms.every(function(t){ return d.text.indexOf(t) !== -1; });
+      var visible = okTema && okText;
+      d.el.classList.toggle('hide', !visible);
+      if(visible) shown++;
+    });
+    if(terms.length || tema !== 'all'){
+      count.textContent = shown + (shown === 1 ? ' artículo coincide' : ' artículos coinciden');
+    } else {
+      count.textContent = '';
+    }
+  }
+
+  input.addEventListener('input', apply);
+
+  document.querySelectorAll('.sb-hints button').forEach(function(b){
+    b.addEventListener('click', function(){
+      input.value = b.getAttribute('data-q');
+      tema = 'all';
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', x.getAttribute('data-tema') === 'all'); });
+      apply();
+      document.getElementById('constitucion').scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      tema = b.getAttribute('data-tema');
+      btns.forEach(function(x){ x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+      apply();
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
