@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UGREEN NAS — Arquitectura y seguridad técnica</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#14171c;
+  --ink-2:#3a414b;
+  --steel:#6b7280;
+  --hair:#c9ccd2;
+  --shell:#e9eaed;
+  --panel:#f8f9fa;
+  --white:#ffffff;
+  --amber:#e08a1e;
+  --amber-deep:#a8620d;
+  --signal:#2f6f8f;
+  --alert:#b4453a;
+  --ok:#3f7d58;
+
+  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
+  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --pad:clamp(16px, 4vw, 44px);
+  --measure:74ch;
+}
+
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--shell);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad);}
+
+/* ---------- Cabecera ---------- */
+.masthead{
+  background:var(--ink);
+  color:#e9eaed;
+  padding:clamp(30px,6vw,64px) 0 clamp(26px,5vw,52px);
+  border-bottom:3px solid var(--amber);
+}
+.eyebrow{
+  font-family:var(--mono);
+  font-size:11px;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--amber);
+  margin:0 0 18px;
+}
+.masthead h1{
+  font-family:var(--sans);
+  font-weight:700;
+  font-size:clamp(30px,6.4vw,62px);
+  line-height:1.02;
+  letter-spacing:-.025em;
+  margin:0 0 10px;
+}
+.masthead h1 span{display:block;color:#8b939f;font-weight:500;font-size:.5em;letter-spacing:-.01em;margin-top:14px;}
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:8px 26px;
+  margin-top:26px;padding-top:20px;
+  border-top:1px solid #2b3037;
+  font-family:var(--mono);font-size:11.5px;color:#8b939f;
+}
+.meta-row b{color:#d7dade;font-weight:500;}
+
+/* ---------- Navegador de bahías (firma) ---------- */
+.baystrip{
+  position:sticky;top:0;z-index:20;
+  background:var(--ink);
+  padding:0 0 14px;
+}
+.bays{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  border:1px solid #2b3037;
+  background:#0e1114;
+  padding:6px;
+  border-radius:3px;
+}
+.bay{
+  appearance:none;border:1px solid #2b3037;background:#181c21;
+  color:#8b939f;text-align:left;
+  padding:13px 14px 13px 26px;
+  border-radius:2px;cursor:pointer;
+  position:relative;
+  font-family:var(--sans);
+  transition:background .18s ease,color .18s ease,border-color .18s ease;
+}
+/* asa de la bandeja */
+.bay::before{
+  content:"";position:absolute;left:9px;top:12px;bottom:12px;width:3px;
+  background:repeating-linear-gradient(to bottom,#343a42 0 2px,transparent 2px 5px);
+  border-radius:2px;
+}
+/* LED de actividad */
+.bay::after{
+  content:"";position:absolute;right:12px;top:14px;
+  width:7px;height:7px;border-radius:50%;
+  background:#2b3037;
+}
+.bay:hover{background:#1f242a;color:#c3c9d1;}
+.bay:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
+.bay[aria-selected="true"]{
+  background:#22272e;border-color:#454c56;color:#f2f4f6;
+}
+.bay[aria-selected="true"]::after{
+  background:var(--amber);
+  box-shadow:0 0 0 3px rgba(224,138,30,.18);
+  animation:led 2.4s ease-in-out infinite;
+}
+@keyframes led{0%,100%{opacity:1}50%{opacity:.45}}
+.bay-n{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--amber);margin-bottom:3px;}
+.bay-t{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25;}
+.bay-s{display:none;}
+@media(min-width:720px){
+  .bay-s{display:block;font-family:var(--mono);font-size:10.5px;color:#6b7280;margin-top:5px;}
+}
+
+/* ---------- Paneles ---------- */
+.panel{display:none;padding:clamp(28px,5vw,56px) 0 90px;}
+.panel.is-on{display:block;animation:rise .35s ease both;}
+@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+.lede{
+  border-left:3px solid var(--amber);
+  padding:2px 0 2px 20px;
+  margin:0 0 40px;
+  max-width:var(--measure);
+}
+.lede p{margin:0;font-size:clamp(16.5px,2.2vw,19px);line-height:1.55;color:var(--ink-2);}
+
+h2{
+  font-size:clamp(21px,3.4vw,29px);font-weight:700;letter-spacing:-.02em;
+  line-height:1.15;margin:52px 0 8px;padding-top:20px;border-top:1px solid var(--hair);
+}
+h2 .num{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--amber-deep);letter-spacing:.1em;display:block;margin-bottom:9px;}
+h3{font-size:16.5px;font-weight:600;letter-spacing:-.01em;margin:30px 0 8px;}
+p{max-width:var(--measure);}
+ul,ol{max-width:var(--measure);padding-left:20px;}
+li{margin-bottom:7px;}
+a{color:var(--signal);}
+strong{font-weight:600;}
+code{font-family:var(--mono);font-size:.88em;background:#dfe1e5;padding:1px 5px;border-radius:2px;}
+
+/* Sección 1: registro experto */
+#s1{font-size:15.3px;}
+#s1 .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--steel);}
+
+/* Sección 2: registro llano — serif, medida corta, aire */
+#s2{font-family:var(--serif);font-size:17.5px;line-height:1.72;}
+#s2 h2,#s2 h3,#s2 .card-h,#s2 .kicker{font-family:var(--sans);}
+#s2 p,#s2 li{max-width:62ch;}
+#s2 .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--amber-deep);margin:0 0 6px;}
+
+/* Sección 3: registro de ficha — mono */
+#s3{font-size:15.3px;}
+
+/* Tablas */
+.tbl{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:13.6px;background:var(--white);border:1px solid var(--hair);}
+.tbl th{
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
+  text-align:left;padding:10px 13px;background:var(--ink);color:#c3c9d1;
+}
+.tbl td{padding:10px 13px;border-top:1px solid #e3e5e8;vertical-align:top;font-family:var(--sans);}
+.tbl tr:nth-child(even) td{background:#fbfbfc;}
+.tbl td:first-child{font-weight:500;white-space:nowrap;}
+.tbl .m{font-family:var(--mono);font-size:12.6px;white-space:normal;}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+
+/* Tarjetas / avisos */
+.cards{display:grid;gap:14px;margin:22px 0;grid-template-columns:1fr;}
+@media(min-width:760px){.cards.two{grid-template-columns:1fr 1fr;} .cards.three{grid-template-columns:repeat(3,1fr);}}
+.card{background:var(--white);border:1px solid var(--hair);border-radius:3px;padding:20px;}
+.card-h{font-size:14.5px;font-weight:600;margin:0 0 7px;letter-spacing:-.01em;}
+.card p{font-size:14.3px;margin:0;color:var(--ink-2);max-width:none;line-height:1.55;}
+
+.note{border-left:3px solid var(--signal);background:#eef4f7;padding:16px 20px;margin:22px 0;max-width:var(--measure);}
+.warn{border-left:3px solid var(--alert);background:#f9efee;padding:16px 20px;margin:22px 0;max-width:var(--measure);}
+.note p,.warn p{margin:0;font-size:14.8px;max-width:none;}
+.note .t,.warn .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:6px;}
+.note .t{color:var(--signal);} .warn .t{color:var(--alert);}
+#s2 .note p,#s2 .warn p{font-family:var(--serif);font-size:16.5px;}
+
+/* Diagrama ASCII */
+.dia{
+  font-family:var(--mono);font-size:12px;line-height:1.5;
+  background:var(--ink);color:#c3c9d1;
+  padding:20px;border-radius:3px;overflow-x:auto;margin:20px 0;white-space:pre;
+}
+.dia b{color:var(--amber);font-weight:400;}
+
+/* Píldoras de riesgo */
+.pill{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.p-hi{background:#f4dedb;color:#8f322a;}
+.p-md{background:#f7e9d3;color:#8a5a0d;}
+.p-lo{background:#dfeee4;color:#2e5f42;}
+
+/* Lista de comprobación */
+.check{list-style:none;padding:0;max-width:var(--measure);}
+.check li{
+  padding:11px 0 11px 34px;border-bottom:1px solid var(--hair);position:relative;margin:0;
+}
+.check li::before{
+  content:"";position:absolute;left:2px;top:16px;
+  width:12px;height:12px;border:1.5px solid var(--amber);border-radius:2px;
+}
+.check li b{font-weight:600;}
+
+/* Glosario */
+.gloss{display:grid;gap:0;margin:18px 0;border-top:1px solid var(--hair);max-width:var(--measure);}
+.gloss div{display:grid;grid-template-columns:1fr;gap:2px;padding:14px 0;border-bottom:1px solid var(--hair);}
+@media(min-width:640px){.gloss div{grid-template-columns:180px 1fr;gap:20px;}}
+.gloss dt,.gloss .term{font-family:var(--sans);font-weight:600;font-size:14.5px;}
+.gloss .def{font-size:16px;color:var(--ink-2);}
+
+/* Pie */
+footer{background:var(--ink);color:#8b939f;padding:40px 0;font-size:13px;}
+footer a{color:#9fb8c6;}
+footer p{max-width:var(--measure);}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="wrap">
+    <p class="eyebrow">Documento técnico · v1.0 · Uso interno</p>
+    <h1>UGREEN NAS<span>Arquitectura y seguridad técnica de la gama NASync con UGOS&nbsp;Pro</span></h1>
+    <div class="meta-row">
+      <span>Fecha <b>29 · 08 · 2026</b></span>
+      <span>Firmware de referencia <b>UGOS Pro 1.18.1.0098</b></span>
+      <span>Modelo detallado <b>DXP4800 Plus</b></span>
+      <span>Clasificación <b>Público</b></span>
+    </div>
+  </div>
+</header>
+
+<div class="baystrip">
+  <div class="wrap">
+    <div class="bays" role="tablist" aria-label="Secciones del documento">
+      <button class="bay" role="tab" id="tab1" aria-controls="s1" aria-selected="true">
+        <span class="bay-n">BAHÍA 01</span>
+        <span class="bay-t">Informe técnico</span>
+        <span class="bay-s">para perfil IT</span>
+      </button>
+      <button class="bay" role="tab" id="tab2" aria-controls="s2" aria-selected="false">
+        <span class="bay-n">BAHÍA 02</span>
+        <span class="bay-t">En lenguaje llano</span>
+        <span class="bay-s">sin tecnicismos</span>
+      </button>
+      <button class="bay" role="tab" id="tab3" aria-controls="s3" aria-selected="false">
+        <span class="bay-n">BAHÍA 03</span>
+        <span class="bay-t">DXP4800 Plus</span>
+        <span class="bay-s">ficha y arquitectura</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- ============ SECCIÓN 1 ============ -->
+<section class="panel is-on" id="s1" role="tabpanel" aria-labelledby="tab1">
+
+  <div class="lede">
+    <p>UGREEN entró en el mercado NAS en 2024 con la gama NASync y un sistema operativo propio, UGOS Pro, basado en kernel Linux y de código cerrado. La plataforma ha madurado rápido, pero conserva carencias defensivas que condicionan su encaje en entornos profesionales.</p>
+  </div>
+
+  <h2><span class="num">01 — ALCANCE</span>Gama cubierta</h2>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Serie</th><th>Modelos</th><th>Plataforma</th><th>Virtualización</th></tr></thead>
+    <tbody>
+      <tr><td>DH</td><td>DH2300, DH4300 Plus</td><td class="m">SoC ARM (Rockchip A72+A53)</td><td>Docker sí · VM no</td></tr>
+      <tr><td>DXP</td><td>DXP2800, DXP4800 Plus, DXP4800 GT, DXP6800 Pro, DXP8800 Plus</td><td class="m">Intel serie N / Pentium Gold / Core i5, DDR5</td><td>Docker y VM</td></tr>
+      <tr><td>iDX</td><td>iDX6011</td><td class="m">Orientado a cargas con aceleración IA</td><td>Docker y VM</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Queda fuera de alcance la línea antigua <strong>DH2100 / DH2100+</strong>, que ejecuta la rama de firmware UGOS 5.x y solo se trata en el apartado de vulnerabilidades por su relevancia como precedente.</p>
+
+  <h2><span class="num">02 — SOFTWARE</span>UGOS Pro: naturaleza y capas</h2>
+  <p>UGOS y UGOS Pro son el mismo sistema. El sufijo «Pro» forma parte del nombre comercial, no de un nivel de licencia: todos los NASync incluyen la funcionalidad completa. Es una distribución Linux propietaria con interfaz web inspirada en DSM.</p>
+  <p>El histórico público de versiones va de <code>1.0.0.1494</code> (octubre 2024) a <code>1.18.1.0098</code> (agosto 2026), algo más de una versión al mes. La cadencia es una ventaja en corrección de defectos, pero implica una superficie funcional en cambio constante que obliga a revalidar la configuración de seguridad tras cada actualización.</p>
+
+  <div class="dia">┌───────────────────────────────────────────────────────────────┐
+│  <b>Clientes</b>   navegador · app móvil UGREEN NAS · cliente PC   │
+├───────────────────────────────────────────────────────────────┤
+│  <b>Acceso remoto</b>   UGREENlink (relay)  │  DDNS  │  VPN/Tailscale│
+├───────────────────────────────────────────────────────────────┤
+│  <b>Aplicación</b>   App Center · Docker · VM (solo DXP)           │
+│                 File Browser · Sync &amp; Backup · Fotos · Media  │
+├───────────────────────────────────────────────────────────────┤
+│  <b>Servicios de archivos</b>   SMB · NFS · FTP/FTPS · WebDAV ·    │
+│                            rsync · SSH (off por defecto)      │
+├───────────────────────────────────────────────────────────────┤
+│  <b>Control</b>   usuarios/grupos · LDAP y dominio · ACL ·         │
+│              cortafuegos · registros · ClamAV                 │
+├───────────────────────────────────────────────────────────────┤
+│  <b>Almacenamiento</b>   Btrfs / ext4 · RAID por software · caché  │
+├───────────────────────────────────────────────────────────────┤
+│  <b>Kernel Linux + firmware UGOS Pro</b>                           │
+└───────────────────────────────────────────────────────────────┘</div>
+
+  <h3>Servicios de archivos e identidad</h3>
+  <ul>
+    <li>Protocolos de serie: <strong>SMB, NFS, FTP, WebDAV y rsync</strong>. Acceso administrativo por <strong>SSH</strong> (y Telnet en algunas compilaciones), deshabilitado por defecto.</li>
+    <li>Usuarios y grupos locales, con soporte de <strong>LDAP y unión a dominio</strong>.</li>
+    <li>Permisos granulares por carpeta compartida. Desde 1.15.x la resolución de conflictos sigue el orden <code>denegar &gt; solo lectura &gt; lectura/escritura &gt; sin configuración</code>, priorizando el criterio más restrictivo. Conviene auditar las ACL heredadas tras actualizar.</li>
+  </ul>
+
+  <h3>Almacenamiento</h3>
+  <ul>
+    <li>Modos <strong>Basic, JBOD y RAID 0/1/5/6/10</strong> sobre la pila de RAID por software de Linux.</li>
+    <li>Sistemas de archivos <strong>Btrfs y ext4</strong>. Btrfs aporta sumas de verificación de integridad, copy-on-write, instantáneas, deduplicación y compresión transparente.</li>
+    <li>Ranuras M.2 NVMe utilizables como volumen o como caché SSD.</li>
+  </ul>
+
+  <div class="note"><p><span class="t">Vector a menudo ignorado</span>Buena parte del catálogo nativo de aplicaciones son en realidad contenedores Docker. La seguridad efectiva del NAS pasa a depender de imágenes de terceros, de su cadencia de parcheo y de los privilegios con que se ejecutan. UGOS Pro no gestiona esto por el administrador.</p></div>
+
+  <h2><span class="num">03 — RED</span>Modelos de acceso remoto</h2>
+  <div class="cards three">
+    <div class="card">
+      <p class="card-h">UGREENlink</p>
+      <p>Relay en la nube del fabricante. Sin apertura de puertos ni IP pública; funciona tras doble NAT y CGNAT. Aplica certificado automáticamente. Reduce drásticamente la superficie expuesta, pero introduce dependencia del proveedor: UGREEN no publica especificación del protocolo, del establecimiento de sesión ni de si el tráfico se termina o solo se retransmite. <strong>No cifra el almacenamiento.</strong></p>
+    </div>
+    <div class="card">
+      <p class="card-h">DDNS + reenvío de puertos</p>
+      <p>Acceso directo por dominio propio. Exige configuración en el router, HTTPS correctamente desplegado y reglas de cortafuegos estrictas. HTTP plano no es acceso remoto seguro. Usar solo cuando un servicio concreto lo requiera.</p>
+    </div>
+    <div class="card">
+      <p class="card-h">VPN / red superpuesta</p>
+      <p>Tailscale, WireGuard o similares colocan el NAS en una red privada. Mejor relación seguridad/control: elimina la exposición pública y no delega la confianza en la nube del fabricante.</p>
+    </div>
+  </div>
+  <div class="warn"><p><span class="t">Regla no negociable</span>No exponer nunca a Internet SMB, NFS, SSH ni la interfaz de administración de UGOS Pro.</p></div>
+
+  <h2><span class="num">04 — CONTROLES</span>Modelo de seguridad de UGOS Pro</h2>
+
+  <h3>Identidad y control de acceso</h3>
+  <ul>
+    <li><strong>2FA</strong> mediante TOTP con aplicaciones estándar, códigos de respaldo y correo de verificación de emergencia. No estaba presente en el lanzamiento inicial.</li>
+    <li><strong>Dispositivos de confianza</strong> en <code>Configuración de cuenta › Seguridad de la cuenta</code>, con revocación individual.</li>
+    <li><strong>Bloqueo por intentos fallidos</strong> con periodo de desbloqueo automático y excepciones para IP o subredes de confianza (<code>Panel de control › Seguridad</code>, desde 1.10.0.0092).</li>
+  </ul>
+
+  <h3>Seguridad de red</h3>
+  <ul>
+    <li>Cortafuegos con reglas por IP, <strong>filtrado MAC</strong> y controles de acceso personalizables.</li>
+    <li>HTTPS en la interfaz de administración, con importación de certificados propios.</li>
+    <li>Aplicación <strong>Logs</strong> con filtrado por usuario, módulo, severidad y palabra clave, más registro del cortafuegos.</li>
+  </ul>
+
+  <h3>Protección de datos</h3>
+  <ul>
+    <li><strong>Cifrado de carpetas</strong> desde el firmware <code>1.18.1.0098</code> (4 de agosto de 2026): carpetas compartidas y carpetas de usuario de primer nivel. Protege frente a extracción física de discos. <strong>UGREEN no ha detallado la tecnología criptográfica empleada</strong>, lo que impide evaluar algoritmo, gestión de claves y modo de operación.</li>
+    <li><strong>No existe cifrado de volumen completo.</strong> Es la diferencia más relevante frente a DSM.</li>
+    <li><strong>Safes</strong>: contenedor cifrado con contraseña y fichero <code>.key</code>. Si se pierden ambos, los datos son irrecuperables. Los archivos dentro de Safes <em>no</em> están soportados por Sync &amp; Backup: nunca deben albergar la única copia de un archivo.</li>
+    <li><strong>Instantáneas Btrfs</strong>: aceleran la recuperación, pero <strong>no son inmutables</strong>; un atacante con control administrativo puede eliminarlas.</li>
+    <li><strong>RAID</strong>: aporta disponibilidad ante fallo de disco. No protege frente a borrado administrativo, sobrescritura por sincronización ni cifrado por ransomware.</li>
+  </ul>
+
+  <h3>Detección</h3>
+  <ul>
+    <li><strong>ClamAV</strong> integrado con firmas actualizadas y análisis programados.</li>
+    <li><strong>Security Manager</strong>: comprobaciones de configuración. Su profundidad en verificación de integridad del sistema sigue siendo limitada frente a DSM o TrueNAS.</li>
+    <li><strong>No existe módulo antiransomware dedicado</strong> (detección conductual, instantáneas inmutables, bloqueo automático de escritura masiva). Es la carencia defensiva más señalada por analistas independientes.</li>
+  </ul>
+
+  <h2><span class="num">05 — VULNERABILIDADES</span>Historial y superficie de ataque</h2>
+
+  <h3>CVE-2026-31431 «Copy Fail»</h3>
+  <p>Escalada de privilegios en el kernel Linux, CVSS 7,8, divulgada el 29 de abril de 2026 por Theori. Afecta a las principales distribuciones y se camufla entre llamadas al sistema legítimas. UGREEN publicó la corrección en <code>UGOS Pro 1.15.0.0127</code> el 2 de mayo de 2026, es decir, en días. <strong>Indicador favorable</strong> de la capacidad de respuesta actual ante fallos de la cadena upstream.</p>
+
+  <h3>CVE-2025-14187 y CVE-2025-14188 (DH2100+)</h3>
+  <p>Dos fallos en el modelo DH2100+ hasta la versión <code>5.3.0.251125</code>, ambos en <code>handler_file_backup_create</code> del endpoint <code>/v1/file/backup/create</code> del componente <code>nas_svr</code>:</p>
+  <ul>
+    <li><strong>CVE-2025-14188</strong> — inyección de comandos (CWE-77) mediante manipulación del argumento <code>path</code>, explotable en remoto con privilegios elevados.</li>
+    <li><strong>CVE-2025-14187</strong> — desbordamiento de búfer en el mismo manejador, igualmente alcanzable en remoto.</li>
+  </ul>
+  <p>Severidad alta; las puntuaciones publicadas oscilan entre 7,2 y 8,6 según fuente y vector CVSS aplicado. Existen pruebas de concepto públicas y VulDB indica que <strong>el fabricante fue contactado antes de la divulgación y no respondió</strong>.</p>
+  <div class="warn"><p><span class="t">Lectura arquitectónica</span>El endpoint vulnerable pertenecía a la funcionalidad de <strong>copia de seguridad</strong>: precisamente el activo que se supone protege a la organización. Un compromiso ahí permite borrar, corromper o cifrar las copias. Que la explotación requiriera privilegios altos refuerza el valor de 2FA, contraseñas únicas y rotación de credenciales administrativas.</p></div>
+
+  <h3>Observación no confirmada</h3>
+  <p>Se ha reportado públicamente —por un único usuario, sin verificación independiente ni corroboración en foros— un posible <strong>uso compartido de certificados y claves privadas entre dispositivos</strong>. De confirmarse supondría un punto único de fallo en la arquitectura TLS, si bien la explotación exigiría posición de intercepción en la red. Se documenta como observación, no como vulnerabilidad establecida.</p>
+
+  <h3>Superficie de ataque a vigilar</h3>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Vector</th><th>Exposición</th><th>Mitigación principal</th></tr></thead>
+    <tbody>
+      <tr><td>Interfaz web UGOS Pro</td><td>Alta si se publica</td><td>No exponer; UGREENlink o VPN</td></tr>
+      <tr><td class="m">API interna (nas_svr)</td><td>Alcanzable en LAN</td><td>Segmentación VLAN, 2FA, parcheo</td></tr>
+      <tr><td>SMB / NFS</td><td>LAN</td><td>Nunca hacia Internet; ACL restrictivas</td></tr>
+      <tr><td>SSH</td><td>Off por defecto</td><td>Mantener deshabilitado; clave pública si se activa</td></tr>
+      <tr><td>Contenedores Docker</td><td>Depende del usuario</td><td class="m">Imágenes verificadas, sin --privileged, actualización</td></tr>
+      <tr><td>Nube UGREENlink</td><td>Externa, del fabricante</td><td>Evaluación de proveedor; alternativa VPN</td></tr>
+      <tr><td>Acceso físico / HDMI / UART</td><td>Local</td><td>Cifrado de carpetas, control de acceso físico</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2><span class="num">06 — RIESGO</span>Riesgos residuales</h2>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Riesgo</th><th>Impacto</th><th>Probabilidad</th><th>Comentario</th></tr></thead>
+    <tbody>
+      <tr><td>Ransomware sobre datos del NAS</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Sin módulo antiransomware; instantáneas eliminables</td></tr>
+      <tr><td>Compromiso de credenciales admin</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Mitigable con 2FA y segmentación</td></tr>
+      <tr><td>Fallo no parcheado en API interna</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Precedente en DH2100+; sin auditoría pública</td></tr>
+      <tr><td>Compromiso de la nube UGREENlink</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-lo">Baja</span></td><td>Sin especificación técnica pública del protocolo</td></tr>
+      <tr><td>Pérdida por acceso físico</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-lo">Baja</span></td><td>Cifrado de carpetas desde 1.18.1; no de volumen</td></tr>
+      <tr><td>Discontinuidad de soporte</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-md">Media</span></td><td>Plataforma de 2024; hoja de ruta no publicada</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h2><span class="num">07 — ENDURECIMIENTO</span>Lista de comprobación</h2>
+  <p class="label">Base — obligatorio en cualquier despliegue</p>
+  <ul class="check">
+    <li><b>Actualizar</b> UGOS Pro y aplicaciones. Los parches no protegen hasta que se instalan.</li>
+    <li><b>Contraseña de administrador única</b>, no reutilizada de ningún otro servicio.</li>
+    <li><b>Habilitar 2FA</b> y custodiar los códigos de respaldo fuera del NAS.</li>
+    <li><b>Activar el bloqueo por intentos fallidos</b> con excepciones para subredes de confianza.</li>
+    <li><b>Cuenta estándar para el uso diario</b>; administrativas solo para configuración. Eliminar admins sin uso.</li>
+    <li><b>No exponer a Internet</b> la interfaz de administración, SMB, NFS ni SSH.</li>
+    <li><b>Acceso remoto vía UGREENlink o VPN</b>, nunca por reenvío de puertos genérico.</li>
+  </ul>
+  <p class="label" style="margin-top:26px">Intermedio</p>
+  <ul class="check">
+    <li><b>Segmentar</b> el NAS en una VLAN de gestión o de almacenamiento.</li>
+    <li><b>ACL de mínimo privilegio</b> y revisión de permisos heredados tras actualizar a 1.15.x.</li>
+    <li><b>Programar análisis ClamAV</b> y activar protección en tiempo real donde exista.</li>
+    <li><b>Importar certificado propio</b> si se dispone de PKI interna.</li>
+    <li><b>Revisar dispositivos de confianza y registros</b> de acceso con periodicidad fija.</li>
+    <li><b>Activar cifrado de carpetas</b> (1.18.1.0098+) y purgar instantáneas previas de esas carpetas, que conservan copias legibles.</li>
+  </ul>
+  <p class="label" style="margin-top:26px">Avanzado / crítico</p>
+  <ul class="check">
+    <li><b>Copia de seguridad independiente</b> con credenciales separadas y limitadas, que no pueda borrarse desde el NAS de origen. Única defensa efectiva frente a ransomware en esta plataforma.</li>
+    <li><b>Regla 3-2-1</b>: tres copias, dos medios, una fuera de sitio.</li>
+    <li><b>Auditar contenedores</b>: origen de la imagen, privilegios, puertos publicados, cadencia de actualización.</li>
+    <li><b>Verificaciones periódicas</b>: prueba de login fallido, restauración real de un fichero, revisión del log del cortafuegos. Repetir tras cambiar router, red, método de acceso remoto, reglas o certificado.</li>
+  </ul>
+
+  <h2><span class="num">08 — CUMPLIMIENTO</span>Consideraciones regulatorias</h2>
+  <ul>
+    <li><strong>RGPD</strong> — si el NAS almacena datos personales, UGREENlink implica tráfico a través de infraestructura de un tercero. Debe constar en el registro de actividades de tratamiento y evaluarse la ubicación de los relays y el encargo de tratamiento.</li>
+    <li><strong>NIS2 / ENS</strong> — la ausencia de cifrado de volumen, de instantáneas inmutables y de auditorías independientes dificulta justificar estos equipos como almacenamiento primario. Su encaje natural es como destino secundario de copia con controles compensatorios.</li>
+    <li><strong>Riesgo de proveedor</strong> — el precedente de falta de respuesta ante divulgación coordinada debe recogerse en la evaluación de terceros, contrastado con la respuesta rápida en el caso «Copy Fail».</li>
+  </ul>
+
+  <h2><span class="num">09 — CONCLUSIÓN</span>Veredicto</h2>
+  <p>Arquitectura sólida en lo fundamental y hardware competitivo por precio. La seguridad ha mejorado de forma sostenida, pero las carencias siguen siendo materiales para uso profesional. <strong>La configuración por defecto no es suficiente</strong>: el nivel alcanzable depende casi por completo del endurecimiento aplicado. Y ninguna función nativa de UGOS Pro sustituye a una copia de seguridad que el NAS comprometido no pueda alcanzar.</p>
+
+</section>
+
+
+<!-- ============ SECCIÓN 2 ============ -->
+<section class="panel" id="s2" role="tabpanel" aria-labelledby="tab2">
+
+  <div class="lede">
+    <p>Esta sección explica lo mismo que la anterior, sin dar por sabido ningún término. Cada palabra técnica se explica la primera vez que aparece.</p>
+  </div>
+
+  <h2><span class="num">01</span>¿Qué es exactamente este aparato?</h2>
+  <p>Un <strong>NAS</strong> es una caja con discos duros dentro que se conecta a tu router, igual que se conecta un ordenador. A partir de ese momento, todos los dispositivos de la casa o la oficina —móviles, portátiles, televisión— pueden guardar y leer archivos en ella.</p>
+  <p>Piensa en él como <em>un disco duro compartido que está siempre encendido</em>. La diferencia con guardar los archivos en Google Drive o Dropbox es que aquí los datos están físicamente en tu casa, en un aparato tuyo, y no en los servidores de otra empresa. A eso se le llama a veces «nube privada».</p>
+  <p>UGREEN es una marca china conocida sobre todo por cables y cargadores. En 2024 lanzó su primera familia de estos aparatos, llamada <strong>NASync</strong>, y con ella un programa propio para manejarlos: <strong>UGOS Pro</strong>. Ese programa es lo que ves en pantalla cuando abres el NAS desde el navegador.</p>
+
+  <h2><span class="num">02</span>Cómo está organizado por dentro</h2>
+  <p>El aparato tiene cuatro piezas que conviene distinguir:</p>
+  <div class="cards two">
+    <div class="card">
+      <p class="card-h">Los discos</p>
+      <p>Donde viven realmente los archivos. Se meten en unas bandejas extraíbles, sin necesidad de destornillador en la mayoría de modelos. Los discos se compran aparte.</p>
+    </div>
+    <div class="card">
+      <p class="card-h">El ordenador interno</p>
+      <p>Sí, el NAS es un ordenador pequeño. Tiene procesador y memoria, y por eso puede hacer cosas además de guardar archivos: reproducir películas, organizar fotos por reconocimiento facial, ejecutar programas.</p>
+    </div>
+    <div class="card">
+      <p class="card-h">La conexión de red</p>
+      <p>Un cable de red lo une al router. Los modelos buenos traen conexiones más rápidas de lo habitual, para mover archivos grandes sin esperas.</p>
+    </div>
+    <div class="card">
+      <p class="card-h">El programa (UGOS Pro)</p>
+      <p>La parte que usas: crear usuarios, decidir quién ve qué carpeta, programar copias, instalar aplicaciones. Está construido sobre Linux, un sistema operativo libre muy usado en servidores.</p>
+    </div>
+  </div>
+
+  <h3>Una palabra que verás mucho: RAID</h3>
+  <p><strong>RAID</strong> es una forma de combinar varios discos para que trabajen juntos. Hay dos objetivos posibles, y conviene tener claro cuál eliges:</p>
+  <ul>
+    <li><strong>Que quepa más</strong>. Se suman las capacidades de todos los discos. Rápido y grande, pero si se rompe un disco lo pierdes todo.</li>
+    <li><strong>Que sobreviva a una avería</strong>. Se guarda información repetida en varios discos. Si uno se estropea, lo sacas, pones uno nuevo y el aparato reconstruye lo que faltaba. A cambio, pierdes parte de la capacidad total.</li>
+  </ul>
+  <div class="warn"><p><span class="t">El malentendido más caro</span>RAID <strong>no es una copia de seguridad</strong>. Protege contra que se rompa un disco, nada más. Si borras un archivo por error, si un virus cifra tus datos, o si el aparato entero se quema o te lo roban, el RAID no te devuelve nada. Necesitas <em>además</em> una copia en otro sitio.</p></div>
+
+  <h2><span class="num">03</span>Acceder desde fuera de casa: tres caminos</h2>
+  <p>Dentro de casa todo es sencillo. El problema aparece cuando quieres abrir tus archivos desde el trabajo o desde el móvil en la calle. Hay tres maneras, y no son igual de seguras.</p>
+
+  <div class="gloss">
+    <div><span class="term">UGREENlink</span><span class="def">El servicio del propio fabricante. Tú entras en una dirección web de UGREEN, y ellos hacen de intermediarios entre tu móvil y tu NAS. Es lo más fácil y lo más seguro para la mayoría de la gente, porque no obliga a «abrir puertas» en tu router. El precio a pagar: tu conexión pasa por los servidores de una empresa china, y UGREEN no ha publicado exactamente qué ven o dejan de ver en ese tránsito.</span></div>
+    <div><span class="term">Abrir puertos</span><span class="def">Configurar el router para que tu NAS sea visible directamente desde Internet. Es la opción avanzada y la más arriesgada: si lo haces mal, cualquiera del mundo puede intentar entrar. Solo con conocimientos y motivo concreto.</span></div>
+    <div><span class="term">VPN</span><span class="def">Una VPN crea una especie de túnel privado entre tu móvil y tu casa. Es como si tu móvil estuviera físicamente en tu salón, aunque estés en otro país. Técnicamente es la mejor opción, y herramientas como Tailscale la han hecho bastante fácil de montar.</span></div>
+  </div>
+  <p>Hay una regla que no tiene excepciones: <strong>nunca dejes la pantalla de administración de tu NAS accesible directamente desde Internet</strong>. Es como dejar la puerta del cuarto de contadores abierta a la calle.</p>
+
+  <h2><span class="num">04</span>Qué protecciones trae y cuáles no</h2>
+
+  <h3>Lo que sí tiene</h3>
+  <div class="gloss">
+    <div><span class="term">Contraseña + código (2FA)</span><span class="def">Además de la contraseña, pide un número de seis cifras que cambia cada treinta segundos y que solo está en tu móvil. Aunque alguien te robe la contraseña, no puede entrar. <strong>Actívalo siempre.</strong> No venía activado en los primeros modelos.</span></div>
+    <div><span class="term">Bloqueo por intentos</span><span class="def">Si alguien falla la contraseña varias veces seguidas, el aparato le prohíbe seguir intentándolo durante un tiempo. Frena los ataques a base de probar contraseñas una tras otra.</span></div>
+    <div><span class="term">Cortafuegos</span><span class="def">Un portero que decide qué conexiones entran y cuáles no, según de dónde vengan. Puedes decirle «solo acepta conexiones desde España» o «solo desde estos aparatos concretos».</span></div>
+    <div><span class="term">Antivirus (ClamAV)</span><span class="def">Un programa gratuito y conocido que revisa los archivos buscando virus. Puedes programarlo para que analice el disco cada semana.</span></div>
+    <div><span class="term">Cifrado de carpetas</span><span class="def">Desde agosto de 2026. Cifrar significa convertir los archivos en algo ilegible sin la contraseña. Sirve sobre todo para que, si alguien te roba el aparato y saca los discos, no pueda leer nada. <em>Ojo:</em> UGREEN no ha explicado qué método usa exactamente, así que nadie de fuera ha podido comprobar si está bien hecho.</span></div>
+    <div><span class="term">Instantáneas</span><span class="def">Fotografías del estado de tus carpetas en un momento dado. Si mañana borras algo sin querer, puedes volver a la foto de ayer. Muy útiles, pero con una pega importante que verás abajo.</span></div>
+  </div>
+
+  <h3>Lo que no tiene</h3>
+  <p>Aquí está lo que de verdad hay que saber antes de comprar:</p>
+  <ul>
+    <li><strong>No protege contra el secuestro de datos.</strong> El <em>ransomware</em> es un tipo de ataque que cifra todos tus archivos y te pide dinero para devolvértelos. Los NAS de la competencia incluyen defensas específicas contra esto. Los de UGREEN, no.</li>
+    <li><strong>Las instantáneas se pueden borrar.</strong> Si un atacante consigue las credenciales de administrador, puede eliminar esas «fotos» antes de cifrarte los archivos. No son a prueba de manipulación.</li>
+    <li><strong>El cifrado va por carpetas, no por disco entero.</strong> Es un avance, pero menos completo que en la competencia.</li>
+    <li><strong>El programa es cerrado.</strong> Nadie de fuera de UGREEN puede revisar el código para buscar fallos. Con Synology o QNAP pasa lo mismo, pero ellos llevan quince años de historial y UGREEN dos.</li>
+  </ul>
+
+  <h2><span class="num">05</span>Los sustos que ha habido</h2>
+  <p>Dos episodios reales, y conviene contar los dos porque dicen cosas distintas.</p>
+  <div class="cards two">
+    <div class="card">
+      <p class="card-h">Lo que salió bien</p>
+      <p>En abril de 2026 se descubrió un fallo grave en Linux —el sistema sobre el que está construido casi todo, no solo UGREEN— que permitía a un atacante hacerse con el control total del aparato. UGREEN publicó la corrección en <strong>tres días</strong>. Es una reacción rápida y un buen indicio.</p>
+    </div>
+    <div class="card">
+      <p class="card-h">Lo que salió mal</p>
+      <p>En diciembre de 2025, unos investigadores encontraron dos fallos serios en un modelo antiguo de UGREEN. Avisaron a la empresa antes de publicarlos, como manda la buena práctica. <strong>UGREEN no contestó.</strong> Los fallos se publicaron con instrucciones de cómo aprovecharlos, y estaban precisamente en la función de hacer copias de seguridad.</p>
+    </div>
+  </div>
+  <p>La lectura conjunta: la empresa ha mejorado, pero su historial de tratar con investigadores de seguridad todavía no es el de un fabricante maduro.</p>
+
+  <h2><span class="num">06</span>Qué hacer, en orden de importancia</h2>
+  <ul class="check">
+    <li><b>Instala las actualizaciones.</b> Las que llegan solas también hay que aceptarlas. Un fallo corregido no te protege hasta que instalas la corrección.</li>
+    <li><b>Contraseña larga y solo para esto.</b> Nada de reutilizar la del correo. Si no quieres memorizarla, usa un gestor de contraseñas.</li>
+    <li><b>Activa el código de seis cifras (2FA)</b> y guarda los códigos de emergencia en papel, fuera del NAS.</li>
+    <li><b>Usa una cuenta normal para el día a día.</b> La cuenta de administrador solo para configurar. Así, si te roban la del día a día, no pueden tocar los ajustes.</li>
+    <li><b>No abras puertos en el router.</b> Usa UGREENlink o una VPN.</li>
+    <li><b>Ten una copia fuera del NAS.</b> Un disco USB externo que desconectas y guardas en un cajón, o un servicio en la nube. Esta es la única defensa real contra el secuestro de datos.</li>
+    <li><b>Prueba a restaurar un archivo</b> de esa copia, de vez en cuando. Una copia que nunca has probado no es una copia: es una suposición.</li>
+  </ul>
+
+  <h2><span class="num">07</span>Entonces, ¿me lo compro?</h2>
+  <p><strong>Sí, si</strong> lo quieres para tener tus fotos y documentos en casa, ver películas en la tele, y hacer copias de los ordenadores de la familia. El hardware está muy bien de precio y el programa ha mejorado mucho en dos años.</p>
+  <p><strong>Piénsalo, si</strong> vas a guardar ahí lo único que tienes de tu negocio: facturas, contabilidad, datos de clientes. En ese caso, o eliges un fabricante con más años a la espalda, o aceptas que vas a necesitar una segunda copia en otro sitio y algo de tiempo dedicado a configurarlo bien.</p>
+  <p><strong>Y en cualquiera de los dos casos</strong>: la configuración que trae de fábrica no es suficiente. Dedica una tarde a la lista de arriba.</p>
+
+</section>
+
+
+<!-- ============ SECCIÓN 3 ============ -->
+<section class="panel" id="s3" role="tabpanel" aria-labelledby="tab3">
+
+  <div class="lede">
+    <p>NASync DXP4800 Plus — el modelo de cuatro bahías de gama media, y probablemente el punto dulce de la familia. Ficha completa, topología interna y las implicaciones de seguridad de cada decisión de diseño.</p>
+  </div>
+
+  <h2><span class="num">01 — FICHA</span>Especificaciones</h2>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th>Bloque</th><th>Especificación</th></tr></thead>
+    <tbody>
+      <tr><td>Procesador</td><td class="m">Intel Pentium Gold 8505 (12ª gen, Alder Lake) · 5 núcleos (1P + 4E) / 6 hilos · hasta 4,40 GHz · gráfica integrada Intel UHD con Quick Sync</td></tr>
+      <tr><td>Memoria</td><td class="m">8 GB DDR5 SODIMM de serie · 2 zócalos · ampliable a 64 GB (32 GB por zócalo) · sin ECC</td></tr>
+      <tr><td>Bahías</td><td class="m">4 × SATA 6 Gbps · 3,5" y 2,5" · instalación sin herramientas para 3,5"</td></tr>
+      <tr><td>M.2</td><td class="m">2 × NVMe formato 2280 · el fabricante indica PCIe 4.0 ×4; en el lanzamiento no se especificaba la generación</td></tr>
+      <tr><td>Disco de sistema</td><td class="m">SSD interno de 128 GB preinstalado en las unidades de lanzamiento (separado del pool de datos)</td></tr>
+      <tr><td>Red</td><td class="m">1 × 10GbE RJ45 + 1 × 2,5GbE RJ45 (retrocompatibles) · hasta ~1.250 MB/s teóricos en el enlace de 10 Gb</td></tr>
+      <tr><td>USB</td><td class="m">1 × USB-C 3.2 Gen 2 (10 Gbps) · 1 × USB-A 3.2 Gen 2 (10 Gbps) · 1 × USB-A 3.2 Gen 1 (5 Gbps) · 2 × USB 2.0 (480 Mbps)</td></tr>
+      <tr><td>Otros puertos</td><td class="m">HDMI con salida 4K a 60 Hz · lector SD 3.0 hasta 104 MB/s · botón de reset · alimentación DC</td></tr>
+      <tr><td>Chasis</td><td class="m">Aluminio negro · 257,5 × 178 × 178 mm · filtro de polvo magnético trasero · modo silencioso 29–34 dB</td></tr>
+      <tr><td>Cabeceras internas</td><td class="m">Cabecera UART de 3 pines y cabecera JMCU1 de 4 pines bajo la tapa de RAM/M.2</td></tr>
+      <tr><td>Sistema</td><td class="m">UGOS Pro · Docker y máquinas virtuales · Btrfs / ext4 · Basic, JBOD, RAID 0/1/5/6/10</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p style="font-size:13.5px;color:var(--steel);max-width:var(--measure)">La serie NASync se financió en Kickstarter con más de 13.000 mecenas y 6,6 M$ recaudados, el producto NAS más financiado de la plataforma.</p>
+
+  <h2><span class="num">02 — TOPOLOGÍA</span>Arquitectura interna</h2>
+  <div class="dia">                      ┌──────────────────────────┐
+                      │  <b>Intel Pentium Gold 8505</b> │
+                      │  1P + 4E · 6 hilos       │
+                      │  iGPU UHD (Quick Sync)   │
+                      └────────────┬─────────────┘
+                                   │  PCIe / DMI
+        ┌──────────────┬───────────┼───────────┬──────────────┐
+        │              │           │           │              │
+  ┌─────┴─────┐  ┌─────┴─────┐ ┌───┴────┐ ┌────┴────┐  ┌──────┴──────┐
+  │ <b>4 × SATA</b>  │  │ <b>2 × M.2</b>   │ │ <b>10GbE</b>  │ │ <b>2.5GbE</b>  │  │ <b>HDMI 4K</b>    │
+  │ 6 Gbps    │  │ NVMe 2280 │ │  RJ45  │ │  RJ45   │  │ USB ×5      │
+  │ 3.5"/2.5" │  │ caché o   │ │        │ │         │  │ lector SD   │
+  │           │  │ volumen   │ │        │ │         │  │ UART (int.) │
+  └─────┬─────┘  └─────┬─────┘ └───┬────┘ └────┬────┘  └─────────────┘
+        │              │           │           │
+        └──────┬───────┘           └─────┬─────┘
+               │                         │
+        ┌──────┴────────┐        ┌───────┴────────┐
+        │ <b>Pool de datos</b> │        │ <b>Plano de red</b>   │
+        │ RAID software │        │ 10GbE = datos  │
+        │ Btrfs / ext4  │        │ 2.5GbE = mgmt  │
+        └───────────────┘        └────────────────┘
+
+        ┌───────────────────────────────────────────┐
+        │ <b>SSD interno 128 GB</b> — sistema UGOS Pro,     │
+        │ separado del pool de datos                │
+        └───────────────────────────────────────────┘</div>
+
+  <h2><span class="num">03 — ANÁLISIS</span>Implicaciones de seguridad del diseño</h2>
+
+  <h3>Doble NIC: la mejor baza del modelo</h3>
+  <p>Tener <strong>dos interfaces de red de velocidades distintas</strong> no es solo comodidad. Permite una separación de planos que muy pocos NAS de este precio ofrecen: <strong>10GbE para el tráfico de datos</strong> (SMB, NFS, edición de vídeo) en su propia VLAN, y <strong>2,5GbE para el plano de gestión</strong> (interfaz web, SSH si se activa) en una VLAN restringida a las estaciones de administración.</p>
+  <div class="note"><p><span class="t">Recomendación de despliegue</span>Configurar la interfaz de 2,5GbE como única vía de acceso a la interfaz de administración y aplicar en el cortafuegos una lista blanca de direcciones IP para ese plano. Es el control de mayor relación coste/beneficio disponible en este hardware, y anula por completo el vector que aprovecharon los fallos del DH2100+.</p></div>
+
+  <h3>SSD de sistema separado del pool</h3>
+  <p>Que UGOS Pro resida en un SSD interno independiente y no en los discos de datos tiene tres consecuencias prácticas: el pool puede reconstruirse sin tocar el sistema, el arranque no depende del estado del RAID, y una recuperación tras compromiso puede reinstalar el sistema conservando los datos. También significa que <strong>el cifrado de carpetas no protege la configuración ni los registros del sistema</strong>, que viven en ese SSD sin cifrar.</p>
+
+  <h3>Memoria DDR5 sin ECC</h3>
+  <p>Btrfs calcula sumas de verificación para detectar corrupción en disco, y suele venderse como garantía de integridad. Conviene matizarlo: <strong>esas sumas se calculan en RAM</strong>. Sin memoria ECC, un error de bit en memoria puede propagarse al disco con una suma de verificación perfectamente válida. Es una limitación compartida con casi todos los NAS de consumo, pero desmonta la idea de que Btrfs por sí solo garantiza integridad de extremo a extremo. Si el dato es crítico, la verificación debe hacerse contra la copia externa.</p>
+
+  <h3>Superficie física: lo que suele pasarse por alto</h3>
+  <ul>
+    <li><strong>Cabecera UART de 3 pines</strong> bajo la tapa de RAM y M.2. Una consola serie de depuración es una vía clásica de acceso a bajo nivel con acceso físico al equipo. No hay documentación pública de si está protegida o de qué expone.</li>
+    <li><strong>Botón de reset</strong> — restablece configuración; con acceso físico, un vector directo de denegación de servicio o de reconfiguración.</li>
+    <li><strong>Lector SD y cinco puertos USB</strong> — puntos de introducción de contenido no confiable y de extracción de datos. En entornos con requisitos, deshabilitar el automontaje y el arranque desde USB.</li>
+    <li><strong>HDMI</strong> — la salida local no requiere autenticación de red y, según el estado del sistema, puede exponer información en pantalla.</li>
+  </ul>
+  <p>Todo esto refuerza el mismo punto: <strong>el cifrado de carpetas, disponible desde 1.18.1.0098, es la contramedida adecuada frente al acceso físico</strong>, y en este modelo concreto tiene sentido activarlo aunque el equipo esté en una oficina cerrada.</p>
+
+  <h3>Quick Sync y contenedores</h3>
+  <p>La gráfica integrada del 8505 acelera la transcodificación de vídeo, lo que en la práctica significa que aplicaciones como Plex, Jellyfin o Emby se desplegarán en Docker con <strong>acceso al dispositivo <code>/dev/dri</code></strong>. Ese paso a través de hardware amplía los privilegios del contenedor más allá de lo habitual. Merece una revisión explícita: montar solo el dispositivo necesario, nunca ejecutar el contenedor en modo privilegiado, y mantener la imagen actualizada.</p>
+
+  <h3>Capacidad de virtualización</h3>
+  <p>Cinco núcleos y hasta 64 GB de RAM permiten alojar máquinas virtuales, cosa que la serie DH no puede. Es la mejor vía para aislar cargas de riesgo: un servicio expuesto puede vivir en una VM con su propia interfaz de red virtual en lugar de compartir el espacio del sistema anfitrión. Es también la razón principal para elegir DXP sobre DH cuando la seguridad es un criterio.</p>
+
+  <h2><span class="num">04 — ALTERNATIVA</span>DXP4800 Plus frente a DXP4800 GT</h2>
+  <div class="scroll">
+  <table class="tbl">
+    <thead><tr><th></th><th>DXP4800 Plus</th><th>DXP4800 GT</th></tr></thead>
+    <tbody>
+      <tr><td>Procesador</td><td class="m">Intel Pentium Gold 8505 · 5 núcleos / 6 hilos</td><td class="m">AMD Ryzen Embedded R2514 · 4 núcleos / 8 hilos</td></tr>
+      <tr><td>Red</td><td class="m">1 × 10GbE + 1 × 2,5GbE</td><td class="m">2 × 10GbE</td></tr>
+      <tr><td>Almacenamiento</td><td class="m">4 × SATA + 2 × M.2 NVMe</td><td class="m">4 × SATA + 2 × M.2 · U.2 NVMe opcional en bahías 1 y 2</td></tr>
+      <tr><td>Encaje</td><td class="m">Estación de trabajo a 10GbE, resto de la red a 2,5GbE · separación natural de planos</td><td class="m">Varios usuarios a 10GbE · almacenamiento all-flash de mayor velocidad</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p>Para un despliegue con criterio de seguridad, el <strong>Plus</strong> tiene una ventaja poco evidente: la asimetría de sus dos interfaces empuja de forma natural hacia la separación entre plano de datos y plano de gestión. En el GT, con dos puertos idénticos, la tentación de agregarlos en un único enlace es fuerte y sacrifica esa separación.</p>
+
+  <h2><span class="num">05 — CIERRE</span>Veredicto sobre el modelo</h2>
+  <p>Es el modelo con mejor relación entre capacidad, red y precio de la familia, y el que mejor se presta a un despliegue endurecido gracias a sus dos interfaces de red y a su capacidad de virtualización. Las limitaciones que arrastra no son del hardware sino del software: sin protección antiransomware, sin instantáneas inmutables y sin cifrado de volumen completo, el DXP4800 Plus sigue necesitando una copia de seguridad externa que no dependa de él. Con esa pieza en su sitio, es una compra defendible; sin ella, no lo es en ningún escenario.</p>
+
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p style="font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#e08a1e;margin:0 0 14px">Fuentes</p>
+    <p style="margin:0 0 16px">Documentación pública del fabricante (ai.ugreen.com, ai-es.ugreen.com, nas-eu.ugreen.com), bases de datos de vulnerabilidades (VulDB, SentinelOne, Feedly), foro DACH de UGREEN, y análisis independientes de RaidSize, NAS Compares, TechPowerUp, Android Central, Marius Hosting, Galaxus y Profesional Review.</p>
+    <p style="margin:0;color:#6b7280">Elaborado a 29 de agosto de 2026. Las versiones de firmware y el estado de las vulnerabilidades deben verificarse antes de cualquier decisión de despliegue.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
+  var panels = tabs.map(function(t){ return document.getElementById(t.getAttribute('aria-controls')); });
+
+  function select(i, focus){
+    tabs.forEach(function(t, n){
+      t.setAttribute('aria-selected', n === i ? 'true' : 'false');
+      t.setAttribute('tabindex', n === i ? '0' : '-1');
+      panels[n].classList.toggle('is-on', n === i);
+    });
+    if (focus) tabs[i].focus();
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }
+
+  tabs.forEach(function(t, i){
+    t.setAttribute('tabindex', i === 0 ? '0' : '-1');
+    t.addEventListener('click', function(){ select(i, false); });
+    t.addEventListener('keydown', function(e){
+      var next = null;
+      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+      if (e.key === 'ArrowLeft')  next = (i - 1 + tabs.length) % tabs.length;
+      if (e.key === 'Home') next = 0;
+      if (e.key === 'End')  next = tabs.length - 1;
+      if (next !== null){ e.preventDefault(); select(next, true); }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
