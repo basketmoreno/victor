@@ -1,0 +1,1162 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mi seguro Sanitas, explicado · Plan 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#eef1f3;
+  --ficha:#ffffff;
+  --tinta:#0e1f2b;
+  --tinta-2:#4a5f6d;
+  --linea:#d3dce2;
+  --azul:#0a6bb0;
+  --azul-claro:#e4f0f9;
+  --verde:#1a7a58;
+  --verde-claro:#e2f2ec;
+  --ambar:#a86400;
+  --ambar-claro:#fbf0dc;
+  --granate:#9a2b3d;
+  --granate-claro:#fae5e8;
+  --gris-claro:#eceff1;
+  --r:14px;
+  --sombra:0 1px 0 #ffffff inset, 0 6px 18px rgba(14,31,43,.07);
+  --display:"Bricolage Grotesque","Archivo","Helvetica Neue",Arial,sans-serif;
+  --texto:"IBM Plex Sans","Segoe UI",system-ui,Arial,sans-serif;
+  --mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--papel);color:var(--tinta);
+  font:16px/1.55 var(--texto);
+  background-image:linear-gradient(180deg,#e8edf0,transparent 320px);
+}
+h1,h2,h3,.display{font-family:var(--display);letter-spacing:-.02em;line-height:1.1;margin:0}
+a{color:var(--azul)}
+button{font:inherit}
+
+/* ---------- cabecera ---------- */
+header{position:sticky;top:0;z-index:20;background:rgba(238,241,243,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+.cabecera{max-width:1180px;margin:auto;padding:14px max(18px,4vw);display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.marca{display:flex;align-items:baseline;gap:10px}
+.marca b{font-family:var(--display);font-size:19px;font-weight:800}
+.marca span{font:12px/1 var(--mono);color:var(--tinta-2);text-transform:uppercase;letter-spacing:.09em}
+nav{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+nav a{
+  font:13px/1 var(--texto);color:var(--tinta-2);text-decoration:none;
+  padding:8px 11px;border-radius:99px;border:1px solid transparent;
+}
+nav a:hover,nav a:focus-visible{color:var(--azul);border-color:var(--linea);background:#fff}
+
+main{max-width:1180px;margin:auto;padding:0 max(18px,4vw) 90px}
+section{padding-top:56px;scroll-margin-top:78px}
+.eyebrow{font:12px/1 var(--mono);text-transform:uppercase;letter-spacing:.14em;color:var(--azul);margin-bottom:12px;display:block}
+h2{font-size:clamp(26px,3.4vw,38px);font-weight:700;margin-bottom:10px}
+.lead{color:var(--tinta-2);max-width:72ch;margin:0 0 4px}
+
+/* ---------- portada ---------- */
+.portada{padding-top:46px;display:grid;grid-template-columns:1.35fr .95fr;gap:34px;align-items:start}
+.portada h1{font-size:clamp(34px,6vw,66px);font-weight:800}
+.portada h1 em{font-style:normal;color:var(--azul)}
+.portada p{color:var(--tinta-2);font-size:17px;max-width:56ch}
+.carnet{
+  background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);
+  padding:20px;box-shadow:var(--sombra);font-size:14px
+}
+.carnet dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:9px 16px}
+.carnet dt{font:12px/1.4 var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--tinta-2)}
+.carnet dd{margin:0;font-weight:500}
+.carnet .cinta{
+  display:inline-block;margin-bottom:14px;font:11px/1 var(--mono);letter-spacing:.12em;
+  text-transform:uppercase;color:var(--verde);background:var(--verde-claro);
+  border:1px solid #bfe0d4;border-radius:4px;padding:6px 9px
+}
+
+/* ---------- rutas ---------- */
+.sello{
+  display:inline-flex;align-items:center;gap:6px;
+  font:11px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;
+  padding:5px 8px;border-radius:5px;border:1px solid;white-space:nowrap
+}
+.s-directo{color:var(--verde);background:var(--verde-claro);border-color:#bfe0d4}
+.s-receta{color:var(--ambar);background:var(--ambar-claro);border-color:#eed6a8}
+.s-auth{color:var(--granate);background:var(--granate-claro);border-color:#f0c4cb}
+.s-fuera{color:var(--tinta-2);background:var(--gris-claro);border-color:var(--linea)}
+
+.rutas{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:24px}
+.ruta{background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);padding:20px;box-shadow:var(--sombra)}
+.ruta h3{font-size:19px;margin:12px 0 8px}
+.ruta p{margin:0 0 10px;font-size:14.5px;color:var(--tinta-2)}
+.pasos{font:12.5px/1.7 var(--mono);color:var(--tinta);background:var(--gris-claro);border-radius:8px;padding:10px 12px}
+
+/* ---------- aviso ---------- */
+.aviso{
+  margin-top:26px;background:var(--ficha);border:1px solid var(--linea);
+  border-left:5px solid var(--azul);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sombra)
+}
+.aviso h3{font-size:21px;margin-bottom:10px}
+.aviso p{margin:0 0 10px;max-width:80ch}
+.aviso p:last-child{margin-bottom:0}
+.flujo{
+  font:13px/1.9 var(--mono);background:var(--azul-claro);border-radius:8px;
+  padding:12px 14px;margin:14px 0;overflow-x:auto;white-space:nowrap
+}
+
+/* ---------- fichas de cobertura ---------- */
+.filtros{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 4px}
+.filtros button{
+  background:var(--ficha);border:1px solid var(--linea);color:var(--tinta-2);
+  padding:8px 13px;border-radius:99px;cursor:pointer;font-size:13.5px
+}
+.filtros button[aria-pressed="true"]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.fichas{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin-top:18px}
+.ficha{background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);padding:20px;box-shadow:var(--sombra);display:flex;flex-direction:column;gap:10px}
+.ficha h3{font-size:18px}
+.ficha .cab{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.ficha ul{margin:0;padding-left:18px;font-size:14.5px;color:var(--tinta-2)}
+.ficha li{margin-bottom:5px}
+.ficha .tope{font:12.5px/1.5 var(--mono);color:var(--granate);background:var(--granate-claro);border-radius:6px;padding:7px 9px}
+.ficha .ojo{font-size:13.5px;color:var(--tinta-2);border-top:1px dashed var(--linea);padding-top:9px;margin-top:auto}
+
+/* ---------- tabla de topes ---------- */
+.tabla-wrap{overflow-x:auto;background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);box-shadow:var(--sombra);margin-top:20px}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th,td{text-align:left;padding:13px 16px;border-bottom:1px solid var(--linea);vertical-align:middle}
+th{font:12px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--tinta-2);background:var(--gris-claro)}
+tbody tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono);white-space:nowrap}
+.contador{display:flex;align-items:center;gap:8px}
+.contador input{width:62px;text-align:center}
+.barra{height:6px;background:var(--gris-claro);border-radius:99px;overflow:hidden;min-width:70px;flex:1}
+.barra i{display:block;height:100%;background:var(--azul);width:0}
+.barra.lleno i{background:var(--granate)}
+
+input,select,textarea{
+  font:14px var(--texto);color:var(--tinta);background:#fff;
+  border:1px solid var(--linea);border-radius:8px;padding:8px 10px;width:100%
+}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--azul);outline-offset:2px}
+
+/* ---------- checklist ---------- */
+.panel-progreso{
+  background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);
+  padding:18px 20px;box-shadow:var(--sombra);margin-top:22px;
+  display:flex;align-items:center;gap:18px;flex-wrap:wrap
+}
+.panel-progreso .cifra{font-family:var(--display);font-size:40px;font-weight:800;line-height:1}
+.panel-progreso .barra{height:10px;min-width:180px}
+.acciones{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.acciones button{background:var(--ficha);border:1px solid var(--linea);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:13.5px}
+.acciones button:hover{border-color:var(--azul);color:var(--azul)}
+
+.tareas{display:grid;gap:12px;margin-top:16px}
+.tarea{
+  background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);
+  padding:16px 18px;box-shadow:var(--sombra);
+  display:grid;grid-template-columns:26px 1fr;gap:0 14px;align-items:start
+}
+.tarea.hecha{background:#f6faf8;border-color:#c9e3d8}
+.tarea input[type=checkbox]{width:20px;height:20px;accent-color:var(--verde);margin-top:3px;padding:0}
+.tarea .titulo{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.tarea h3{font-size:17px}
+.tarea .frec{font:12px/1 var(--mono);color:var(--azul);text-transform:uppercase;letter-spacing:.06em}
+.tarea .detalle{grid-column:2;color:var(--tinta-2);font-size:14.5px;margin:6px 0 0}
+.tarea .campos{grid-column:2;display:grid;grid-template-columns:150px 1fr 150px;gap:10px;margin-top:12px}
+.tarea .campos label{font:11px/1.6 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--tinta-2);display:block}
+
+.donaciones{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:16px}
+.donacion{background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sombra)}
+.donacion h4{margin:0 0 8px;font:12px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;color:var(--tinta-2)}
+#proxima-donacion{margin-top:12px;font-size:14.5px;background:var(--azul-claro);border-radius:8px;padding:12px 14px}
+
+details{background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);padding:0;box-shadow:var(--sombra);margin-top:12px}
+summary{cursor:pointer;padding:16px 20px;font-weight:600;font-family:var(--display);font-size:17px}
+details[open] summary{border-bottom:1px solid var(--linea)}
+details .cuerpo{padding:16px 20px}
+details dl{margin:0;display:grid;gap:12px}
+details dt{font-weight:600}
+details dd{margin:2px 0 0;color:var(--tinta-2);font-size:15px}
+
+.notas{margin-top:26px;font-size:14px;color:var(--tinta-2)}
+.notas li{margin-bottom:7px}
+footer{border-top:1px solid var(--linea);margin-top:60px;padding-top:22px;font-size:13.5px;color:var(--tinta-2)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+#estado-guardado{font:12px var(--mono);color:var(--tinta-2)}
+
+/* ---------- síntomas ---------- */
+.banda-aviso{
+  margin-top:22px;background:var(--granate-claro);border:1px solid #f0c4cb;
+  border-left:5px solid var(--granate);border-radius:var(--r);padding:16px 20px;font-size:14.5px
+}
+.escala{display:grid;gap:14px;margin-top:20px}
+.nivel{
+  background:var(--ficha);border:1px solid var(--linea);border-radius:var(--r);
+  box-shadow:var(--sombra);display:grid;grid-template-columns:8px 1fr;overflow:hidden
+}
+.nivel .franja{width:8px}
+.nivel .cuerpo{padding:16px 20px}
+.nivel .cab{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+.nivel h3{font-size:18px}
+.nivel .grado{font:11px/1 var(--mono);text-transform:uppercase;letter-spacing:.08em;padding:5px 9px;border-radius:5px;font-weight:600}
+.nivel .via{margin-left:auto}
+.nivel p{margin:0;color:var(--tinta-2);font-size:14.5px}
+.nivel .senal{margin:9px 0 0;font-size:13.5px}
+.nivel .senal b{color:var(--tinta)}
+.n-verde .franja{background:var(--verde)}   .n-verde .grado{background:var(--verde-claro);color:var(--verde)}
+.n-ambar .franja{background:var(--ambar)}   .n-ambar .grado{background:var(--ambar-claro);color:var(--ambar)}
+.n-granate .franja{background:var(--granate)}.n-granate .grado{background:var(--granate-claro);color:var(--granate)}
+.n-rojo .franja{background:#c62828}         .n-rojo .grado{background:#fde0e0;color:#c62828}
+
+/* ---------- calendario ---------- */
+.cal-tools{display:flex;align-items:center;gap:12px;margin-top:20px;flex-wrap:wrap}
+.cal-tools button{background:var(--ficha);border:1px solid var(--linea);border-radius:8px;width:38px;height:38px;cursor:pointer;font-size:20px;line-height:1}
+.cal-tools button:hover{border-color:var(--azul);color:var(--azul)}
+.cal-tools strong{font-family:var(--display);font-size:22px;min-width:70px;text-align:center}
+.cal-leyenda{display:flex;gap:16px;flex-wrap:wrap;margin-left:auto;font-size:12.5px;color:var(--tinta-2)}
+.cal-leyenda span{display:inline-flex;align-items:center;gap:6px}
+.cal-leyenda i{width:11px;height:11px;border-radius:3px;display:inline-block}
+.p-dental{background:var(--azul)} .p-anual{background:var(--verde)} .p-riesgo{background:var(--ambar)} .p-donacion{background:var(--granate)}
+.calendario{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.mes{background:var(--ficha);border:1px solid var(--linea);border-radius:12px;box-shadow:var(--sombra);padding:12px 14px;min-height:104px}
+.mes h4{margin:0 0 8px;font:12px/1 var(--mono);text-transform:uppercase;letter-spacing:.09em;color:var(--tinta-2)}
+.mes.vacio{opacity:.6}
+.evento{font-size:12.5px;line-height:1.35;padding:5px 8px;border-radius:7px;margin-bottom:5px;display:flex;gap:6px;align-items:flex-start}
+.evento b{font-family:var(--mono);font-size:11px;opacity:.75;min-width:22px}
+.ev-dental{background:var(--azul-claro);color:#0a4a78}
+.ev-anual{background:var(--verde-claro);color:#12563c}
+.ev-riesgo{background:var(--ambar-claro);color:#7a4a00}
+.ev-donacion{background:var(--granate-claro);color:#7a1e2d}
+.ev-real{box-shadow:inset 0 0 0 1px currentColor}
+
+@media(max-width:920px){
+  .portada{grid-template-columns:1fr}
+  .rutas{grid-template-columns:1fr}
+  .tarea .campos{grid-template-columns:1fr}
+  .calendario{grid-template-columns:repeat(2,1fr)}
+  .nivel .via{margin-left:0}
+}
+@media(max-width:560px){
+  .calendario{grid-template-columns:1fr}
+}
+@media print{
+  header,nav,.filtros,.acciones,#estado-guardado{display:none!important}
+  body{background:#fff}
+  .ficha,.tarea,.carnet,.ruta,.aviso,details,.panel-progreso,.tabla-wrap{box-shadow:none;break-inside:avoid}
+  section{padding-top:26px}
+}
+@media(prefers-reduced-motion:no-preference){
+  .barra i{transition:width .35s ease}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="cabecera">
+    <div class="marca"><b>Mi seguro, en claro</b><span>Sanitas Empresas Más Digital · Nestlé</span></div>
+    <nav>
+      <a href="#funciona">Cómo funciona</a>
+      <a href="#rutas">Cómo pido cita</a>
+      <a href="#coberturas">Qué cubre</a>
+      <a href="#topes">Topes y contador</a>
+      <a href="#dental">Dental</a>
+      <a href="#sintomas">Qué hago si…</a>
+      <a href="#calendario">Calendario</a>
+      <a href="#checklist">Mi año</a>
+      <a href="#letra-pequena">Letra pequeña</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<section class="portada" id="inicio" style="scroll-margin-top:0">
+  <div>
+    <h1>Tienes un seguro bueno.<br>Falta saber <em>cómo se usa</em>.</h1>
+    <p>Esta página traduce tu póliza a lenguaje normal: qué está cubierto, cuántas sesiones tienes de cada cosa, y —lo que más se atasca— si puedes pedir cita directamente o necesitas antes una receta o una autorización.</p>
+    <p style="font-size:15px">Todo lo que escribas se guarda solo en este navegador, en tu ordenador. No se envía a ningún sitio. <span id="estado-guardado"></span></p>
+  </div>
+  <aside class="carnet">
+    <span class="cinta">Póliza en vigor</span>
+    <dl>
+      <dt>Producto</dt><dd>Sanitas Empresas Más Digital</dd>
+      <dt>Colectivo</dt><dd>Nestlé Global Services</dd>
+      <dt>Vigencia</dt><dd>Hasta 31/12/2026, con prórroga automática</dd>
+      <dt>Modalidad</dt><dd>Cuadro médico. Sanitas paga al centro concertado; no es un seguro de reembolso</dd>
+      <dt>Copagos</dt><dd>Ninguno en la póliza médica</dd>
+      <dt>Carencias</dt><dd>No se aplican en esta póliza de empresa</dd>
+      <dt>Preexistencias</dt><dd>Contratada sin preexistencias</dd>
+      <dt>Extras</dt><dd>Dental 21 · Blua · Programas de salud · Videoconsulta de urgencias y de especialistas · Envío de medicamentos · Accidentes de tráfico y laborales</dd>
+    </dl>
+  </aside>
+</section>
+
+<section id="funciona">
+  <span class="eyebrow">Lo básico</span>
+  <h2>Cinco cosas que conviene entender antes de nada</h2>
+  <p class="lead">Son las que explican el 90% de los sustos y de las facturas inesperadas.</p>
+
+  <div class="fichas" style="margin-top:22px">
+    <article class="ficha">
+      <h3>1. Solo vale el cuadro médico</h3>
+      <ul><li>Sanitas paga directamente al médico o al centro concertado.</li>
+      <li>Si vas por tu cuenta a un médico de fuera, lo pagas tú: esta póliza no devuelve facturas.</li>
+      <li>Excepción: urgencia vital, avisando a Sanitas cuanto antes para que te trasladen a un centro concertado.</li></ul>
+      <p class="ojo">Antes de pedir cita, comprueba en Mi Sanitas que ese profesional está en el cuadro de <em>tu</em> producto.</p>
+    </article>
+
+    <article class="ficha">
+      <h3>2. No pagas nada por consulta</h3>
+      <ul><li>Sin copagos en la parte médica.</li>
+      <li>Sin carencias: no hay que esperar meses para usar nada.</li>
+      <li>Sin exclusión por enfermedades que ya tuvieras antes de entrar.</li></ul>
+      <p class="ojo">El condicionado general sí trae carencias (por ejemplo 6 meses para psicología), pero tus condiciones particulares las anulan para esta póliza.</p>
+    </article>
+
+    <article class="ficha">
+      <h3>3. «Sin límite de capital» no es «todo incluido»</h3>
+      <ul><li>Significa que no hay un techo de euros al año.</li>
+      <li>Pero sí hay topes de sesiones, prestaciones excluidas y técnicas concretas fuera de cobertura.</li>
+      <li>Y todo requiere indicación médica: no se piden pruebas «por mirar».</li></ul>
+      <p class="ojo">Los topes reales están más abajo, en «Topes y contador».</p>
+    </article>
+
+    <article class="ficha">
+      <h3>4. Hay tres puertas de entrada</h3>
+      <ul><li><b>Directo:</b> pides cita tú y punto.</li>
+      <li><b>Con receta:</b> antes necesitas que un médico del cuadro te lo prescriba por escrito.</li>
+      <li><b>Con autorización:</b> además, Sanitas tiene que aprobarlo antes, valorando un informe médico.</li></ul>
+      <p class="ojo">Cada ficha de esta página lleva su etiqueta. Es lo más útil de todo el documento.</p>
+    </article>
+
+    <article class="ficha">
+      <h3>5. Lo digital va aparte</h3>
+      <ul><li>Blua y Programas de salud son orientación a distancia: teléfono, chat y videoconsulta.</li>
+      <li>Ahí entra apoyo psicológico, nutrición, entrenador y fisioterapia, deshabituación tabáquica, crónicos.</li>
+      <li>No diagnostican ni recetan pruebas: eso sigue siendo del médico presencial.</li></ul>
+      <p class="ojo">Estos programas no consumen tus sesiones de psicología de la póliza. Son otra vía.</p>
+    </article>
+
+    <article class="ficha">
+      <h3>Vocabulario mínimo</h3>
+      <ul>
+        <li><b>Carencia:</b> tiempo de espera desde el alta hasta poder usar algo. Tú no tienes.</li>
+        <li><b>Preexistencia:</b> enfermedad anterior al alta. En tu póliza no se excluyen.</li>
+        <li><b>Franquicia:</b> parte que pagas tú. Solo aparece en dental.</li>
+        <li><b>Volante o autorización:</b> el papel de Sanitas que aprueba una prueba o un ingreso.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<section id="rutas">
+  <span class="eyebrow">Antes de pedir cita</span>
+  <h2>Cómo se llega a cada cosa</h2>
+  <p class="lead">Los asegurados pueden acudir libremente a las consultas de especialistas, medicina familiar, pediatría y urgencias del cuadro concertado. Lo que se complica son las pruebas y los tratamientos.</p>
+
+  <div class="rutas">
+    <div class="ruta">
+      <span class="sello s-directo">Directo</span>
+      <h3>Pides cita y ya está</h3>
+      <p>Consultas de medicina familiar, enfermería, urgencias y consultas de especialista del cuadro médico: dermatología, traumatología, digestivo, cardiología, urología, otorrino, psiquiatría, oftalmología…</p>
+      <div class="pasos">Tú → Mi Sanitas → cita → consulta</div>
+    </div>
+    <div class="ruta">
+      <span class="sello s-receta">Con receta</span>
+      <h3>Necesitas que te lo prescriban</h3>
+      <p>Pruebas diagnósticas, métodos terapéuticos y algunos servicios exigen prescripción escrita de un médico del cuadro. Aquí entra la psicología.</p>
+      <div class="pasos">Tú → médico del cuadro → receta → servicio</div>
+    </div>
+    <div class="ruta">
+      <span class="sello s-auth">Con autorización</span>
+      <h3>Además lo aprueba Sanitas</h3>
+      <p>Cirugías, hospitalizaciones, médicos consultores y determinadas pruebas y tratamientos: hace falta el visto bueno previo de Sanitas tras valorar un informe médico.</p>
+      <div class="pasos">Tú → médico → informe → Sanitas autoriza → servicio</div>
+    </div>
+  </div>
+</section>
+
+<section id="coberturas">
+  <span class="eyebrow">Qué cubre</span>
+  <h2>Prestaciones, con su puerta de entrada</h2>
+  <p class="lead">Filtra por cómo se accede a cada bloque. Cuando el contrato no fija un número de sesiones, no significa ilimitado: sigue dependiendo de la indicación médica y de las exclusiones.</p>
+  <div class="filtros" id="filtros-coberturas" role="group" aria-label="Filtrar coberturas por vía de acceso">
+    <button data-f="todo" aria-pressed="true">Todo</button>
+    <button data-f="directo" aria-pressed="false">Directo</button>
+    <button data-f="receta" aria-pressed="false">Con receta</button>
+    <button data-f="auth" aria-pressed="false">Con autorización</button>
+  </div>
+  <div class="fichas" id="fichas-coberturas"></div>
+</section>
+
+<section id="topes">
+  <span class="eyebrow">Topes y contador</span>
+  <h2>Cuántas sesiones tienes de cada cosa</h2>
+  <p class="lead">Estos son los máximos que aparecen escritos en el condicionado. Apunta lo que vayas usando y verás lo que te queda. Los importes en euros son de las coberturas de viaje al extranjero.</p>
+  <div class="tabla-wrap">
+    <table>
+      <thead><tr><th style="width:34%">Prestación</th><th style="width:19%">Tope contractual</th><th style="width:14%">Periodo</th><th style="width:33%">Llevas usadas</th></tr></thead>
+      <tbody id="cuerpo-topes"></tbody>
+    </table>
+  </div>
+  <ul class="notas">
+    <li>El contador es tuyo y orientativo: el registro oficial lo lleva Sanitas.</li>
+    <li>Revisión dental, higiene bucodental y segunda opinión médica <b>no tienen un número máximo escrito en el contrato</b>. Las he puesto a 2/año porque es la pauta clínica habitual, pero técnicamente puedes pedir más si hay indicación; a partir de ahí puede pedirte prescripción.</li>
+    <li>Fisioterapia y rehabilitación no tienen un número máximo de sesiones, pero terminan cuando se alcanza la máxima recuperación funcional posible, y no cubren procesos crónicos de más de 6 meses ni fisioterapia a domicilio.</li>
+    <li>Las coberturas de urgencias en el extranjero exigen llamar a Sanitas antes de recibir asistencia, salvo urgencia vital, y solo valen los primeros 90 días de cada viaje.</li>
+  </ul>
+</section>
+
+<section id="dental">
+  <span class="eyebrow">Sanitas Dental 21</span>
+  <h2>Lo que en el dentista no pagas, y lo que sí</h2>
+  <p class="lead">El dental funciona distinto al resto: no hay copagos, pero muchos tratamientos tienen precio concertado que abonas tú en la clínica. Estas tarifas son las de 2025 y se actualizan cada 1 de enero.</p>
+  <div class="fichas" style="margin-top:20px">
+    <article class="ficha">
+      <div class="cab"><h3>Incluido, sin pagar nada</h3><span class="sello s-directo">Directo</span></div>
+      <ul>
+        <li>Consulta de odontología general, exploración y diagnóstico</li>
+        <li>Higiene bucodental</li>
+        <li>Consulta prioritaria de urgencia</li>
+        <li>Radiología: periapical, aleta, oclusal, panorámica, escáner intraoral, TAC dental, cefalometría</li>
+        <li>Extracciones: pieza simple, restos radiculares, odontosección, cordales</li>
+        <li>Revisión postoperatoria, incluida retirada de suturas</li>
+        <li>Toma de biopsia y serie radiográfica periodontal</li>
+      </ul>
+      <p class="ojo">Con esto ya cubres las dos revisiones e higienes al año sin gastar un euro.</p>
+    </article>
+    <article class="ficha">
+      <div class="cab"><h3>Con precio concertado</h3><span class="sello s-fuera">Lo pagas tú</span></div>
+      <ul>
+        <li>Empaste 68,50 € · reconstrucción 79,90 €</li>
+        <li>Endodoncia 139,90 € a 244,50 € según raíces</li>
+        <li>Estudio de salud periodontal 21,90 € · curetaje por cuadrante 81,90 €</li>
+        <li>Corona sobre diente desde 391,50 € · implante 863,50 €</li>
+        <li>Férula de descarga tipo Michigan 338,90 €</li>
+        <li>Ortodoncia: brackets metálicos ambas arcadas 2.759,50 € · Invisalign desde 2.185,50 €</li>
+      </ul>
+      <p class="ojo">Son precios cerrados de la red concertada, bastante por debajo del mercado libre, pero salen de tu bolsillo.</p>
+    </article>
+  </div>
+</section>
+
+<section id="sintomas">
+  <span class="eyebrow">Qué hago si…</span>
+  <h2>Me pasa algo: ¿a dónde voy?</h2>
+  <p class="lead">Elige el síntoma y mira en qué nivel estás. La idea es que no acabes en urgencias por algo que se resuelve en casa, ni esperando cita cuando lo que toca es urgencias. No sustituye al criterio de un médico: ante la duda, Sanitas 24 h resuelve por teléfono los 365 días.</p>
+
+  <div class="banda-aviso">
+    <b>Antes de nada, las señales de llamar al 112 ya:</b> dolor de pecho opresivo, dificultad para respirar, pérdida de fuerza o de habla, desviación de la cara, pérdida de conciencia, sangrado que no para, o el peor dolor de cabeza de tu vida de golpe. Eso no es cita: es emergencia.
+  </div>
+
+  <div class="filtros" id="filtros-sintomas" role="group" aria-label="Elegir síntoma">
+    <button data-s="espalda" aria-pressed="true">Dolor de espalda</button>
+    <button data-s="cabeza" aria-pressed="false">Dolor de cabeza</button>
+    <button data-s="garganta" aria-pressed="false">Garganta y catarro</button>
+    <button data-s="tripa" aria-pressed="false">Dolor de tripa</button>
+    <button data-s="fiebre" aria-pressed="false">Fiebre</button>
+    <button data-s="animo" aria-pressed="false">Ánimo y ansiedad</button>
+    <button data-s="piel" aria-pressed="false">Piel y lunares</button>
+    <button data-s="muela" aria-pressed="false">Dolor de muela</button>
+  </div>
+
+  <div id="panel-sintomas"></div>
+</section>
+
+<section id="calendario">
+  <span class="eyebrow">Calendario</span>
+  <h2>Tu año de un vistazo</h2>
+  <p class="lead">Reparte las visitas para no amontonarlas. Las revisiones dentales van cada seis meses; el resto es una vez al año o según toque. Cuando marques una tarea con fecha en «Mi año», aparecerá aquí en su mes.</p>
+
+  <div class="cal-tools">
+    <button id="cal-año-menos" aria-label="Año anterior">‹</button>
+    <strong id="cal-año"></strong>
+    <button id="cal-año-mas" aria-label="Año siguiente">›</button>
+    <span class="cal-leyenda">
+      <span><i class="p-dental"></i> Dental</span>
+      <span><i class="p-anual"></i> Revisión anual</span>
+      <span><i class="p-riesgo"></i> Según riesgo</span>
+      <span><i class="p-donacion"></i> Donación</span>
+    </span>
+  </div>
+  <div class="calendario" id="calendario"></div>
+  <p class="notas" style="margin-top:14px">Las visitas sugeridas se colocan solas para repartir el año; cuando pongas una fecha real en «Mi año» o una donación, esa fecha manda y se pinta en su día.</p>
+</section>
+
+<section id="checklist">
+  <span class="eyebrow">Mi año</span>
+  <h2>Qué te toca revisar, y cuándo</h2>
+  <p class="lead">Tienes 25 años y no hay síntomas de por medio, así que el plan sensato no es una visita anual a cada especialidad: es una revisión centrada en medicina familiar y derivar solo si hay algo. Lo demás está aquí como «según riesgo», para que sepas cuándo activarlo.</p>
+
+  <div class="panel-progreso">
+    <div><div class="cifra" id="cifra-progreso">0%</div><div style="font-size:13px;color:var(--tinta-2)">completado este año</div></div>
+    <div class="barra" style="max-width:340px"><i id="barra-progreso"></i></div>
+    <div class="acciones">
+      <button id="btn-exportar">Descargar copia</button>
+      <button id="btn-importar">Restaurar copia</button>
+      <button id="btn-imprimir">Imprimir o guardar en PDF</button>
+      <button id="btn-reiniciar">Empezar año nuevo</button>
+      <input type="file" id="fichero-importar" accept="application/json" class="sr">
+    </div>
+  </div>
+
+  <div class="filtros" id="filtros-tareas" role="group" aria-label="Filtrar tareas">
+    <button data-t="todo" aria-pressed="true">Todas</button>
+    <button data-t="anual" aria-pressed="false">Revisión periódica</button>
+    <button data-t="riesgo" aria-pressed="false">Solo si hay motivo</button>
+    <button data-t="pendiente" aria-pressed="false">Pendientes</button>
+  </div>
+
+  <div class="tareas" id="lista-tareas"></div>
+
+  <h3 style="margin-top:44px;font-size:22px">Donación de sangre</h3>
+  <p class="lead" style="margin-top:8px">Es voluntariado, no una revisión médica, y no sustituye a ningún control. En España el mínimo entre donaciones es de dos meses y el máximo son cuatro al año para hombres; algunas comunidades ya aplican los nuevos criterios europeos que lo suben a seis. Antes de cada donación te hacen una entrevista y te miden la hemoglobina.</p>
+  <div class="donaciones" id="donaciones"></div>
+  <div id="proxima-donacion"></div>
+  <p class="notas" style="margin-top:14px">Si notas cansancio marcado, tienes anemia o ferropenia, o te lo desaconsejan en el centro, espacia las donaciones. La aptitud la decide el centro, no el calendario.</p>
+</section>
+
+<section id="letra-pequena">
+  <span class="eyebrow">Letra pequeña</span>
+  <h2>Lo que no cubre, y lo que se olvida</h2>
+
+  <details>
+    <summary>Exclusiones que más te pueden afectar</summary>
+    <div class="cuerpo">
+      <dl>
+        <dt>Reconocimientos médicos generales preventivos</dt><dd>Excluidos salvo los programas de medicina preventiva que el propio condicionado recoge: pediatría, digestivo, cardiología, neumología, ginecología y urología. No entra el clásico «chequeo completo» a demanda.</dd>
+        <dt>Asistencia en la sanidad pública</dt><dd>Lo prestado en centros del Sistema Nacional de Salud no es objeto de cobertura, ni la asistencia transfronteriza.</dd>
+        <dt>Medicinas alternativas</dt><dd>Naturopatía, homeopatía, acupuntura, mesoterapia, ozonoterapia, quiropráctica y centros de medicina integrativa.</dd>
+        <dt>Estética</dt><dd>Cualquier intervención con finalidad estética, incluidas las que se justifican por razones psicológicas. También la cirugía refractiva de miopía, hipermetropía o astigmatismo.</dd>
+        <dt>Medicamentos fuera del hospital</dt><dd>La farmacia ambulatoria la pagas tú. También quedan fuera gafas, lentillas, audífonos, órtesis y material ortopédico.</dd>
+        <dt>Fertilidad</dt><dd>Solo entran las pruebas diagnósticas listadas. En cuanto empieza el tratamiento, se acaba la cobertura.</dd>
+        <dt>Deportes de riesgo y competición</dt><dd>Escalada, artes marciales, rugby, submarinismo, parapente, quad y similares, incluidos entrenamientos y competiciones.</dd>
+        <dt>Consumo y autolesiones</dt><dd>Excluida la asistencia derivada de alcoholismo crónico, drogadicción, intoxicaciones por abuso, intento de suicidio y autolesiones.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <details>
+    <summary>Coberturas que casi nadie usa y ya tienes pagadas</summary>
+    <div class="cuerpo">
+      <dl>
+        <dt>Segunda opinión médica internacional</dt><dd>Para enfermedades graves o crónicas con mal pronóstico. Informe de especialistas de primer nivel de cualquier país, con un médico consultor asignado. Teléfono 93 254 05 38. No vale para procesos agudos o urgentes.</dd>
+        <dt>Envío de medicamentos a casa</dt><dd>Hasta 6 veces al año, entrega en 3 horas dentro de España. El precio del medicamento lo pagas al recibirlo.</dd>
+        <dt>Sanitas 24 horas</dt><dd>Equipo médico al teléfono los 365 días para dudas sobre tratamientos, medicación o lectura de análisis.</dd>
+        <dt>Videoconsulta de urgencias y de especialistas</dt><dd>Desde la app. No eliges facultativo y no sustituye a la consulta presencial.</dd>
+        <dt>Accidentes de tráfico y laborales</dt><dd>Cubiertos por la póliza, salvo deporte profesional.</dd>
+        <dt>Urgencias en el extranjero</dt><dd>Hasta 12.000 € por persona y año durante los primeros 90 días de viaje, más traslados, alojamiento de acompañante y adelantos. Llama a Sanitas antes de que te atiendan.</dd>
+      </dl>
+    </div>
+  </details>
+
+  <details>
+    <summary>De dónde sale cada dato</summary>
+    <div class="cuerpo">
+      <p>Todo lo contractual procede de tu propia documentación: condiciones generales (coberturas, topes, exclusiones, forma de prestar los servicios), condiciones particulares (productos contratados, ausencia de copagos y carencias, tarifas dentales 2025) y el certificado de cobertura en España, que confirma la vigencia hasta el 31/12/2026 y que la modalidad es de asistencia sanitaria, no de reembolso.</p>
+      <p>Las recomendaciones preventivas siguen el enfoque del PAPPS de la semFYC: prevención desde atención primaria, no cribados indiscriminados en adultos jóvenes sanos. Los intervalos de donación de sangre proceden del Real Decreto 1088/2005 y de los criterios europeos que algunas comunidades ya aplican.</p>
+      <p>Esta página es una guía de uso, no un documento contractual ni consejo médico. Ante cualquier discrepancia manda el condicionado de la póliza, y las decisiones clínicas las toma tu médico.</p>
+    </div>
+  </details>
+</section>
+
+<footer>
+  <p>Preparado a partir de tus documentos de póliza. Sin datos personales identificativos: no aparecen DNI, dirección ni número completo de póliza. Los datos que introduzcas viven solo en este navegador.</p>
+</footer>
+
+</main>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- almacenamiento con red de seguridad ---------- */
+var CLAVE="plan_salud_sanitas_v2";
+var memoria={};
+var persistente=(function(){
+  try{var p="__t";window.localStorage.setItem(p,"1");window.localStorage.removeItem(p);return true;}
+  catch(e){return false;}
+})();
+function leer(){
+  if(!persistente) return memoria;
+  try{return JSON.parse(window.localStorage.getItem(CLAVE)||"{}");}catch(e){return {};}
+}
+function escribir(d){
+  memoria=d;
+  if(!persistente) return;
+  try{window.localStorage.setItem(CLAVE,JSON.stringify(d));}catch(e){}
+}
+var estado=leer();
+estado.tareas=estado.tareas||{};
+estado.topes=estado.topes||{};
+estado.donaciones=estado.donaciones||{};
+function guardar(){escribir(estado);}
+
+document.getElementById("estado-guardado").textContent =
+  persistente ? "" : "Aviso: este navegador no permite guardar; usa «Descargar copia» antes de cerrar.";
+
+/* ---------- coberturas ---------- */
+var COBERTURAS=[
+ {t:"Atención primaria y enfermería",v:"directo",p:[
+   "Medicina familiar en consulta, con indicación de analítica y radiología general",
+   "Enfermería en consulta y a domicilio",
+   "Medicina familiar a domicilio si la enfermedad te impide desplazarte"],
+  ojo:"Es tu puerta de entrada más útil: desde aquí salen las recetas para pruebas y para psicología."},
+
+ {t:"Urgencias",v:"directo",p:[
+   "Centros de urgencia permanente concertados",
+   "Urgencias a domicilio en poblaciones donde Sanitas lo tenga concertado",
+   "Sanitas 24 horas y videoconsulta de urgencias",
+   "Ambulancia terrestre para ingreso, urgencia, alta y traslados entre hospitales"],
+  ojo:"La ambulancia no cubre ir a consultas, a pruebas ni a fisioterapia.",
+  tope:"Urgencia vital fuera del cuadro: avisar a Sanitas cuanto antes"},
+
+ {t:"Consultas de especialista",v:"directo",p:[
+   "Alergología, cardiología, dermatología, digestivo, endocrino, geriatría, hematología, medicina interna, nefrología, neumología, neurología, neurofisiología",
+   "Ginecología, oftalmología, otorrino, psiquiatría, rehabilitación, reumatología, traumatología, urología",
+   "Anestesiología, anatomía patológica, medicina nuclear, radiodiagnóstico, radioterapia, oncología"],
+  ojo:"Consulta la guía de médicos: unos pocos especialistas sí piden volante en algunos productos."},
+
+ {t:"Análisis y pruebas de imagen",v:"receta",p:[
+   "Análisis clínicos, radiografías, ecografías, TAC y resonancia",
+   "Contrastes a cargo de Sanitas"],
+  ojo:"Excluidos: test de disbiosis intestinal, intolerancia alimentaria ALCAT, actividad DAO, paneles de anticuerpos cualitativos y PCR múltiple.",
+  tope:"Las pruebas complejas necesitan además autorización"},
+
+ {t:"Psicología",v:"receta",p:[
+   "Atención psicológica individual para patologías tratables psicológicamente",
+   "Prescrita por psiquiatra, médico de familia, pediatra u oncólogo"],
+  ojo:"Los test psicométricos los pagas tú. Fuera: psicoanálisis, hipnosis, terapias con animales, rehabilitación psicosocial.",
+  tope:"15 sesiones por año"},
+
+ {t:"Psiquiatría",v:"directo",p:[
+   "Consulta de especialista del cuadro médico",
+   "Hospitalización con pernocta para brotes agudos",
+   "En trastorno de conducta alimentaria, continuidad en hospital de día tras el ingreso"],
+  ojo:"El ingreso psiquiátrico no incluye habitación individual con cama de acompañante.",
+  tope:"50 días de hospitalización por año"},
+
+ {t:"Fisioterapia y rehabilitación",v:"auth",p:[
+   "Solo ambulatoria y solo para el aparato locomotor",
+   "Consulta de rehabilitación para valorar y prescribir el tratamiento",
+   "Ondas de choque para lesiones osteotendinosas crónicas",
+   "Drenaje linfático tras cirugía oncológica"],
+  ojo:"Fuera: fisioterapia a domicilio, procesos crónicos de más de 6 meses, rehabilitación neurológica, vestibular, acuática, de la mandíbula o con robot. Y termina cuando se alcanza la recuperación funcional máxima.",
+  tope:"Ondas de choque: 5 sesiones por articulación y año"},
+
+ {t:"Logopedia y foniatría",v:"auth",p:[
+   "Solo por procesos orgánicos de laringe y cuerdas vocales, o tras ictus",
+   "Prescrita por otorrino o por neurólogo"],
+  ojo:"No cubre terapia educativa ni educación del lenguaje sin patología orgánica.",
+  tope:"80 sesiones al año"},
+
+ {t:"Podología",v:"receta",p:[
+   "Solo quiropodia: callosidades y alteraciones de las uñas de los pies",
+   "Realizada por podólogo"],
+  tope:"12 sesiones al año"},
+
+ {t:"Hospitalización y cirugía",v:"auth",p:[
+   "Habitación individual y cama de acompañante, salvo UVI, incubadora y psiquiatría",
+   "Quirófano, medicación hospitalaria, métodos diagnósticos y terapéuticos, estancia y manutención",
+   "Prótesis internas de la lista del condicionado: cadera, rodilla, stents, marcapasos, lente intraocular monofocal simple, mallas, entre otras"],
+  ojo:"Neurocirugía, cirugía cardiaca y de columna: Sanitas designa centro y cirujano en cada caso. Excluida la cirugía robótica.",
+  tope:"Requiere autorización previa expresa"},
+
+ {t:"Medicina preventiva del contrato",v:"directo",p:[
+   "Programas para población sana con consulta, exploración y pruebas básicas",
+   "Digestivo: sangre oculta en heces o colonoscopia",
+   "Cardiología: ECG, analítica básica y prueba de esfuerzo para riesgo coronario",
+   "Neumología: radiografía de tórax",
+   "Urología: analítica con PSA, ecografía y, si procede, biopsia de próstata",
+   "Ginecología y pediatría en sus propios programas"],
+  ojo:"La periodicidad la marca el especialista según tu riesgo, no un calendario fijo. A los 25 años, sin antecedentes ni síntomas, casi nada de esto toca todavía."},
+
+ {t:"Programas digitales Blua",v:"directo",p:[
+   "Psicología, nutrición, entrenador personal y fisioterapia a distancia",
+   "Deshabituación tabáquica, seguimiento de crónicos, embarazo, salud infantil, suelo pélvico",
+   "Por teléfono, chat y videoconsulta, de lunes a viernes de 8 a 22 h"],
+  ojo:"No diagnostican, no recetan pruebas y no atienden lo que requiera presencia física.",
+  tope:"91 752 29 04 · Mi Sanitas"},
+
+ {t:"Fuera de España",v:"auth",p:[
+   "Urgencias por enfermedad o accidente en los primeros 90 días de viaje",
+   "Gastos médicos, hospitalización, medicamentos recetados y ambulancia local",
+   "Traslado sanitario, acompañamiento de menores, envío de objetos olvidados"],
+  ojo:"No cubre lo ya conocido antes del viaje, ni enfermedades mentales o crónicas, ni gastos menores de 3 €.",
+  tope:"12.000 € por persona y año"},
+
+ {t:"Dental",v:"directo",p:[
+   "Consulta, higiene, urgencia, radiología y extracciones sin coste",
+   "El resto de tratamientos, a precio concertado"],
+  ojo:"Detalle completo en la sección Dental.",
+  tope:"Tarifas 2025, revisables cada 1 de enero"},
+
+ {t:"Segunda opinión médica",v:"receta",p:[
+   "Enfermedades graves o crónicas con mal pronóstico",
+   "Informe de expertos internacionales designados por Sanitas",
+   "Médico consultor asignado durante todo el proceso"],
+  ojo:"No aplica a procesos agudos ni urgentes.",
+  tope:"Teléfono 93 254 05 38"}
+];
+
+var SELLOS={directo:["s-directo","Directo"],receta:["s-receta","Con receta"],auth:["s-auth","Con autorización"]};
+
+function pintarCoberturas(filtro){
+  var cont=document.getElementById("fichas-coberturas");
+  cont.innerHTML="";
+  COBERTURAS.filter(function(c){return filtro==="todo"||c.v===filtro;}).forEach(function(c){
+    var el=document.createElement("article");
+    el.className="ficha";
+    var s=SELLOS[c.v];
+    var html='<div class="cab"><h3>'+c.t+'</h3><span class="sello '+s[0]+'">'+s[1]+'</span></div>';
+    html+='<ul>'+c.p.map(function(x){return "<li>"+x+"</li>";}).join("")+'</ul>';
+    if(c.tope) html+='<div class="tope">'+c.tope+'</div>';
+    if(c.ojo) html+='<p class="ojo">'+c.ojo+'</p>';
+    el.innerHTML=html;
+    cont.appendChild(el);
+  });
+}
+pintarCoberturas("todo");
+
+document.getElementById("filtros-coberturas").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b));});
+  pintarCoberturas(b.dataset.f);
+});
+
+/* ---------- topes ---------- */
+var TOPES=[
+ {id:"dentalrev",n:"Revisión dental incluida",max:2,u:"visitas",per:"al año (orientativo)",nota:"Sin número máximo en el contrato; 2/año es la norma clínica"},
+ {id:"dentalhig",n:"Higiene bucodental incluida",max:2,u:"limpiezas",per:"al año (orientativo)",nota:"Sin número máximo en el contrato; 2/año es la norma clínica"},
+ {id:"psico",n:"Psicología, sesiones individuales",max:15,u:"sesiones",per:"por año"},
+ {id:"psiq",n:"Hospitalización psiquiátrica, brotes agudos",max:50,u:"días",per:"por año"},
+ {id:"logo",n:"Logopedia y foniatría",max:80,u:"sesiones",per:"por año"},
+ {id:"podo",n:"Podología, quiropodia",max:12,u:"sesiones",per:"por año"},
+ {id:"ondas",n:"Ondas de choque",max:5,u:"sesiones",per:"por articulación y año"},
+ {id:"fisiotor",n:"Fisioterapia respiratoria tras cirugía torácica",max:5,u:"sesiones",per:"durante el ingreso"},
+ {id:"suelo",n:"Rehabilitación de suelo pélvico",max:10,u:"sesiones",per:"por parto"},
+ {id:"medic",n:"Envío de medicamentos a domicilio",max:6,u:"envíos",per:"por año"},
+ {id:"extranj",n:"Urgencias en el extranjero",max:12000,u:"€",per:"por persona y año"},
+ {id:"dentalext",n:"Odontología urgente en el extranjero",max:300,u:"€",per:"por asegurado"},
+ {id:"hotelac",n:"Alojamiento de acompañante hospitalizado",max:60,u:"€/día, 10 días",per:"por viaje"},
+ {id:"hotelfam",n:"Desplazamiento de un familiar",max:60,u:"€/día, 5 días",per:"por viaje"},
+ {id:"fondos",n:"Adelanto de fondos",max:1500,u:"€",per:"a devolver en 30 días"},
+ {id:"fianza",n:"Adelanto de fianza penal",max:10000,u:"€",per:"a devolver en 2 meses"}
+];
+var CONTABLES={dentalrev:1,dentalhig:1,psico:1,psiq:1,logo:1,podo:1,ondas:1,medic:1};
+
+function pintarTopes(){
+  var tb=document.getElementById("cuerpo-topes");
+  tb.innerHTML="";
+  TOPES.forEach(function(t){
+    var tr=document.createElement("tr");
+    var celda;
+    if(CONTABLES[t.id]){
+      var usadas=Number(estado.topes[t.id]||0);
+      var pct=Math.min(100,Math.round(usadas/t.max*100));
+      celda='<div class="contador"><input type="number" min="0" max="'+t.max+'" value="'+usadas+
+        '" data-tope="'+t.id+'" aria-label="Usadas de '+t.n+'"><div class="barra'+(pct>=100?" lleno":"")+
+        '"><i style="width:'+pct+'%"></i></div><span class="num" style="font-size:12.5px;color:var(--tinta-2)">'+
+        Math.max(0,t.max-usadas)+' rest.</span></div>';
+    }else{
+      celda='<span style="color:var(--tinta-2);font-size:14px">Sin contador: es un importe, no sesiones</span>';
+    }
+    var nombre=t.n+(t.nota?'<br><span style="font-size:12px;color:var(--tinta-2)">'+t.nota+'</span>':'');
+    tr.innerHTML='<td>'+nombre+'</td><td class="num">'+(t.u==="€"?t.max.toLocaleString("es-ES")+" €":t.max+" "+t.u)+
+      '</td><td style="color:var(--tinta-2);font-size:14px">'+t.per+'</td><td>'+celda+'</td>';
+    tb.appendChild(tr);
+  });
+}
+pintarTopes();
+
+document.getElementById("cuerpo-topes").addEventListener("change",function(e){
+  var i=e.target.closest("input[data-tope]"); if(!i) return;
+  estado.topes[i.dataset.tope]=Math.max(0,Number(i.value)||0);
+  guardar(); pintarTopes();
+});
+
+/* ---------- checklist ---------- */
+var TAREAS=[
+ {id:"mf",c:"anual",t:"Revisión con Medicina Familiar",f:"1 vez al año o cada 2",v:"directo",
+  d:"La consulta base. Repasáis hábitos, peso, tensión, vacunas, sueño, alcohol y tabaco, y desde aquí salen las derivaciones o analíticas que hagan falta. Es lo único que de verdad conviene hacer con periodicidad fija a tu edad."},
+ {id:"ta",c:"anual",t:"Tensión arterial",f:"cada 1-2 años",v:"directo",
+  d:"Se mide en la propia consulta o en enfermería, tarda dos minutos y es de lo poco con beneficio claro a los 25 años. Anota la cifra para poder comparar."},
+ {id:"dental1",c:"anual",t:"Revisión dental e higiene bucodental",f:"2 veces al año",v:"directo",
+  d:"Consulta, exploración e higiene están incluidas sin coste, igual que la panorámica y el escáner intraoral. Aprovéchalo: es la prestación gratuita que más se desperdicia."},
+ {id:"vacunas",c:"anual",t:"Repaso del calendario de vacunas",f:"1 vez, y revisar cada 5 años",v:"directo",
+  d:"Comprueba con tu médico si te falta algún recuerdo de tétanos-difteria, triple vírica, hepatitis B, meningococo o VPH. Ojo: las vacunas como producto no las cubre la póliza, pero la consulta sí."},
+ {id:"piel",c:"anual",t:"Autoexploración de la piel",f:"cada 2-3 meses, tú solo",v:"directo",
+  d:"Mira lunares nuevos o que cambien de forma, color, tamaño o sangren. Si algo llama la atención, dermatología es de acceso directo."},
+ {id:"animo",c:"anual",t:"Chequeo de ánimo, sueño y estrés",f:"1 vez al año",v:"receta",
+  d:"Si algo no va bien, la ruta es médico de familia o psiquiatra, y desde ahí prescripción para el psicólogo del cuadro. Para apoyo ligero e inmediato tienes el programa de psicología de Blua por teléfono o vídeo."},
+ {id:"laboral",c:"anual",t:"Vigilancia de la salud de Nestlé",f:"cuando la ofrezcan",v:"fuera",
+  d:"El reconocimiento laboral lo paga la empresa por su servicio de prevención, no la póliza. Si te lo ofrecen, aprovéchalo: suele incluir analítica, y así no duplicas pruebas."},
+ {id:"vista",c:"anual",t:"Revisión de la vista",f:"cada 2 años si usas gafas",v:"directo",
+  d:"Oftalmología es acceso directo. Las gafas y lentillas las pagas tú: la póliza excluye el material óptico."},
+
+ {id:"analitica",c:"riesgo",t:"Analítica general",f:"solo si hay motivo",v:"receta",
+  d:"Sin síntomas ni factores de riesgo, una analítica anual de rutina no aporta beneficio demostrado y sí falsos positivos. Se pide cuando tu médico ve una razón. Necesita prescripción."},
+ {id:"lipidos",c:"riesgo",t:"Colesterol y riesgo cardiovascular",f:"desde los 35-40, o antes si hay antecedentes",v:"receta",
+  d:"Adelántalo si hay hipercolesterolemia familiar, infartos precoces en la familia, tabaquismo, hipertensión o sobrepeso importante."},
+ {id:"glucosa",c:"riesgo",t:"Glucosa",f:"según riesgo",v:"receta",
+  d:"Se mira con sobrepeso, sedentarismo, antecedentes familiares de diabetes o hipertensión. No de rutina a los 25."},
+ {id:"its",c:"riesgo",t:"Cribado de infecciones de transmisión sexual",f:"según prácticas",v:"receta",
+  d:"La prueba de VIH al menos una vez en la vida es una recomendación razonable, y con más frecuencia si hay parejas nuevas o sexo sin protección. Se pide sin drama en medicina familiar."},
+ {id:"derma",c:"riesgo",t:"Dermatología",f:"si aparece algo",v:"directo",
+  d:"Lunar que cambia, acné que no responde, caída de pelo llamativa o lesiones que no curan. No hace falta revisión anual de cribado sin factores de riesgo."},
+ {id:"trauma",c:"riesgo",t:"Traumatología y fisioterapia",f:"tras lesión",v:"auth",
+  d:"La consulta es directa, pero las sesiones de fisioterapia necesitan prescripción del rehabilitador y autorización de Sanitas. Y solo cubre aparato locomotor, en proceso no crónico."},
+ {id:"digest",c:"riesgo",t:"Aparato digestivo",f:"según síntomas o antecedentes",v:"directo",
+  d:"El cribado de colon por edad empieza a los 50. Antes, solo con antecedentes familiares o síntomas persistentes."},
+ {id:"uro",c:"riesgo",t:"Urología",f:"la marca el especialista",v:"directo",
+  d:"El propio contrato dice que la periodicidad de la prevención urológica la decide el especialista según el riesgo. A tu edad, motivo concreto o nada."},
+ {id:"orl",c:"riesgo",t:"Otorrinolaringología",f:"según síntomas",v:"directo",
+  d:"Pérdida de audición, ruidos, obstrucción nasal persistente o afonía de más de tres semanas."}
+];
+
+var VIA_TXT={directo:["s-directo","Directo"],receta:["s-receta","Con receta"],auth:["s-auth","Con autorización"],fuera:["s-fuera","Fuera de póliza"]};
+var filtroTareas="todo";
+
+function pintarTareas(){
+  var cont=document.getElementById("lista-tareas");
+  cont.innerHTML="";
+  TAREAS.filter(function(t){
+    var e=estado.tareas[t.id]||{};
+    if(filtroTareas==="todo") return true;
+    if(filtroTareas==="pendiente") return !e.hecha;
+    return t.c===filtroTareas;
+  }).forEach(function(t){
+    var e=estado.tareas[t.id]||{};
+    var v=VIA_TXT[t.v];
+    var el=document.createElement("article");
+    el.className="tarea"+(e.hecha?" hecha":"");
+    el.innerHTML=
+      '<input type="checkbox" data-id="'+t.id+'" data-campo="hecha" '+(e.hecha?"checked":"")+
+        ' aria-label="Marcar '+t.t+' como hecho">'+
+      '<div class="titulo"><h3>'+t.t+'</h3><span class="frec">'+t.f+'</span><span class="sello '+v[0]+'">'+v[1]+'</span></div>'+
+      '<p class="detalle">'+t.d+'</p>'+
+      '<div class="campos">'+
+        '<div><label for="f-'+t.id+'">Fecha</label><input id="f-'+t.id+'" type="date" data-id="'+t.id+'" data-campo="fecha" value="'+(e.fecha||"")+'"></div>'+
+        '<div><label for="r-'+t.id+'">Resultado o notas</label><input id="r-'+t.id+'" type="text" placeholder="Qué salió, qué te dijeron" data-id="'+t.id+'" data-campo="nota" value="'+(e.nota||"").replace(/"/g,"&quot;")+'"></div>'+
+        '<div><label for="p-'+t.id+'">Próxima cita</label><input id="p-'+t.id+'" type="date" data-id="'+t.id+'" data-campo="proxima" value="'+(e.proxima||"")+'"></div>'+
+      '</div>';
+    cont.appendChild(el);
+  });
+  actualizarProgreso();
+}
+
+function actualizarProgreso(){
+  var base=TAREAS.filter(function(t){return t.c==="anual";});
+  var hechas=base.filter(function(t){return (estado.tareas[t.id]||{}).hecha;}).length;
+  var pct=base.length?Math.round(hechas/base.length*100):0;
+  document.getElementById("cifra-progreso").textContent=pct+"%";
+  document.getElementById("barra-progreso").style.width=pct+"%";
+}
+
+document.getElementById("lista-tareas").addEventListener("change",function(e){
+  var el=e.target.closest("[data-id]"); if(!el) return;
+  var id=el.dataset.id, campo=el.dataset.campo;
+  estado.tareas[id]=estado.tareas[id]||{};
+  estado.tareas[id][campo]= campo==="hecha" ? el.checked : el.value;
+  if(campo==="hecha" && el.checked && !estado.tareas[id].fecha){
+    estado.tareas[id].fecha=new Date().toISOString().slice(0,10);
+  }
+  guardar();
+  if(campo==="hecha") pintarTareas(); else actualizarProgreso();
+});
+
+document.getElementById("filtros-tareas").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b));});
+  filtroTareas=b.dataset.t;
+  pintarTareas();
+});
+
+/* ---------- donaciones ---------- */
+function pintarDonaciones(){
+  var cont=document.getElementById("donaciones");
+  cont.innerHTML="";
+  for(var i=1;i<=4;i++){
+    var v=estado.donaciones["d"+i]||"";
+    var d=document.createElement("div");
+    d.className="donacion";
+    d.innerHTML='<h4>Donación '+i+'</h4><input type="date" data-don="d'+i+'" value="'+v+'" aria-label="Fecha de la donación '+i+'">';
+    cont.appendChild(d);
+  }
+  var fechas=Object.keys(estado.donaciones).map(function(k){return estado.donaciones[k];})
+    .filter(Boolean).map(function(s){return new Date(s);}).sort(function(a,b){return b-a;});
+  var caja=document.getElementById("proxima-donacion");
+  if(!fechas.length){
+    caja.textContent="Cuando apuntes una donación, te calculo aquí la fecha a partir de la cual puedes volver a donar.";
+    return;
+  }
+  var ultima=fechas[0];
+  var proxima=new Date(ultima); proxima.setMonth(proxima.getMonth()+2);
+  var hoy=new Date(); hoy.setHours(0,0,0,0);
+  var doce=new Date(hoy); doce.setFullYear(doce.getFullYear()-1);
+  var enVentana=fechas.filter(function(f){return f>=doce;}).length;
+  var fmt=function(d){return d.toLocaleDateString("es-ES",{day:"numeric",month:"long",year:"numeric"});};
+  caja.innerHTML= proxima<=hoy
+    ? "<b>Ya puedes donar.</b> Han pasado más de dos meses desde el "+fmt(ultima)+". Llevas "+enVentana+" donación(es) en los últimos 12 meses; el máximo habitual para hombres son 4."
+    : "<b>Puedes volver a donar a partir del "+fmt(proxima)+".</b> Tu última donación fue el "+fmt(ultima)+" y el intervalo mínimo es de dos meses. Llevas "+enVentana+" en los últimos 12 meses.";
+}
+pintarDonaciones();
+
+document.getElementById("donaciones").addEventListener("change",function(e){
+  var i=e.target.closest("[data-don]"); if(!i) return;
+  estado.donaciones[i.dataset.don]=i.value;
+  guardar(); pintarDonaciones();
+});
+
+/* ---------- acciones ---------- */
+document.getElementById("btn-imprimir").addEventListener("click",function(){window.print();});
+
+document.getElementById("btn-exportar").addEventListener("click",function(){
+  var blob=new Blob([JSON.stringify(estado,null,2)],{type:"application/json"});
+  var a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="plan-salud-"+new Date().toISOString().slice(0,10)+".json";
+  a.click();
+  setTimeout(function(){URL.revokeObjectURL(a.href);},1000);
+});
+
+document.getElementById("btn-importar").addEventListener("click",function(){
+  document.getElementById("fichero-importar").click();
+});
+document.getElementById("fichero-importar").addEventListener("change",function(e){
+  var f=e.target.files[0]; if(!f) return;
+  var r=new FileReader();
+  r.onload=function(){
+    try{
+      var d=JSON.parse(r.result);
+      estado={tareas:d.tareas||{},topes:d.topes||{},donaciones:d.donaciones||{}};
+      guardar(); pintarTareas(); pintarTopes(); pintarDonaciones();
+    }catch(err){
+      window.alert("Ese fichero no se puede leer. Usa una copia descargada desde esta misma página.");
+    }
+  };
+  r.readAsText(f);
+  e.target.value="";
+});
+
+document.getElementById("btn-reiniciar").addEventListener("click",function(){
+  if(!window.confirm("Se borran fechas, notas y contadores. Descarga antes una copia si quieres conservarlos. ¿Empezamos año nuevo?")) return;
+  estado={tareas:{},topes:{},donaciones:{}};
+  guardar(); pintarTareas(); pintarTopes(); pintarDonaciones();
+});
+
+pintarTareas();
+
+/* ---------- síntomas por intensidad ---------- */
+var SINTOMAS={
+ espalda:{titulo:"Dolor de espalda",niveles:[
+   {g:"verde",e:"Leve",v:["s-directo","Casa"],
+    txt:"Molestia tras un mal gesto, un esfuerzo o muchas horas sentado. Te duele pero puedes moverte y hacer vida casi normal.",
+    senal:"<b>Qué hacer:</b> sigue en movimiento suave, evita reposo en cama, calor local y un analgésico normal si hace falta. Suele mejorar en pocos días."},
+   {g:"ambar",e:"Molesto o persistente",v:["s-directo","Medicina Familiar"],
+    txt:"Dura más de una o dos semanas sin mejorar, te limita para trabajar o dormir, o se repite cada poco.",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar. Si valora fisioterapia, recuerda que necesita prescripción del rehabilitador y autorización de Sanitas, y solo cubre aparato locomotor no crónico."},
+   {g:"granate",e:"Con señales de alarma",v:["s-auth","Urgencias / valoración pronta"],
+    txt:"Baja por la pierna con hormigueo, hay pérdida de fuerza en un pie, aparece tras un golpe fuerte, o se acompaña de fiebre o pérdida de peso.",
+    senal:"<b>Qué hacer:</b> no lo dejes pasar; acude a urgencias del cuadro o pide valoración pronta. Estas señales cambian el manejo."},
+   {g:"rojo",e:"Emergencia",v:["s-fuera","112"],
+    txt:"Pierdes el control de orina o heces, se te duermen la zona genital y la cara interna de los muslos, o hay debilidad brusca en las dos piernas.",
+    senal:"<b>Qué hacer:</b> 112 o urgencias hospitalarias inmediatas. Es una urgencia neurológica."}
+ ]},
+ cabeza:{titulo:"Dolor de cabeza",niveles:[
+   {g:"verde",e:"Leve o habitual",v:["s-directo","Casa"],
+    txt:"Tipo tensión: presión en la frente o la nuca al final de un día largo, con pantallas, poco sueño o poca agua.",
+    senal:"<b>Qué hacer:</b> hidrátate, descansa la vista, analgésico normal si lo necesitas. Vigila no abusar de analgésicos más de dos o tres días por semana."},
+   {g:"ambar",e:"Recurrente o incapacitante",v:["s-directo","Medicina Familiar"],
+    txt:"Se repite varias veces al mes, te obliga a parar, es pulsátil con náuseas o molestia con la luz (perfil de migraña).",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar para filiarlo y tratarlo. Si hace falta, deriva a neurología, que es acceso directo del cuadro."},
+   {g:"granate",e:"Distinto a lo habitual",v:["s-directo","Valoración pronta"],
+    txt:"Cambia de patrón, empeora al toser o tumbarte, te despierta por la noche, o aparece por primera vez pasados los 50.",
+    senal:"<b>Qué hacer:</b> valoración médica pronta. No es para dejar semanas."},
+   {g:"rojo",e:"Emergencia",v:["s-fuera","112"],
+    txt:"El peor dolor de tu vida y de golpe (en segundos), o con fiebre y rigidez de cuello, confusión, pérdida de fuerza o del habla, o tras un golpe fuerte.",
+    senal:"<b>Qué hacer:</b> 112 de inmediato. Puede ser un sangrado o una infección grave."}
+ ]},
+ garganta:{titulo:"Garganta y catarro",niveles:[
+   {g:"verde",e:"Catarro común",v:["s-directo","Casa"],
+    txt:"Mocos, algo de tos, garganta rasposa, sin apenas fiebre. Molesto pero llevadero.",
+    senal:"<b>Qué hacer:</b> líquidos, descanso, y paciencia: son virus y se pasan en unos días. Los antibióticos no ayudan aquí."},
+   {g:"ambar",e:"No mejora o fiebre alta",v:["s-directo","Medicina Familiar"],
+    txt:"Fiebre que sube, placas blancas en las amígdalas, dolor fuerte al tragar, o síntomas que se alargan más de una semana.",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar. Puede necesitar mirar si es bacteriano. Sanitas 24 h orienta si dudas."},
+   {g:"granate",e:"Cuesta tragar o respirar",v:["s-auth","Urgencias"],
+    txt:"Te cuesta tragar tu propia saliva, babeas, cambia la voz, se hincha el cuello o notas que respiras peor.",
+    senal:"<b>Qué hacer:</b> urgencias sin esperar. La vía respiratoria es prioritaria."}
+ ]},
+ tripa:{titulo:"Dolor de tripa",niveles:[
+   {g:"verde",e:"Leve y pasajero",v:["s-directo","Casa"],
+    txt:"Gases, empacho, un poco de diarrea o retortijones que van y vienen, sin fiebre y sin cortarte la vida.",
+    senal:"<b>Qué hacer:</b> dieta blanda, líquidos, y esperar. Suele irse en un día o dos."},
+   {g:"ambar",e:"Persistente o con síntomas",v:["s-directo","Medicina Familiar"],
+    txt:"Dura varios días, hay vómitos repetidos, diarrea que no cede, o el dolor te despierta.",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar o digestivo (acceso directo). Hidrátate bien mientras tanto."},
+   {g:"granate",e:"Dolor intenso localizado",v:["s-auth","Urgencias"],
+    txt:"Dolor fuerte que se concentra abajo a la derecha, vientre duro como una tabla, vómitos con sangre, o heces negras.",
+    senal:"<b>Qué hacer:</b> urgencias. Podría ser apendicitis o un sangrado; no tomes analgésicos que lo enmascaren."},
+   {g:"rojo",e:"Emergencia",v:["s-fuera","112"],
+    txt:"Dolor brutal y súbito, palidez con sudor frío, mareo con sensación de desmayo o abdomen muy hinchado y tenso.",
+    senal:"<b>Qué hacer:</b> 112."}
+ ]},
+ fiebre:{titulo:"Fiebre",niveles:[
+   {g:"verde",e:"Febrícula o fiebre baja",v:["s-directo","Casa"],
+    txt:"Hasta unos 38 °C, con buen estado general, normalmente por un catarro. Menos de tres días.",
+    senal:"<b>Qué hacer:</b> líquidos, descanso, antitérmico si estás incómodo. No hace falta correr a ningún sitio."},
+   {g:"ambar",e:"Alta o que dura",v:["s-directo","Medicina Familiar"],
+    txt:"Pasa de 38,5 °C, dura más de tres días, o baja y vuelve. Te sientes bastante mal pero orientado.",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar para buscar el foco. Sanitas 24 h orienta mientras tanto."},
+   {g:"granate",e:"Con mal estado",v:["s-auth","Urgencias"],
+    txt:"Fiebre con dolor de cabeza intenso, confusión, dificultad para respirar, o manchas en la piel que no desaparecen al presionar.",
+    senal:"<b>Qué hacer:</b> urgencias sin demora. Esas manchas obligan a ir ya."}
+ ]},
+ animo:{titulo:"Ánimo y ansiedad",niveles:[
+   {g:"verde",e:"Bajón puntual o estrés",v:["s-directo","Blua a distancia"],
+    txt:"Días regulares, más nervios de lo normal, sueño peor por una racha concreta, pero sigues funcionando.",
+    senal:"<b>Qué hacer:</b> el programa de psicología de Blua (teléfono, chat o vídeo) es acceso directo y no gasta tus 15 sesiones. Cuida sueño, ejercicio y desconexión."},
+   {g:"ambar",e:"Sostenido o te limita",v:["s-receta","Medicina Familiar → Psicología"],
+    txt:"Semanas de ánimo bajo, ansiedad que interfiere en trabajo o relaciones, poco interés por lo que antes disfrutabas.",
+    senal:"<b>Qué hacer:</b> cita con medicina familiar o psiquiatría, y desde ahí prescripción para el psicólogo del cuadro (hasta 15 sesiones/año)."},
+   {g:"granate",e:"Grave",v:["s-directo","Psiquiatría"],
+    txt:"Bloqueo casi total, ataques de pánico frecuentes, no puedes con el día a día.",
+    senal:"<b>Qué hacer:</b> psiquiatría es acceso directo del cuadro. Pide cita cuanto antes; el psicólogo de la póliza no cubre cuadros graves."},
+   {g:"rojo",e:"Emergencia",v:["s-fuera","024 / 112"],
+    txt:"Pensamientos de hacerte daño o de que no merece la pena seguir.",
+    senal:"<b>Qué hacer:</b> llama al 024 (atención a la conducta suicida, 24 h y gratuito) o al 112. No estás solo y esto se trata."}
+ ]},
+ piel:{titulo:"Piel y lunares",niveles:[
+   {g:"verde",e:"Cambios menores",v:["s-directo","Autoexploración"],
+    txt:"Un grano, piel seca, una rojez que va y viene. Nada que cambie de forma llamativa.",
+    senal:"<b>Qué hacer:</b> observa. Revisa tus lunares cada dos o tres meses buscando cambios."},
+   {g:"ambar",e:"Algo que no cuadra",v:["s-directo","Dermatología"],
+    txt:"Un lunar que cambia de color, forma, tamaño o bordes, pica o sangra; acné que no responde; lesión que no cura en semanas.",
+    senal:"<b>Qué hacer:</b> dermatología es acceso directo del cuadro. Pide cita para que lo vean."},
+   {g:"granate",e:"Reacción extensa",v:["s-auth","Urgencias"],
+    txt:"Ronchas por todo el cuerpo con hinchazón de labios o párpados, ampollas extensas, o afectación con fiebre.",
+    senal:"<b>Qué hacer:</b> urgencias. Si además cuesta respirar o se hincha la garganta, es 112."}
+ ]},
+ muela:{titulo:"Dolor de muela",niveles:[
+   {g:"verde",e:"Sensibilidad leve",v:["s-directo","Dental"],
+    txt:"Molestia con el frío o el dulce, encía algo irritada, pero puntual.",
+    senal:"<b>Qué hacer:</b> pide cita dental normal. La consulta, la revisión y la urgencia dental están incluidas sin coste."},
+   {g:"ambar",e:"Dolor que no cede",v:["s-directo","Urgencia dental"],
+    txt:"Dolor mantenido, sensibilidad intensa, encía inflamada o sangrante.",
+    senal:"<b>Qué hacer:</b> consulta prioritaria de urgencia dental (incluida). El tratamiento que salga —empaste, endodoncia— puede tener precio concertado."},
+   {g:"granate",e:"Con hinchazón o fiebre",v:["s-auth","Urgencias médicas"],
+    txt:"Se hincha la cara o el cuello, hay fiebre, o el dolor es incontrolable: puede haber un flemón o absceso.",
+    senal:"<b>Qué hacer:</b> urgencias. Si se hincha hacia el ojo o el cuello y cuesta tragar o respirar, 112."}
+ ]}
+};
+
+function pintarSintomas(clave){
+  var s=SINTOMAS[clave];
+  var cont=document.getElementById("panel-sintomas");
+  var html='<div class="escala">';
+  s.niveles.forEach(function(n){
+    html+='<article class="nivel n-'+n.g+'"><div class="franja"></div><div class="cuerpo">'+
+      '<div class="cab"><span class="grado">'+n.e+'</span>'+
+      '<span class="sello '+n.v[0]+' via">'+n.v[1]+'</span></div>'+
+      '<p>'+n.txt+'</p><p class="senal">'+n.senal+'</p></div></article>';
+  });
+  html+='</div>';
+  cont.innerHTML=html;
+}
+pintarSintomas("espalda");
+
+document.getElementById("filtros-sintomas").addEventListener("click",function(e){
+  var b=e.target.closest("button"); if(!b) return;
+  this.querySelectorAll("button").forEach(function(x){x.setAttribute("aria-pressed",String(x===b));});
+  pintarSintomas(b.dataset.s);
+});
+
+/* ---------- calendario ---------- */
+var MESES=["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+// visitas sugeridas: mes por defecto (0-11) para repartir el año
+var SUGERIDAS=[
+  {tipo:"dental",mes:2,txt:"Revisión + higiene dental"},
+  {tipo:"dental",mes:8,txt:"Revisión + higiene dental"},
+  {tipo:"anual",mes:0,txt:"Medicina Familiar + tensión"},
+  {tipo:"anual",mes:0,txt:"Repaso de vacunas"},
+  {tipo:"anual",mes:5,txt:"Revisión de la vista"},
+  {tipo:"anual",mes:9,txt:"Chequeo de ánimo y estrés"},
+  {tipo:"riesgo",mes:4,txt:"Piel: autoexploración (cada 2-3 meses)"},
+  {tipo:"riesgo",mes:10,txt:"Piel: autoexploración (cada 2-3 meses)"}
+];
+// mapa id de tarea -> tipo de evento para colorear cuando haya fecha real
+var TIPO_TAREA={};
+TAREAS.forEach(function(t){TIPO_TAREA[t.id]=(t.c==="anual"?"anual":"riesgo");});
+TIPO_TAREA.dental1="dental";
+
+var añoCal=new Date().getFullYear();
+
+function eventosDe(año){
+  // devuelve array de 12 arrays (uno por mes)
+  var meses=[]; for(var i=0;i<12;i++) meses.push([]);
+  // 1) fechas reales de tareas
+  TAREAS.forEach(function(t){
+    var e=estado.tareas[t.id]||{};
+    if(e.fecha){
+      var d=new Date(e.fecha+"T00:00");
+      if(d.getFullYear()===año)
+        meses[d.getMonth()].push({tipo:TIPO_TAREA[t.id]||"anual",dia:d.getDate(),txt:t.t,real:true});
+    }
+    if(e.proxima){
+      var p=new Date(e.proxima+"T00:00");
+      if(p.getFullYear()===año)
+        meses[p.getMonth()].push({tipo:TIPO_TAREA[t.id]||"anual",dia:p.getDate(),txt:"Próxima: "+t.t,real:true});
+    }
+  });
+  // 2) donaciones reales
+  Object.keys(estado.donaciones).forEach(function(k){
+    var v=estado.donaciones[k]; if(!v) return;
+    var d=new Date(v+"T00:00");
+    if(d.getFullYear()===año) meses[d.getMonth()].push({tipo:"donacion",dia:d.getDate(),txt:"Donación de sangre",real:true});
+  });
+  // 3) sugeridas solo si el mes no tiene ya un evento real del mismo tipo
+  SUGERIDAS.forEach(function(s){
+    var yaReal=meses[s.mes].some(function(ev){return ev.real&&ev.tipo===s.tipo;});
+    if(!yaReal) meses[s.mes].push({tipo:s.tipo,txt:s.txt,real:false});
+  });
+  return meses;
+}
+
+function pintarCalendario(){
+  document.getElementById("cal-año").textContent=añoCal;
+  var cont=document.getElementById("calendario");
+  var meses=eventosDe(añoCal);
+  cont.innerHTML="";
+  meses.forEach(function(evs,i){
+    evs.sort(function(a,b){return (a.dia||99)-(b.dia||99);});
+    var div=document.createElement("div");
+    div.className="mes"+(evs.length?"":" vacio");
+    var html='<h4>'+MESES[i]+'</h4>';
+    if(!evs.length){ html+='<span style="font-size:12px;color:var(--tinta-2)">—</span>'; }
+    evs.forEach(function(ev){
+      html+='<div class="evento ev-'+ev.tipo+(ev.real?' ev-real':'')+'">'+
+        '<b>'+(ev.dia?ev.dia:"·")+'</b><span>'+ev.txt+'</span></div>';
+    });
+    div.innerHTML=html;
+    cont.appendChild(div);
+  });
+}
+document.getElementById("cal-año-menos").addEventListener("click",function(){añoCal--;pintarCalendario();});
+document.getElementById("cal-año-mas").addEventListener("click",function(){añoCal++;pintarCalendario();});
+pintarCalendario();
+
+/* recolorear calendario cuando cambian tareas o donaciones */
+document.getElementById("lista-tareas").addEventListener("change",pintarCalendario);
+document.getElementById("donaciones").addEventListener("change",pintarCalendario);
+document.getElementById("btn-reiniciar").addEventListener("click",function(){setTimeout(pintarCalendario,0);});
+document.getElementById("fichero-importar").addEventListener("change",function(){setTimeout(pintarCalendario,300);});
+})();
+</script>
+</body>
+</html>
