@@ -1,725 +1,520 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>UGREEN NAS — Arquitectura y seguridad técnica</title>
+<title>Nuestro NAS — Guía de casa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Karla:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#14171c;
-  --ink-2:#3a414b;
-  --steel:#6b7280;
-  --hair:#c9ccd2;
-  --shell:#e9eaed;
-  --panel:#f8f9fa;
-  --white:#ffffff;
-  --amber:#e08a1e;
-  --amber-deep:#a8620d;
-  --signal:#2f6f8f;
-  --alert:#b4453a;
-  --ok:#3f7d58;
-
-  --sans:"Archivo", "Helvetica Neue", Arial, sans-serif;
-  --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
-  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-
-  --pad:clamp(16px, 4vw, 44px);
-  --measure:74ch;
+  --paper:#eef1ec;--paper-2:#e6ebe4;--card:#fff;
+  --pine:#1c3b30;--pine-2:#2c5445;
+  --leaf:#3f8f63;--leaf-soft:#e2efe6;
+  --flag:#c94f3d;--flag-soft:#f8e6e2;
+  --sun:#d99a24;--sun-soft:#fbf0d9;
+  --sky:#3c7b96;--sky-soft:#e2eef3;
+  --slate:#5b6660;--line:#d5dbd4;
+  --display:"Outfit","Trebuchet MS",sans-serif;
+  --body:"Karla","Helvetica Neue",Arial,sans-serif;
+  --pad:clamp(16px,4vw,40px);
 }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--pine);font-family:var(--body);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1060px;margin:0 auto;padding:0 var(--pad)}
+svg.ic{width:1em;height:1em;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;display:block}
 
-*{box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{
-  margin:0;
-  background:var(--shell);
-  color:var(--ink);
-  font-family:var(--sans);
-  font-size:16px;
-  line-height:1.6;
-  -webkit-font-smoothing:antialiased;
-}
+.hero{background:var(--pine);color:#eef1ec;padding:clamp(34px,7vw,66px) 0 clamp(28px,6vw,52px)}
+.tag{display:inline-block;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#a8c9b6;
+  border:1px solid #3a5f50;border-radius:100px;padding:6px 14px;margin-bottom:20px}
+.hero h1{font-family:var(--display);font-weight:800;font-size:clamp(32px,7.4vw,62px);line-height:1.03;letter-spacing:-.03em;margin:0 0 14px}
+.hero p{font-size:clamp(17px,2.6vw,21px);color:#b9d1c4;max-width:48ch;margin:0 0 24px}
+.facts{display:flex;flex-wrap:wrap;gap:9px}
+.facts span{display:inline-flex;align-items:center;gap:8px;background:#2c5445;border-radius:100px;padding:8px 15px;font-size:14.5px;color:#d4e5da}
+.facts svg{font-size:17px;color:#7fc09a}
 
-.wrap{max-width:1120px;margin:0 auto;padding:0 var(--pad);}
+.chips{position:sticky;top:0;z-index:30;background:var(--paper);border-bottom:1px solid var(--line);padding:11px 0}
+.chips-in{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.chips-in::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;display:flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:100px;
+  padding:8px 15px;font-family:var(--display);font-weight:600;font-size:14px;color:var(--pine);text-decoration:none}
+.chip svg{font-size:16px;color:var(--leaf)}
+.chip:hover{border-color:var(--leaf);background:var(--leaf-soft)}
+.chip:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
 
-/* ---------- Cabecera ---------- */
-.masthead{
-  background:var(--ink);
-  color:#e9eaed;
-  padding:clamp(30px,6vw,64px) 0 clamp(26px,5vw,52px);
-  border-bottom:3px solid var(--amber);
-}
-.eyebrow{
-  font-family:var(--mono);
-  font-size:11px;
-  letter-spacing:.18em;
-  text-transform:uppercase;
-  color:var(--amber);
-  margin:0 0 18px;
-}
-.masthead h1{
-  font-family:var(--sans);
-  font-weight:700;
-  font-size:clamp(30px,6.4vw,62px);
-  line-height:1.02;
-  letter-spacing:-.025em;
-  margin:0 0 10px;
-}
-.masthead h1 span{display:block;color:#8b939f;font-weight:500;font-size:.5em;letter-spacing:-.01em;margin-top:14px;}
-.meta-row{
-  display:flex;flex-wrap:wrap;gap:8px 26px;
-  margin-top:26px;padding-top:20px;
-  border-top:1px solid #2b3037;
-  font-family:var(--mono);font-size:11.5px;color:#8b939f;
-}
-.meta-row b{color:#d7dade;font-weight:500;}
+section{padding:clamp(42px,7vw,76px) 0}
+.alt{background:var(--paper-2)}
+.sec-h{display:flex;align-items:center;gap:14px;margin:0 0 8px}
+.sec-h .badge{flex:0 0 auto;width:48px;height:48px;border-radius:14px;background:var(--pine);color:#eef1ec;display:grid;place-items:center;font-size:24px}
+h2{font-family:var(--display);font-weight:700;font-size:clamp(25px,5vw,38px);line-height:1.08;letter-spacing:-.025em;margin:0}
+.sub{font-size:clamp(16px,2.3vw,19px);color:var(--slate);max-width:58ch;margin:0 0 26px}
+h4{font-family:var(--display);font-weight:700;font-size:17px;margin:30px 0 12px;display:flex;align-items:center;gap:9px}
+h4 svg{font-size:20px;color:var(--leaf)}
 
-/* ---------- Navegador de bahías (firma) ---------- */
-.baystrip{
-  position:sticky;top:0;z-index:20;
-  background:var(--ink);
-  padding:0 0 14px;
-}
-.bays{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:6px;
-  border:1px solid #2b3037;
-  background:#0e1114;
-  padding:6px;
-  border-radius:3px;
-}
-.bay{
-  appearance:none;border:1px solid #2b3037;background:#181c21;
-  color:#8b939f;text-align:left;
-  padding:13px 14px 13px 26px;
-  border-radius:2px;cursor:pointer;
-  position:relative;
-  font-family:var(--sans);
-  transition:background .18s ease,color .18s ease,border-color .18s ease;
-}
-/* asa de la bandeja */
-.bay::before{
-  content:"";position:absolute;left:9px;top:12px;bottom:12px;width:3px;
-  background:repeating-linear-gradient(to bottom,#343a42 0 2px,transparent 2px 5px);
-  border-radius:2px;
-}
-/* LED de actividad */
-.bay::after{
-  content:"";position:absolute;right:12px;top:14px;
-  width:7px;height:7px;border-radius:50%;
-  background:#2b3037;
-}
-.bay:hover{background:#1f242a;color:#c3c9d1;}
-.bay:focus-visible{outline:2px solid var(--amber);outline-offset:2px;}
-.bay[aria-selected="true"]{
-  background:#22272e;border-color:#454c56;color:#f2f4f6;
-}
-.bay[aria-selected="true"]::after{
-  background:var(--amber);
-  box-shadow:0 0 0 3px rgba(224,138,30,.18);
-  animation:led 2.4s ease-in-out infinite;
-}
-@keyframes led{0%,100%{opacity:1}50%{opacity:.45}}
-.bay-n{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:var(--amber);margin-bottom:3px;}
-.bay-t{display:block;font-size:13.5px;font-weight:600;letter-spacing:-.01em;line-height:1.25;}
-.bay-s{display:none;}
-@media(min-width:720px){
-  .bay-s{display:block;font-family:var(--mono);font-size:10.5px;color:#6b7280;margin-top:5px;}
-}
+.grid{display:grid;gap:14px;grid-template-columns:1fr}
+@media(min-width:620px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:900px){.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
 
-/* ---------- Paneles ---------- */
-.panel{display:none;padding:clamp(28px,5vw,56px) 0 90px;}
-.panel.is-on{display:block;animation:rise .35s ease both;}
-@keyframes rise{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.card .ci{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;font-size:25px;margin-bottom:14px;background:var(--leaf-soft);color:var(--pine-2)}
+.card h3{font-family:var(--display);font-weight:700;font-size:19px;letter-spacing:-.015em;margin:0 0 8px}
+.card p{margin:0;font-size:15.5px;color:var(--slate);line-height:1.5}
+.card.sky .ci{background:var(--sky-soft);color:var(--sky)}
+.card.warm .ci{background:var(--sun-soft);color:var(--sun)}
+.card.hot .ci{background:var(--flag-soft);color:var(--flag)}
 
-.lede{
-  border-left:3px solid var(--amber);
-  padding:2px 0 2px 20px;
-  margin:0 0 40px;
-  max-width:var(--measure);
-}
-.lede p{margin:0;font-size:clamp(16.5px,2.2vw,19px);line-height:1.55;color:var(--ink-2);}
+.ex{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.ex span{display:inline-flex;align-items:center;gap:6px;background:var(--paper);border:1px solid var(--line);border-radius:100px;
+  padding:6px 12px;font-size:14px;line-height:1.2}
+.ex span svg{font-size:14px;color:var(--leaf);flex:0 0 auto}
+.card.sky .ex span svg{color:var(--sky)}
+.card.warm .ex span svg{color:var(--sun)}
 
-h2{
-  font-size:clamp(21px,3.4vw,29px);font-weight:700;letter-spacing:-.02em;
-  line-height:1.15;margin:52px 0 8px;padding-top:20px;border-top:1px solid var(--hair);
-}
-h2 .num{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--amber-deep);letter-spacing:.1em;display:block;margin-bottom:9px;}
-h3{font-size:16.5px;font-weight:600;letter-spacing:-.01em;margin:30px 0 8px;}
-p{max-width:var(--measure);}
-ul,ol{max-width:var(--measure);padding-left:20px;}
-li{margin-bottom:7px;}
-a{color:var(--signal);}
-strong{font-weight:600;}
-code{font-family:var(--mono);font-size:.88em;background:#dfe1e5;padding:1px 5px;border-radius:2px;}
+/* cuentas */
+.people{display:grid;gap:12px;grid-template-columns:repeat(2,1fr)}
+@media(min-width:900px){.people{grid-template-columns:repeat(5,1fr)}}
+.per{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;text-align:center}
+.per .av{width:52px;height:52px;border-radius:50%;margin:0 auto 10px;display:grid;place-items:center;font-size:25px;background:var(--leaf-soft);color:var(--pine-2)}
+.per b{display:block;font-family:var(--display);font-weight:700;font-size:17px}
+.per span{font-size:13px;color:var(--slate);display:block;margin-top:3px}
+.per.adm{border-color:var(--pine);border-width:2px}
+.per.adm .av{background:var(--pine);color:#eef1ec}
+.per .rol{display:inline-block;margin-top:10px;font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  border-radius:100px;padding:3px 10px;background:var(--paper);border:1px solid var(--line);color:var(--slate)}
+.per.adm .rol{background:var(--pine);border-color:var(--pine);color:#eef1ec}
 
-/* Sección 1: registro experto */
-#s1{font-size:15.3px;}
-#s1 .label{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--steel);}
+/* árbol */
+.tree{background:var(--pine);color:#cfe0d6;border-radius:18px;padding:clamp(18px,4vw,28px);font-size:15.5px}
+.tree ul{list-style:none;margin:0;padding:0}
+.tree li{padding:8px 0;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid #2c5445}
+.tree li:last-child{border-bottom:0}
+.tree li svg{font-size:19px;flex:0 0 auto;margin-top:1px;color:#7fc09a}
+.tree b{font-family:var(--display);font-weight:600;color:#eef1ec}
+.tree em{font-style:normal;color:#8fae9e;font-size:14px;display:block}
+.tree .in{padding-left:26px}
+.tree .in svg{color:#5f9c7c;font-size:17px}
 
-/* Sección 2: registro llano — serif, medida corta, aire */
-#s2{font-family:var(--serif);font-size:17.5px;line-height:1.72;}
-#s2 h2,#s2 h3,#s2 .card-h,#s2 .kicker{font-family:var(--sans);}
-#s2 p,#s2 li{max-width:62ch;}
-#s2 .kicker{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--amber-deep);margin:0 0 6px;}
+/* discos */
+.bays{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:4px 0 20px}
+.by{width:74px;height:104px;border-radius:13px;display:grid;place-items:center;font-size:28px;border:2px solid var(--line);
+  background:var(--paper);color:var(--slate);position:relative}
+.by.on{border-color:var(--leaf);background:var(--leaf-soft);color:var(--leaf)}
+.by small{position:absolute;bottom:-22px;left:0;right:0;text-align:center;font-size:12px;color:var(--slate)}
+.gauge{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.gbar{height:26px;border-radius:8px;background:var(--paper);border:1px solid var(--line);display:flex;overflow:hidden;margin-top:10px}
+.gbar i{display:block;height:100%}
+.gbar .u{background:var(--leaf);width:50%}
+.gbar .m{background:var(--sky);width:50%}
+.glab{display:flex;flex-wrap:wrap;gap:16px;margin-top:12px;font-size:14px;color:var(--slate)}
+.glab b{display:inline-flex;align-items:center;gap:7px;font-weight:600;color:var(--pine)}
+.glab i{width:11px;height:11px;border-radius:3px;display:block}
 
-/* Sección 3: registro de ficha — mono */
-#s3{font-size:15.3px;}
+/* ajustes */
+.set{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-bottom:16px}
+.set-h{background:var(--pine);color:#eef1ec;padding:14px 20px;font-family:var(--display);font-weight:600;font-size:16px;display:flex;align-items:center;gap:10px}
+.set-h svg{font-size:20px;color:#7fc09a}
+.set-h span{margin-left:auto;font-family:var(--body);font-size:13px;color:#8fae9e;font-weight:400}
+.opt{display:flex;gap:14px;padding:16px 20px;border-top:1px solid var(--line);align-items:flex-start}
+.opt:first-of-type{border-top:0}
+.st{flex:0 0 auto;width:32px;height:32px;border-radius:10px;display:grid;place-items:center;font-size:18px}
+.st.ok{background:var(--leaf-soft);color:var(--leaf)}
+.st.off{background:var(--flag-soft);color:var(--flag)}
+.st.chk{background:var(--sun-soft);color:var(--sun)}
+.opt-b b{display:block;font-family:var(--display);font-weight:600;font-size:16px;letter-spacing:-.01em}
+.opt-b p{margin:3px 0 0;font-size:15px;color:var(--slate);line-height:1.48}
+.val{display:inline-block;margin-top:7px;font-size:13px;background:var(--paper);border:1px solid var(--line);border-radius:100px;padding:3px 11px;color:var(--slate)}
 
-/* Tablas */
-.tbl{width:100%;border-collapse:collapse;margin:18px 0 8px;font-size:13.6px;background:var(--white);border:1px solid var(--hair);}
-.tbl th{
-  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.13em;text-transform:uppercase;
-  text-align:left;padding:10px 13px;background:var(--ink);color:#c3c9d1;
-}
-.tbl td{padding:10px 13px;border-top:1px solid #e3e5e8;vertical-align:top;font-family:var(--sans);}
-.tbl tr:nth-child(even) td{background:#fbfbfc;}
-.tbl td:first-child{font-weight:500;white-space:nowrap;}
-.tbl .m{font-family:var(--mono);font-size:12.6px;white-space:normal;}
-.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+/* situaciones */
+.sit{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:19px;display:flex;gap:14px;align-items:flex-start}
+.sit .si{flex:0 0 auto;width:40px;height:40px;border-radius:12px;background:var(--sky-soft);color:var(--sky);display:grid;place-items:center;font-size:20px}
+.sit q{display:block;font-family:var(--display);font-weight:600;font-size:16px;margin-bottom:4px;quotes:'«' '»'}
+.sit p{margin:0;font-size:14.8px;color:var(--slate);line-height:1.48}
 
-/* Tarjetas / avisos */
-.cards{display:grid;gap:14px;margin:22px 0;grid-template-columns:1fr;}
-@media(min-width:760px){.cards.two{grid-template-columns:1fr 1fr;} .cards.three{grid-template-columns:repeat(3,1fr);}}
-.card{background:var(--white);border:1px solid var(--hair);border-radius:3px;padding:20px;}
-.card-h{font-size:14.5px;font-weight:600;margin:0 0 7px;letter-spacing:-.01em;}
-.card p{font-size:14.3px;margin:0;color:var(--ink-2);max-width:none;line-height:1.55;}
+/* filas */
+.rows{display:grid;gap:9px}
+.row{display:flex;align-items:flex-start;gap:13px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px 17px}
+.row .rm{flex:0 0 auto;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:19px;background:var(--flag-soft);color:var(--flag)}
+.row b{display:block;font-family:var(--display);font-weight:600;font-size:16px}
+.row span{font-size:14.5px;color:var(--slate);line-height:1.45}
 
-.note{border-left:3px solid var(--signal);background:#eef4f7;padding:16px 20px;margin:22px 0;max-width:var(--measure);}
-.warn{border-left:3px solid var(--alert);background:#f9efee;padding:16px 20px;margin:22px 0;max-width:var(--measure);}
-.note p,.warn p{margin:0;font-size:14.8px;max-width:none;}
-.note .t,.warn .t{font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;display:block;margin-bottom:6px;}
-.note .t{color:var(--signal);} .warn .t{color:var(--alert);}
-#s2 .note p,#s2 .warn p{font-family:var(--serif);font-size:16.5px;}
+/* rutina */
+.when{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.when .wh{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:700;font-size:18px;margin-bottom:12px}
+.when .wh svg{font-size:22px;color:var(--leaf)}
+.when ul{list-style:none;margin:0;padding:0}
+.when li{display:flex;gap:11px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line);font-size:15.5px}
+.when li:first-child{border-top:0}
+.when li svg{font-size:18px;color:var(--slate);flex:0 0 auto;margin-top:3px}
 
-/* Diagrama ASCII */
-.dia{
-  font-family:var(--mono);font-size:12px;line-height:1.5;
-  background:var(--ink);color:#c3c9d1;
-  padding:20px;border-radius:3px;overflow-x:auto;margin:20px 0;white-space:pre;
-}
-.dia b{color:var(--amber);font-weight:400;}
+.shout{background:var(--pine);color:#eef1ec;border-radius:22px;padding:clamp(24px,5vw,38px);display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
+.shout .si{width:54px;height:54px;border-radius:16px;background:#2c5445;color:#a8e0c0;display:grid;place-items:center;font-size:27px;flex:0 0 auto}
+.shout h3{font-family:var(--display);font-weight:700;font-size:clamp(20px,3.5vw,27px);letter-spacing:-.02em;margin:0 0 8px}
+.shout p{margin:0;color:#b9d1c4;font-size:16.5px;max-width:52ch}
+.shout .sc{flex:1 1 260px}
 
-/* Píldoras de riesgo */
-.pill{display:inline-block;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
-.p-hi{background:#f4dedb;color:#8f322a;}
-.p-md{background:#f7e9d3;color:#8a5a0d;}
-.p-lo{background:#dfeee4;color:#2e5f42;}
-
-/* Lista de comprobación */
-.check{list-style:none;padding:0;max-width:var(--measure);}
-.check li{
-  padding:11px 0 11px 34px;border-bottom:1px solid var(--hair);position:relative;margin:0;
-}
-.check li::before{
-  content:"";position:absolute;left:2px;top:16px;
-  width:12px;height:12px;border:1.5px solid var(--amber);border-radius:2px;
-}
-.check li b{font-weight:600;}
-
-/* Glosario */
-.gloss{display:grid;gap:0;margin:18px 0;border-top:1px solid var(--hair);max-width:var(--measure);}
-.gloss div{display:grid;grid-template-columns:1fr;gap:2px;padding:14px 0;border-bottom:1px solid var(--hair);}
-@media(min-width:640px){.gloss div{grid-template-columns:180px 1fr;gap:20px;}}
-.gloss dt,.gloss .term{font-family:var(--sans);font-weight:600;font-size:14.5px;}
-.gloss .def{font-size:16px;color:var(--ink-2);}
-
-/* Pie */
-footer{background:var(--ink);color:#8b939f;padding:40px 0;font-size:13px;}
-footer a{color:#9fb8c6;}
-footer p{max-width:var(--measure);}
-
-@media (prefers-reduced-motion: reduce){
-  *{animation:none !important;transition:none !important;scroll-behavior:auto !important;}
-}
+footer{background:var(--pine);color:#8fae9e;padding:32px 0;font-size:14px}
+footer p{margin:0;max-width:62ch}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 
-<header class="masthead">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="i-nas" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 3v18M12 3v18M16 3v18"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20a5.5 5.5 0 0 1 11 0"/><path d="M16 5.4a3 3 0 0 1 0 5.6"/><path d="M17.5 20a5.5 5.5 0 0 0-2.6-4.7"/></symbol>
+<symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.6"/><path d="M5 20.5a7 7 0 0 1 14 0"/></symbol>
+<symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v2.2M12 19.3v2.2M21.5 12h-2.2M4.7 12H2.5M18.7 5.3l-1.6 1.6M6.9 17.1l-1.6 1.6M18.7 18.7l-1.6-1.6M6.9 6.9 5.3 5.3"/></symbol>
+<symbol id="i-folder" viewBox="0 0 24 24"><path d="M3 19V6a1 1 0 0 1 1-1h5l2 2.5h9a1 1 0 0 1 1 1V19z"/></symbol>
+<symbol id="i-doc" viewBox="0 0 24 24"><path d="M6 2.5h7l5 5V21a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1z"/><path d="M13 2.5V8h5"/><path d="M8.5 13h7M8.5 17h5"/></symbol>
+<symbol id="i-receipt" viewBox="0 0 24 24"><path d="M5 3h14v18l-3-2-3 2-3-2-3 2z"/><path d="M8.5 8h7M8.5 12h5"/></symbol>
+<symbol id="i-euro" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.8 8.6a4.5 4.5 0 1 0 0 6.8"/><path d="M6.8 11h6M6.8 13.4h6"/></symbol>
+<symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20.5S4.5 16 4.5 10.6A3.9 3.9 0 0 1 12 8.2a3.9 3.9 0 0 1 7.5 2.4c0 5.4-7.5 9.9-7.5 9.9z"/></symbol>
+<symbol id="i-car" viewBox="0 0 24 24"><path d="M3.5 16.5v-4L5.5 7h13l2 5.5v4z"/><path d="M5.5 16.5V19H8v-2.5M16 16.5V19h2.5v-2.5"/><path d="M7 12.5h.01M17 12.5h.01"/></symbol>
+<symbol id="i-school" viewBox="0 0 24 24"><path d="M2.5 8.5 12 4.5l9.5 4L12 12.5z"/><path d="M6.5 10.8V16c0 1.4 2.5 2.5 5.5 2.5s5.5-1.1 5.5-2.5v-5.2"/></symbol>
+<symbol id="i-camera" viewBox="0 0 24 24"><path d="M3 8h4l1.6-2.4h6.8L17 8h4v12H3z"/><circle cx="12" cy="13.5" r="3.6"/></symbol>
+<symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M3 15h18M8 4v16M16 4v16"/></symbol>
+<symbol id="i-music" viewBox="0 0 24 24"><path d="M9 17.5V5.2l11-2v12.3"/><circle cx="6.5" cy="17.5" r="2.6"/><circle cx="17.5" cy="15.5" r="2.6"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8 4.5 4 4.5V19c4 0 6.5.5 8 2 1.5-1.5 4-2 8-2V4.5c-4 0-6.5.5-8 2z"/><path d="M12 6.5V21"/></symbol>
+<symbol id="i-plane" viewBox="0 0 24 24"><path d="M10.5 3.5a1.5 1.5 0 0 1 3 0V9l7.5 4.5v2.5l-7.5-2v3.5l2.5 2v1.5L12 20l-4 1v-1.5l2.5-2V14l-7.5 2v-2.5L10.5 9z"/></symbol>
+<symbol id="i-laptop" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="10.5" rx="1.5"/><path d="M2 18.5h20"/></symbol>
+<symbol id="i-phone" viewBox="0 0 24 24"><rect x="6.5" y="2.5" width="11" height="19" rx="2"/><path d="M10.8 18.5h2.4"/></symbol>
+<symbol id="i-sd" viewBox="0 0 24 24"><path d="M7 21V6.5L10.5 3H17v18z"/><path d="M10 6v2.5M12.5 6v2.5M15 6v2.5"/></symbol>
+<symbol id="i-tv" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="12" rx="2"/><path d="M8 21h8M12 17v4"/></symbol>
+<symbol id="i-box" viewBox="0 0 24 24"><path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/></symbol>
+<symbol id="i-tool" viewBox="0 0 24 24"><path d="M14.2 3.8a4.6 4.6 0 0 0 6 6L9.6 20.4a2.6 2.6 0 0 1-3.7-3.7z"/><path d="M14.2 3.8 17 6.6"/></symbol>
+<symbol id="i-share" viewBox="0 0 24 24"><circle cx="17.5" cy="5.5" r="2.6"/><circle cx="6.5" cy="12" r="2.6"/><circle cx="17.5" cy="18.5" r="2.6"/><path d="M8.8 10.6 15.2 6.9M8.8 13.4l6.4 3.7"/></symbol>
+<symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 19a4.5 4.5 0 0 1 .4-9A6 6 0 0 1 18.4 11 4 4 0 0 1 17.6 19z"/></symbol>
+<symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.4-5.7"/><path d="M20.5 4v5h-5"/></symbol>
+<symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4.5 16.5V6A1.5 1.5 0 0 1 6 4.5h10"/></symbol>
+<symbol id="i-check" viewBox="0 0 24 24"><path d="m5 13 5 5L20 6"/></symbol>
+<symbol id="i-cross" viewBox="0 0 24 24"><path d="M6 6 18 18M18 6 6 18"/></symbol>
+<symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3.5 22 20.5H2z"/><path d="M12 10v4.5M12 17.6h.01"/></symbol>
+<symbol id="i-question" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 1 1 3.3 2.4c-.7.3-.9.9-.9 1.6v.4"/><path d="M12 17.4h.01"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></symbol>
+<symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="9" r="4"/><path d="M10.8 11.8 21 22M17.5 18.5 20 16"/></symbol>
+<symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M9.5 7V4h5v3"/><path d="M6.5 7 7.5 21h9L17.5 7"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5.3l3.2 2"/></symbol>
+<symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></symbol>
+<symbol id="i-disk" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5"/></symbol>
+<symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 20 6v6c0 4.5-3.4 7.7-8 9-4.6-1.3-8-4.5-8-9V6z"/></symbol>
+<symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.6-6.2 10-6.2S22 12 22 12s-3.6 6.2-10 6.2S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+<symbol id="i-ban" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M5.6 5.6 18.4 18.4"/></symbol>
+<symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></symbol>
+<symbol id="i-wifi" viewBox="0 0 24 24"><path d="M4 9a12 12 0 0 1 16 0"/><path d="M7.5 12.5a7 7 0 0 1 9 0"/><path d="M12 16.6h.01"/></symbol>
+<symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v12"/><path d="m7.5 11 4.5 4.5L16.5 11"/><path d="M4.5 20.5h15"/></symbol>
+<symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4 21 21"/></symbol>
+<symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.7 5.6 6.1.8-4.4 4.3 1.1 6.1L12 17.4l-5.5 2.9 1.1-6.1L3.2 9.9l6.1-.8z"/></symbol>
+<symbol id="i-home" viewBox="0 0 24 24"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9.5 21v-6h5v6"/></symbol>
+<symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="13" rx="2"/><path d="M8.5 7V4.5h7V7"/><path d="M2.5 12.5h19"/></symbol>
+</defs></svg>
+
+<header class="hero">
   <div class="wrap">
-    <p class="eyebrow">Documento técnico · v1.0 · Uso interno</p>
-    <h1>UGREEN NAS<span>Arquitectura y seguridad técnica de la gama NASync con UGOS&nbsp;Pro</span></h1>
-    <div class="meta-row">
-      <span>Fecha <b>29 · 08 · 2026</b></span>
-      <span>Firmware de referencia <b>UGOS Pro 1.18.1.0098</b></span>
-      <span>Modelo detallado <b>DXP4800 Plus</b></span>
-      <span>Clasificación <b>Público</b></span>
+    <span class="tag">Guía de casa · Nuestro DXP4800 Plus</span>
+    <h1>Cómo usamos<br>nuestro NAS</h1>
+    <p>Quién es quién, qué guarda cada uno, y qué significan los ajustes de seguridad que ya están puestos.</p>
+    <div class="facts">
+      <span><svg class="ic"><use href="#i-users"/></svg>5 cuentas</span>
+      <span><svg class="ic"><use href="#i-disk"/></svg>2 discos de 16 TB</span>
+      <span><svg class="ic"><use href="#i-copy"/></svg>RAID 1 (espejo)</span>
+      <span><svg class="ic"><use href="#i-plus"/></svg>2 bahías libres</span>
     </div>
   </div>
 </header>
 
-<div class="baystrip">
+<nav class="chips" aria-label="Secciones">
+  <div class="wrap chips-in">
+    <a class="chip" href="#cuentas"><svg class="ic"><use href="#i-users"/></svg>Las 5 cuentas</a>
+    <a class="chip" href="#discos"><svg class="ic"><use href="#i-disk"/></svg>Los discos</a>
+    <a class="chip" href="#guardar"><svg class="ic"><use href="#i-folder"/></svg>Qué guardar</a>
+    <a class="chip" href="#ajustes"><svg class="ic"><use href="#i-gear"/></svg>La seguridad</a>
+    <a class="chip" href="#pendiente"><svg class="ic"><use href="#i-question"/></svg>Por revisar</a>
+    <a class="chip" href="#dia"><svg class="ic"><use href="#i-search"/></svg>El día a día</a>
+    <a class="chip" href="#rutina"><svg class="ic"><use href="#i-calendar"/></svg>La rutina</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- ===== CUENTAS ===== -->
+<section id="cuentas">
   <div class="wrap">
-    <div class="bays" role="tablist" aria-label="Secciones del documento">
-      <button class="bay" role="tab" id="tab1" aria-controls="s1" aria-selected="true">
-        <span class="bay-n">BAHÍA 01</span>
-        <span class="bay-t">Informe técnico</span>
-        <span class="bay-s">para perfil IT</span>
-      </button>
-      <button class="bay" role="tab" id="tab2" aria-controls="s2" aria-selected="false">
-        <span class="bay-n">BAHÍA 02</span>
-        <span class="bay-t">En lenguaje llano</span>
-        <span class="bay-s">sin tecnicismos</span>
-      </button>
-      <button class="bay" role="tab" id="tab3" aria-controls="s3" aria-selected="false">
-        <span class="bay-n">BAHÍA 03</span>
-        <span class="bay-t">DXP4800 Plus</span>
-        <span class="bay-s">ficha y arquitectura</span>
-      </button>
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-users"/></svg></div><h2>Las cinco cuentas</h2></div>
+    <p class="sub">Cuatro personas, más una cuenta de mantenimiento. Esta división está bien hecha: explicamos por qué.</p>
+
+    <div class="people">
+      <div class="per adm"><div class="av"><svg class="ic"><use href="#i-gear"/></svg></div><b>Admin</b><span>Nadie la usa a diario</span><div class="rol">Configura</div></div>
+      <div class="per"><div class="av"><svg class="ic"><use href="#i-user"/></svg></div><b>Victor</b><span>Su carpeta privada</span><div class="rol">Usa</div></div>
+      <div class="per"><div class="av"><svg class="ic"><use href="#i-user"/></svg></div><b>Carlos</b><span>Su carpeta privada</span><div class="rol">Usa</div></div>
+      <div class="per"><div class="av"><svg class="ic"><use href="#i-user"/></svg></div><b>Javier</b><span>Su carpeta privada</span><div class="rol">Usa</div></div>
+      <div class="per"><div class="av"><svg class="ic"><use href="#i-user"/></svg></div><b>Carmen</b><span>Su carpeta privada</span><div class="rol">Usa</div></div>
+    </div>
+
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card sky"><div class="ci"><svg class="ic"><use href="#i-shield"/></svg></div><h3>Por qué solo un Admin</h3>
+        <p>Si os colaran un virus mientras estáis con vuestra cuenta normal, no podría cambiar la configuración ni borrar las carpetas de los demás. Con todos siendo administradores, sí podría.</p></div>
+      <div class="card sky"><div class="ci"><svg class="ic"><use href="#i-key"/></svg></div><h3>La contraseña de Admin</h3>
+        <p>Que no la use nadie para el día a día. Solo para instalar cosas o cambiar ajustes. Y que sea distinta de las cuatro personales.</p></div>
+      <div class="card sky"><div class="ci"><svg class="ic"><use href="#i-eye"/></svg></div><h3>Lo privado es privado</h3>
+        <p>La carpeta de Carmen no la ven Victor, Carlos ni Javier. Ni siquiera aparece en su pantalla. Admin sí podría, por eso importa quién tiene esa contraseña.</p></div>
     </div>
   </div>
-</div>
-
-<main class="wrap">
-
-<!-- ============ SECCIÓN 1 ============ -->
-<section class="panel is-on" id="s1" role="tabpanel" aria-labelledby="tab1">
-
-  <div class="lede">
-    <p>UGREEN entró en el mercado NAS en 2024 con la gama NASync y un sistema operativo propio, UGOS Pro, basado en kernel Linux y de código cerrado. La plataforma ha madurado rápido, pero conserva carencias defensivas que condicionan su encaje en entornos profesionales.</p>
-  </div>
-
-  <h2><span class="num">01 — ALCANCE</span>Gama cubierta</h2>
-  <div class="scroll">
-  <table class="tbl">
-    <thead><tr><th>Serie</th><th>Modelos</th><th>Plataforma</th><th>Virtualización</th></tr></thead>
-    <tbody>
-      <tr><td>DH</td><td>DH2300, DH4300 Plus</td><td class="m">SoC ARM (Rockchip A72+A53)</td><td>Docker sí · VM no</td></tr>
-      <tr><td>DXP</td><td>DXP2800, DXP4800 Plus, DXP4800 GT, DXP6800 Pro, DXP8800 Plus</td><td class="m">Intel serie N / Pentium Gold / Core i5, DDR5</td><td>Docker y VM</td></tr>
-      <tr><td>iDX</td><td>iDX6011</td><td class="m">Orientado a cargas con aceleración IA</td><td>Docker y VM</td></tr>
-    </tbody>
-  </table>
-  </div>
-  <p>Queda fuera de alcance la línea antigua <strong>DH2100 / DH2100+</strong>, que ejecuta la rama de firmware UGOS 5.x y solo se trata en el apartado de vulnerabilidades por su relevancia como precedente.</p>
-
-  <h2><span class="num">02 — SOFTWARE</span>UGOS Pro: naturaleza y capas</h2>
-  <p>UGOS y UGOS Pro son el mismo sistema. El sufijo «Pro» forma parte del nombre comercial, no de un nivel de licencia: todos los NASync incluyen la funcionalidad completa. Es una distribución Linux propietaria con interfaz web inspirada en DSM.</p>
-  <p>El histórico público de versiones va de <code>1.0.0.1494</code> (octubre 2024) a <code>1.18.1.0098</code> (agosto 2026), algo más de una versión al mes. La cadencia es una ventaja en corrección de defectos, pero implica una superficie funcional en cambio constante que obliga a revalidar la configuración de seguridad tras cada actualización.</p>
-
-  <div class="dia">┌───────────────────────────────────────────────────────────────┐
-│  <b>Clientes</b>   navegador · app móvil UGREEN NAS · cliente PC   │
-├───────────────────────────────────────────────────────────────┤
-│  <b>Acceso remoto</b>   UGREENlink (relay)  │  DDNS  │  VPN/Tailscale│
-├───────────────────────────────────────────────────────────────┤
-│  <b>Aplicación</b>   App Center · Docker · VM (solo DXP)           │
-│                 File Browser · Sync &amp; Backup · Fotos · Media  │
-├───────────────────────────────────────────────────────────────┤
-│  <b>Servicios de archivos</b>   SMB · NFS · FTP/FTPS · WebDAV ·    │
-│                            rsync · SSH (off por defecto)      │
-├───────────────────────────────────────────────────────────────┤
-│  <b>Control</b>   usuarios/grupos · LDAP y dominio · ACL ·         │
-│              cortafuegos · registros · ClamAV                 │
-├───────────────────────────────────────────────────────────────┤
-│  <b>Almacenamiento</b>   Btrfs / ext4 · RAID por software · caché  │
-├───────────────────────────────────────────────────────────────┤
-│  <b>Kernel Linux + firmware UGOS Pro</b>                           │
-└───────────────────────────────────────────────────────────────┘</div>
-
-  <h3>Servicios de archivos e identidad</h3>
-  <ul>
-    <li>Protocolos de serie: <strong>SMB, NFS, FTP, WebDAV y rsync</strong>. Acceso administrativo por <strong>SSH</strong> (y Telnet en algunas compilaciones), deshabilitado por defecto.</li>
-    <li>Usuarios y grupos locales, con soporte de <strong>LDAP y unión a dominio</strong>.</li>
-    <li>Permisos granulares por carpeta compartida. Desde 1.15.x la resolución de conflictos sigue el orden <code>denegar &gt; solo lectura &gt; lectura/escritura &gt; sin configuración</code>, priorizando el criterio más restrictivo. Conviene auditar las ACL heredadas tras actualizar.</li>
-  </ul>
-
-  <h3>Almacenamiento</h3>
-  <ul>
-    <li>Modos <strong>Basic, JBOD y RAID 0/1/5/6/10</strong> sobre la pila de RAID por software de Linux.</li>
-    <li>Sistemas de archivos <strong>Btrfs y ext4</strong>. Btrfs aporta sumas de verificación de integridad, copy-on-write, instantáneas, deduplicación y compresión transparente.</li>
-    <li>Ranuras M.2 NVMe utilizables como volumen o como caché SSD.</li>
-  </ul>
-
-  <div class="note"><p><span class="t">Vector a menudo ignorado</span>Buena parte del catálogo nativo de aplicaciones son en realidad contenedores Docker. La seguridad efectiva del NAS pasa a depender de imágenes de terceros, de su cadencia de parcheo y de los privilegios con que se ejecutan. UGOS Pro no gestiona esto por el administrador.</p></div>
-
-  <h2><span class="num">03 — RED</span>Modelos de acceso remoto</h2>
-  <div class="cards three">
-    <div class="card">
-      <p class="card-h">UGREENlink</p>
-      <p>Relay en la nube del fabricante. Sin apertura de puertos ni IP pública; funciona tras doble NAT y CGNAT. Aplica certificado automáticamente. Reduce drásticamente la superficie expuesta, pero introduce dependencia del proveedor: UGREEN no publica especificación del protocolo, del establecimiento de sesión ni de si el tráfico se termina o solo se retransmite. <strong>No cifra el almacenamiento.</strong></p>
-    </div>
-    <div class="card">
-      <p class="card-h">DDNS + reenvío de puertos</p>
-      <p>Acceso directo por dominio propio. Exige configuración en el router, HTTPS correctamente desplegado y reglas de cortafuegos estrictas. HTTP plano no es acceso remoto seguro. Usar solo cuando un servicio concreto lo requiera.</p>
-    </div>
-    <div class="card">
-      <p class="card-h">VPN / red superpuesta</p>
-      <p>Tailscale, WireGuard o similares colocan el NAS en una red privada. Mejor relación seguridad/control: elimina la exposición pública y no delega la confianza en la nube del fabricante.</p>
-    </div>
-  </div>
-  <div class="warn"><p><span class="t">Regla no negociable</span>No exponer nunca a Internet SMB, NFS, SSH ni la interfaz de administración de UGOS Pro.</p></div>
-
-  <h2><span class="num">04 — CONTROLES</span>Modelo de seguridad de UGOS Pro</h2>
-
-  <h3>Identidad y control de acceso</h3>
-  <ul>
-    <li><strong>2FA</strong> mediante TOTP con aplicaciones estándar, códigos de respaldo y correo de verificación de emergencia. No estaba presente en el lanzamiento inicial.</li>
-    <li><strong>Dispositivos de confianza</strong> en <code>Configuración de cuenta › Seguridad de la cuenta</code>, con revocación individual.</li>
-    <li><strong>Bloqueo por intentos fallidos</strong> con periodo de desbloqueo automático y excepciones para IP o subredes de confianza (<code>Panel de control › Seguridad</code>, desde 1.10.0.0092).</li>
-  </ul>
-
-  <h3>Seguridad de red</h3>
-  <ul>
-    <li>Cortafuegos con reglas por IP, <strong>filtrado MAC</strong> y controles de acceso personalizables.</li>
-    <li>HTTPS en la interfaz de administración, con importación de certificados propios.</li>
-    <li>Aplicación <strong>Logs</strong> con filtrado por usuario, módulo, severidad y palabra clave, más registro del cortafuegos.</li>
-  </ul>
-
-  <h3>Protección de datos</h3>
-  <ul>
-    <li><strong>Cifrado de carpetas</strong> desde el firmware <code>1.18.1.0098</code> (4 de agosto de 2026): carpetas compartidas y carpetas de usuario de primer nivel. Protege frente a extracción física de discos. <strong>UGREEN no ha detallado la tecnología criptográfica empleada</strong>, lo que impide evaluar algoritmo, gestión de claves y modo de operación.</li>
-    <li><strong>No existe cifrado de volumen completo.</strong> Es la diferencia más relevante frente a DSM.</li>
-    <li><strong>Safes</strong>: contenedor cifrado con contraseña y fichero <code>.key</code>. Si se pierden ambos, los datos son irrecuperables. Los archivos dentro de Safes <em>no</em> están soportados por Sync &amp; Backup: nunca deben albergar la única copia de un archivo.</li>
-    <li><strong>Instantáneas Btrfs</strong>: aceleran la recuperación, pero <strong>no son inmutables</strong>; un atacante con control administrativo puede eliminarlas.</li>
-    <li><strong>RAID</strong>: aporta disponibilidad ante fallo de disco. No protege frente a borrado administrativo, sobrescritura por sincronización ni cifrado por ransomware.</li>
-  </ul>
-
-  <h3>Detección</h3>
-  <ul>
-    <li><strong>ClamAV</strong> integrado con firmas actualizadas y análisis programados.</li>
-    <li><strong>Security Manager</strong>: comprobaciones de configuración. Su profundidad en verificación de integridad del sistema sigue siendo limitada frente a DSM o TrueNAS.</li>
-    <li><strong>No existe módulo antiransomware dedicado</strong> (detección conductual, instantáneas inmutables, bloqueo automático de escritura masiva). Es la carencia defensiva más señalada por analistas independientes.</li>
-  </ul>
-
-  <h2><span class="num">05 — VULNERABILIDADES</span>Historial y superficie de ataque</h2>
-
-  <h3>CVE-2026-31431 «Copy Fail»</h3>
-  <p>Escalada de privilegios en el kernel Linux, CVSS 7,8, divulgada el 29 de abril de 2026 por Theori. Afecta a las principales distribuciones y se camufla entre llamadas al sistema legítimas. UGREEN publicó la corrección en <code>UGOS Pro 1.15.0.0127</code> el 2 de mayo de 2026, es decir, en días. <strong>Indicador favorable</strong> de la capacidad de respuesta actual ante fallos de la cadena upstream.</p>
-
-  <h3>CVE-2025-14187 y CVE-2025-14188 (DH2100+)</h3>
-  <p>Dos fallos en el modelo DH2100+ hasta la versión <code>5.3.0.251125</code>, ambos en <code>handler_file_backup_create</code> del endpoint <code>/v1/file/backup/create</code> del componente <code>nas_svr</code>:</p>
-  <ul>
-    <li><strong>CVE-2025-14188</strong> — inyección de comandos (CWE-77) mediante manipulación del argumento <code>path</code>, explotable en remoto con privilegios elevados.</li>
-    <li><strong>CVE-2025-14187</strong> — desbordamiento de búfer en el mismo manejador, igualmente alcanzable en remoto.</li>
-  </ul>
-  <p>Severidad alta; las puntuaciones publicadas oscilan entre 7,2 y 8,6 según fuente y vector CVSS aplicado. Existen pruebas de concepto públicas y VulDB indica que <strong>el fabricante fue contactado antes de la divulgación y no respondió</strong>.</p>
-  <div class="warn"><p><span class="t">Lectura arquitectónica</span>El endpoint vulnerable pertenecía a la funcionalidad de <strong>copia de seguridad</strong>: precisamente el activo que se supone protege a la organización. Un compromiso ahí permite borrar, corromper o cifrar las copias. Que la explotación requiriera privilegios altos refuerza el valor de 2FA, contraseñas únicas y rotación de credenciales administrativas.</p></div>
-
-  <h3>Observación no confirmada</h3>
-  <p>Se ha reportado públicamente —por un único usuario, sin verificación independiente ni corroboración en foros— un posible <strong>uso compartido de certificados y claves privadas entre dispositivos</strong>. De confirmarse supondría un punto único de fallo en la arquitectura TLS, si bien la explotación exigiría posición de intercepción en la red. Se documenta como observación, no como vulnerabilidad establecida.</p>
-
-  <h3>Superficie de ataque a vigilar</h3>
-  <div class="scroll">
-  <table class="tbl">
-    <thead><tr><th>Vector</th><th>Exposición</th><th>Mitigación principal</th></tr></thead>
-    <tbody>
-      <tr><td>Interfaz web UGOS Pro</td><td>Alta si se publica</td><td>No exponer; UGREENlink o VPN</td></tr>
-      <tr><td class="m">API interna (nas_svr)</td><td>Alcanzable en LAN</td><td>Segmentación VLAN, 2FA, parcheo</td></tr>
-      <tr><td>SMB / NFS</td><td>LAN</td><td>Nunca hacia Internet; ACL restrictivas</td></tr>
-      <tr><td>SSH</td><td>Off por defecto</td><td>Mantener deshabilitado; clave pública si se activa</td></tr>
-      <tr><td>Contenedores Docker</td><td>Depende del usuario</td><td class="m">Imágenes verificadas, sin --privileged, actualización</td></tr>
-      <tr><td>Nube UGREENlink</td><td>Externa, del fabricante</td><td>Evaluación de proveedor; alternativa VPN</td></tr>
-      <tr><td>Acceso físico / HDMI / UART</td><td>Local</td><td>Cifrado de carpetas, control de acceso físico</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h2><span class="num">06 — RIESGO</span>Riesgos residuales</h2>
-  <div class="scroll">
-  <table class="tbl">
-    <thead><tr><th>Riesgo</th><th>Impacto</th><th>Probabilidad</th><th>Comentario</th></tr></thead>
-    <tbody>
-      <tr><td>Ransomware sobre datos del NAS</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Sin módulo antiransomware; instantáneas eliminables</td></tr>
-      <tr><td>Compromiso de credenciales admin</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Mitigable con 2FA y segmentación</td></tr>
-      <tr><td>Fallo no parcheado en API interna</td><td><span class="pill p-hi">Alto</span></td><td><span class="pill p-md">Media</span></td><td>Precedente en DH2100+; sin auditoría pública</td></tr>
-      <tr><td>Compromiso de la nube UGREENlink</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-lo">Baja</span></td><td>Sin especificación técnica pública del protocolo</td></tr>
-      <tr><td>Pérdida por acceso físico</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-lo">Baja</span></td><td>Cifrado de carpetas desde 1.18.1; no de volumen</td></tr>
-      <tr><td>Discontinuidad de soporte</td><td><span class="pill p-md">Medio</span></td><td><span class="pill p-md">Media</span></td><td>Plataforma de 2024; hoja de ruta no publicada</td></tr>
-    </tbody>
-  </table>
-  </div>
-
-  <h2><span class="num">07 — ENDURECIMIENTO</span>Lista de comprobación</h2>
-  <p class="label">Base — obligatorio en cualquier despliegue</p>
-  <ul class="check">
-    <li><b>Actualizar</b> UGOS Pro y aplicaciones. Los parches no protegen hasta que se instalan.</li>
-    <li><b>Contraseña de administrador única</b>, no reutilizada de ningún otro servicio.</li>
-    <li><b>Habilitar 2FA</b> y custodiar los códigos de respaldo fuera del NAS.</li>
-    <li><b>Activar el bloqueo por intentos fallidos</b> con excepciones para subredes de confianza.</li>
-    <li><b>Cuenta estándar para el uso diario</b>; administrativas solo para configuración. Eliminar admins sin uso.</li>
-    <li><b>No exponer a Internet</b> la interfaz de administración, SMB, NFS ni SSH.</li>
-    <li><b>Acceso remoto vía UGREENlink o VPN</b>, nunca por reenvío de puertos genérico.</li>
-  </ul>
-  <p class="label" style="margin-top:26px">Intermedio</p>
-  <ul class="check">
-    <li><b>Segmentar</b> el NAS en una VLAN de gestión o de almacenamiento.</li>
-    <li><b>ACL de mínimo privilegio</b> y revisión de permisos heredados tras actualizar a 1.15.x.</li>
-    <li><b>Programar análisis ClamAV</b> y activar protección en tiempo real donde exista.</li>
-    <li><b>Importar certificado propio</b> si se dispone de PKI interna.</li>
-    <li><b>Revisar dispositivos de confianza y registros</b> de acceso con periodicidad fija.</li>
-    <li><b>Activar cifrado de carpetas</b> (1.18.1.0098+) y purgar instantáneas previas de esas carpetas, que conservan copias legibles.</li>
-  </ul>
-  <p class="label" style="margin-top:26px">Avanzado / crítico</p>
-  <ul class="check">
-    <li><b>Copia de seguridad independiente</b> con credenciales separadas y limitadas, que no pueda borrarse desde el NAS de origen. Única defensa efectiva frente a ransomware en esta plataforma.</li>
-    <li><b>Regla 3-2-1</b>: tres copias, dos medios, una fuera de sitio.</li>
-    <li><b>Auditar contenedores</b>: origen de la imagen, privilegios, puertos publicados, cadencia de actualización.</li>
-    <li><b>Verificaciones periódicas</b>: prueba de login fallido, restauración real de un fichero, revisión del log del cortafuegos. Repetir tras cambiar router, red, método de acceso remoto, reglas o certificado.</li>
-  </ul>
-
-  <h2><span class="num">08 — CUMPLIMIENTO</span>Consideraciones regulatorias</h2>
-  <ul>
-    <li><strong>RGPD</strong> — si el NAS almacena datos personales, UGREENlink implica tráfico a través de infraestructura de un tercero. Debe constar en el registro de actividades de tratamiento y evaluarse la ubicación de los relays y el encargo de tratamiento.</li>
-    <li><strong>NIS2 / ENS</strong> — la ausencia de cifrado de volumen, de instantáneas inmutables y de auditorías independientes dificulta justificar estos equipos como almacenamiento primario. Su encaje natural es como destino secundario de copia con controles compensatorios.</li>
-    <li><strong>Riesgo de proveedor</strong> — el precedente de falta de respuesta ante divulgación coordinada debe recogerse en la evaluación de terceros, contrastado con la respuesta rápida en el caso «Copy Fail».</li>
-  </ul>
-
-  <h2><span class="num">09 — CONCLUSIÓN</span>Veredicto</h2>
-  <p>Arquitectura sólida en lo fundamental y hardware competitivo por precio. La seguridad ha mejorado de forma sostenida, pero las carencias siguen siendo materiales para uso profesional. <strong>La configuración por defecto no es suficiente</strong>: el nivel alcanzable depende casi por completo del endurecimiento aplicado. Y ninguna función nativa de UGOS Pro sustituye a una copia de seguridad que el NAS comprometido no pueda alcanzar.</p>
-
 </section>
 
+<!-- ===== DISCOS ===== -->
+<section id="discos" class="alt">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-disk"/></svg></div><h2>Dos discos en espejo</h2></div>
+    <p class="sub">Tenéis dos discos de 16 TB en RAID 1. Eso significa que el segundo disco es una copia exacta del primero, al segundo.</p>
 
-<!-- ============ SECCIÓN 2 ============ -->
-<section class="panel" id="s2" role="tabpanel" aria-labelledby="tab2">
-
-  <div class="lede">
-    <p>Esta sección explica lo mismo que la anterior, sin dar por sabido ningún término. Cada palabra técnica se explica la primera vez que aparece.</p>
-  </div>
-
-  <h2><span class="num">01</span>¿Qué es exactamente este aparato?</h2>
-  <p>Un <strong>NAS</strong> es una caja con discos duros dentro que se conecta a tu router, igual que se conecta un ordenador. A partir de ese momento, todos los dispositivos de la casa o la oficina —móviles, portátiles, televisión— pueden guardar y leer archivos en ella.</p>
-  <p>Piensa en él como <em>un disco duro compartido que está siempre encendido</em>. La diferencia con guardar los archivos en Google Drive o Dropbox es que aquí los datos están físicamente en tu casa, en un aparato tuyo, y no en los servidores de otra empresa. A eso se le llama a veces «nube privada».</p>
-  <p>UGREEN es una marca china conocida sobre todo por cables y cargadores. En 2024 lanzó su primera familia de estos aparatos, llamada <strong>NASync</strong>, y con ella un programa propio para manejarlos: <strong>UGOS Pro</strong>. Ese programa es lo que ves en pantalla cuando abres el NAS desde el navegador.</p>
-
-  <h2><span class="num">02</span>Cómo está organizado por dentro</h2>
-  <p>El aparato tiene cuatro piezas que conviene distinguir:</p>
-  <div class="cards two">
-    <div class="card">
-      <p class="card-h">Los discos</p>
-      <p>Donde viven realmente los archivos. Se meten en unas bandejas extraíbles, sin necesidad de destornillador en la mayoría de modelos. Los discos se compran aparte.</p>
+    <div class="bays">
+      <div class="by on"><svg class="ic"><use href="#i-disk"/></svg><small>16 TB</small></div>
+      <div class="by on"><svg class="ic"><use href="#i-disk"/></svg><small>espejo</small></div>
+      <div class="by"><svg class="ic"><use href="#i-plus"/></svg><small>libre</small></div>
+      <div class="by"><svg class="ic"><use href="#i-plus"/></svg><small>libre</small></div>
     </div>
-    <div class="card">
-      <p class="card-h">El ordenador interno</p>
-      <p>Sí, el NAS es un ordenador pequeño. Tiene procesador y memoria, y por eso puede hacer cosas además de guardar archivos: reproducir películas, organizar fotos por reconocimiento facial, ejecutar programas.</p>
+
+    <div class="grid g2" style="margin-top:34px">
+      <div class="gauge">
+        <b style="font-family:var(--display);font-size:17px">Espacio real disponible</b>
+        <div class="gbar"><i class="u"></i><i class="m"></i></div>
+        <div class="glab">
+          <b><i style="background:var(--leaf)"></i>16 TB para vosotros</b>
+          <b><i style="background:var(--sky)"></i>16 TB para el espejo</b>
+        </div>
+        <p style="font-size:14.5px;color:var(--slate);margin:12px 0 0">Compraste 32 TB y usas 16. Esa mitad no está desperdiciada: es lo que te salva cuando un disco se rompe. En pantalla verás unos 14,5 TB, porque los fabricantes cuentan los gigas de forma distinta al sistema.</p>
+      </div>
+      <div class="card">
+        <h3>Y las dos bahías libres</h3>
+        <p>Son el margen de crecimiento. Cuando os quedéis sin sitio, se añaden discos sin tirar nada de lo que hay. Antes de hacerlo, preguntad: cambiar el tipo de RAID no siempre se puede hacer sobre la marcha.</p>
+        <div class="ex">
+          <span><svg class="ic"><use href="#i-plus"/></svg>Ampliar más adelante</span>
+          <span><svg class="ic"><use href="#i-copy"/></svg>O un tercer disco solo para copias</span>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <p class="card-h">La conexión de red</p>
-      <p>Un cable de red lo une al router. Los modelos buenos traen conexiones más rápidas de lo habitual, para mover archivos grandes sin esperas.</p>
-    </div>
-    <div class="card">
-      <p class="card-h">El programa (UGOS Pro)</p>
-      <p>La parte que usas: crear usuarios, decidir quién ve qué carpeta, programar copias, instalar aplicaciones. Está construido sobre Linux, un sistema operativo libre muy usado en servidores.</p>
-    </div>
-  </div>
 
-  <h3>Una palabra que verás mucho: RAID</h3>
-  <p><strong>RAID</strong> es una forma de combinar varios discos para que trabajen juntos. Hay dos objetivos posibles, y conviene tener claro cuál eliges:</p>
-  <ul>
-    <li><strong>Que quepa más</strong>. Se suman las capacidades de todos los discos. Rápido y grande, pero si se rompe un disco lo pierdes todo.</li>
-    <li><strong>Que sobreviva a una avería</strong>. Se guarda información repetida en varios discos. Si uno se estropea, lo sacas, pones uno nuevo y el aparato reconstruye lo que faltaba. A cambio, pierdes parte de la capacidad total.</li>
-  </ul>
-  <div class="warn"><p><span class="t">El malentendido más caro</span>RAID <strong>no es una copia de seguridad</strong>. Protege contra que se rompa un disco, nada más. Si borras un archivo por error, si un virus cifra tus datos, o si el aparato entero se quema o te lo roban, el RAID no te devuelve nada. Necesitas <em>además</em> una copia en otro sitio.</p></div>
-
-  <h2><span class="num">03</span>Acceder desde fuera de casa: tres caminos</h2>
-  <p>Dentro de casa todo es sencillo. El problema aparece cuando quieres abrir tus archivos desde el trabajo o desde el móvil en la calle. Hay tres maneras, y no son igual de seguras.</p>
-
-  <div class="gloss">
-    <div><span class="term">UGREENlink</span><span class="def">El servicio del propio fabricante. Tú entras en una dirección web de UGREEN, y ellos hacen de intermediarios entre tu móvil y tu NAS. Es lo más fácil y lo más seguro para la mayoría de la gente, porque no obliga a «abrir puertas» en tu router. El precio a pagar: tu conexión pasa por los servidores de una empresa china, y UGREEN no ha publicado exactamente qué ven o dejan de ver en ese tránsito.</span></div>
-    <div><span class="term">Abrir puertos</span><span class="def">Configurar el router para que tu NAS sea visible directamente desde Internet. Es la opción avanzada y la más arriesgada: si lo haces mal, cualquiera del mundo puede intentar entrar. Solo con conocimientos y motivo concreto.</span></div>
-    <div><span class="term">VPN</span><span class="def">Una VPN crea una especie de túnel privado entre tu móvil y tu casa. Es como si tu móvil estuviera físicamente en tu salón, aunque estés en otro país. Técnicamente es la mejor opción, y herramientas como Tailscale la han hecho bastante fácil de montar.</span></div>
-  </div>
-  <p>Hay una regla que no tiene excepciones: <strong>nunca dejes la pantalla de administración de tu NAS accesible directamente desde Internet</strong>. Es como dejar la puerta del cuarto de contadores abierta a la calle.</p>
-
-  <h2><span class="num">04</span>Qué protecciones trae y cuáles no</h2>
-
-  <h3>Lo que sí tiene</h3>
-  <div class="gloss">
-    <div><span class="term">Contraseña + código (2FA)</span><span class="def">Además de la contraseña, pide un número de seis cifras que cambia cada treinta segundos y que solo está en tu móvil. Aunque alguien te robe la contraseña, no puede entrar. <strong>Actívalo siempre.</strong> No venía activado en los primeros modelos.</span></div>
-    <div><span class="term">Bloqueo por intentos</span><span class="def">Si alguien falla la contraseña varias veces seguidas, el aparato le prohíbe seguir intentándolo durante un tiempo. Frena los ataques a base de probar contraseñas una tras otra.</span></div>
-    <div><span class="term">Cortafuegos</span><span class="def">Un portero que decide qué conexiones entran y cuáles no, según de dónde vengan. Puedes decirle «solo acepta conexiones desde España» o «solo desde estos aparatos concretos».</span></div>
-    <div><span class="term">Antivirus (ClamAV)</span><span class="def">Un programa gratuito y conocido que revisa los archivos buscando virus. Puedes programarlo para que analice el disco cada semana.</span></div>
-    <div><span class="term">Cifrado de carpetas</span><span class="def">Desde agosto de 2026. Cifrar significa convertir los archivos en algo ilegible sin la contraseña. Sirve sobre todo para que, si alguien te roba el aparato y saca los discos, no pueda leer nada. <em>Ojo:</em> UGREEN no ha explicado qué método usa exactamente, así que nadie de fuera ha podido comprobar si está bien hecho.</span></div>
-    <div><span class="term">Instantáneas</span><span class="def">Fotografías del estado de tus carpetas en un momento dado. Si mañana borras algo sin querer, puedes volver a la foto de ayer. Muy útiles, pero con una pega importante que verás abajo.</span></div>
-  </div>
-
-  <h3>Lo que no tiene</h3>
-  <p>Aquí está lo que de verdad hay que saber antes de comprar:</p>
-  <ul>
-    <li><strong>No protege contra el secuestro de datos.</strong> El <em>ransomware</em> es un tipo de ataque que cifra todos tus archivos y te pide dinero para devolvértelos. Los NAS de la competencia incluyen defensas específicas contra esto. Los de UGREEN, no.</li>
-    <li><strong>Las instantáneas se pueden borrar.</strong> Si un atacante consigue las credenciales de administrador, puede eliminar esas «fotos» antes de cifrarte los archivos. No son a prueba de manipulación.</li>
-    <li><strong>El cifrado va por carpetas, no por disco entero.</strong> Es un avance, pero menos completo que en la competencia.</li>
-    <li><strong>El programa es cerrado.</strong> Nadie de fuera de UGREEN puede revisar el código para buscar fallos. Con Synology o QNAP pasa lo mismo, pero ellos llevan quince años de historial y UGREEN dos.</li>
-  </ul>
-
-  <h2><span class="num">05</span>Los sustos que ha habido</h2>
-  <p>Dos episodios reales, y conviene contar los dos porque dicen cosas distintas.</p>
-  <div class="cards two">
-    <div class="card">
-      <p class="card-h">Lo que salió bien</p>
-      <p>En abril de 2026 se descubrió un fallo grave en Linux —el sistema sobre el que está construido casi todo, no solo UGREEN— que permitía a un atacante hacerse con el control total del aparato. UGREEN publicó la corrección en <strong>tres días</strong>. Es una reacción rápida y un buen indicio.</p>
-    </div>
-    <div class="card">
-      <p class="card-h">Lo que salió mal</p>
-      <p>En diciembre de 2025, unos investigadores encontraron dos fallos serios en un modelo antiguo de UGREEN. Avisaron a la empresa antes de publicarlos, como manda la buena práctica. <strong>UGREEN no contestó.</strong> Los fallos se publicaron con instrucciones de cómo aprovecharlos, y estaban precisamente en la función de hacer copias de seguridad.</p>
+    <div class="shout" style="margin-top:20px">
+      <div class="si"><svg class="ic"><use href="#i-copy"/></svg></div>
+      <div class="sc">
+        <h3>El espejo no es una copia de seguridad</h3>
+        <p>Si Javier borra una carpeta por error, se borra de los dos discos a la vez. Igual con un virus, un robo o un incendio. El espejo solo cubre una cosa: que se estropee un disco. Para lo demás hace falta un disco USB que viva fuera del NAS.</p>
+      </div>
     </div>
   </div>
-  <p>La lectura conjunta: la empresa ha mejorado, pero su historial de tratar con investigadores de seguridad todavía no es el de un fabricante maduro.</p>
-
-  <h2><span class="num">06</span>Qué hacer, en orden de importancia</h2>
-  <ul class="check">
-    <li><b>Instala las actualizaciones.</b> Las que llegan solas también hay que aceptarlas. Un fallo corregido no te protege hasta que instalas la corrección.</li>
-    <li><b>Contraseña larga y solo para esto.</b> Nada de reutilizar la del correo. Si no quieres memorizarla, usa un gestor de contraseñas.</li>
-    <li><b>Activa el código de seis cifras (2FA)</b> y guarda los códigos de emergencia en papel, fuera del NAS.</li>
-    <li><b>Usa una cuenta normal para el día a día.</b> La cuenta de administrador solo para configurar. Así, si te roban la del día a día, no pueden tocar los ajustes.</li>
-    <li><b>No abras puertos en el router.</b> Usa UGREENlink o una VPN.</li>
-    <li><b>Ten una copia fuera del NAS.</b> Un disco USB externo que desconectas y guardas en un cajón, o un servicio en la nube. Esta es la única defensa real contra el secuestro de datos.</li>
-    <li><b>Prueba a restaurar un archivo</b> de esa copia, de vez en cuando. Una copia que nunca has probado no es una copia: es una suposición.</li>
-  </ul>
-
-  <h2><span class="num">07</span>Entonces, ¿me lo compro?</h2>
-  <p><strong>Sí, si</strong> lo quieres para tener tus fotos y documentos en casa, ver películas en la tele, y hacer copias de los ordenadores de la familia. El hardware está muy bien de precio y el programa ha mejorado mucho en dos años.</p>
-  <p><strong>Piénsalo, si</strong> vas a guardar ahí lo único que tienes de tu negocio: facturas, contabilidad, datos de clientes. En ese caso, o eliges un fabricante con más años a la espalda, o aceptas que vas a necesitar una segunda copia en otro sitio y algo de tiempo dedicado a configurarlo bien.</p>
-  <p><strong>Y en cualquiera de los dos casos</strong>: la configuración que trae de fábrica no es suficiente. Dedica una tarde a la lista de arriba.</p>
-
 </section>
 
+<!-- ===== QUÉ GUARDAR ===== -->
+<section id="guardar">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-folder"/></svg></div><h2>Qué guarda cada uno</h2></div>
+    <p class="sub">Sois cuatro adultos con papeles serios cada uno. Así que casi todo va en carpetas privadas, y solo lo común se comparte.</p>
 
-<!-- ============ SECCIÓN 3 ============ -->
-<section class="panel" id="s3" role="tabpanel" aria-labelledby="tab3">
+    <div class="tree">
+      <ul>
+        <li><svg class="ic"><use href="#i-home"/></svg><div><b>Común</b><em>Los cuatro entran y guardan</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-receipt"/></svg><div><b>Papeles de la casa</b><em>Luz, agua, internet, comunidad, seguro del hogar, manuales</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-plane"/></svg><div><b>Viajes juntos</b><em>Las fotos de los viajes que habéis hecho todos</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-film"/></svg><div><b>Cine y música</b><em>Lo que se ve en la tele del salón</em></div></li>
+        <li><svg class="ic"><use href="#i-lock"/></svg><div><b>Victor · Carlos · Javier · Carmen</b><em>Una carpeta privada por persona. Aquí va lo de abajo.</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-briefcase"/></svg><div><b>Trabajo</b><em>Contratos, nóminas, currículum, proyectos</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-euro"/></svg><div><b>Dinero</b><em>Hipoteca, cuadro de pagos, renta, banco</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-shield"/></svg><div><b>Seguros</b><em>Vida, salud, coche, decesos, con sus recibos</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-heart"/></svg><div><b>Salud</b><em>Informes médicos, analíticas, recetas, tarjeta sanitaria</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-school"/></svg><div><b>Estudios</b><em>Títulos, certificados, notas, cursos</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-camera"/></svg><div><b>Fotos personales</b><em>Su carrete, sus viajes, sus cosas</em></div></li>
+        <li class="in"><svg class="ic"><use href="#i-doc"/></svg><div><b>Identidad</b><em>DNI, pasaporte, permiso de conducir escaneados</em></div></li>
+        <li><svg class="ic"><use href="#i-refresh"/></svg><div><b>Copias automáticas</b><em>Aquí caen solos los móviles y los portátiles de los cuatro</em></div></li>
+        <li><svg class="ic"><use href="#i-gear"/></svg><div><b>Admin</b><em>Sin datos personales. Solo la configuración del aparato.</em></div></li>
+      </ul>
+    </div>
 
-  <div class="lede">
-    <p>NASync DXP4800 Plus — el modelo de cuatro bahías de gama media, y probablemente el punto dulce de la familia. Ficha completa, topología interna y las implicaciones de seguridad de cada decisión de diseño.</p>
+    <h4><svg class="ic"><use href="#i-key"/></svg>Las cuatro carpetas privadas, cifradas</h4>
+    <p class="sub" style="margin-bottom:16px">Con hipotecas, informes médicos y DNIs dentro, merece la pena. Cifrar significa que si alguien se lleva el aparato y saca los discos, no puede leer nada. Cada uno guarda su clave fuera del NAS: en papel, o en un gestor de contraseñas.</p>
+
+    <h4><svg class="ic"><use href="#i-refresh"/></svg>Que llegue solo</h4>
+    <div class="grid g4">
+      <div class="card"><div class="ci"><svg class="ic"><use href="#i-phone"/></svg></div><h3>El carrete</h3><p>La app en los cuatro móviles sube las fotos nuevas sola, cuando hay wifi en casa.</p></div>
+      <div class="card"><div class="ci"><svg class="ic"><use href="#i-laptop"/></svg></div><h3>Los portátiles</h3><p>Copia programada una vez por semana, de madrugada.</p></div>
+      <div class="card"><div class="ci"><svg class="ic"><use href="#i-doc"/></svg></div><h3>Los papeles</h3><p>Foto de la factura desde la app y va directa a su carpeta, ya en PDF.</p></div>
+      <div class="card"><div class="ci"><svg class="ic"><use href="#i-sd"/></svg></div><h3>La tarjeta</h3><p>Metes la SD de la cámara en la ranura de delante y se vacía sola.</p></div>
+    </div>
   </div>
+</section>
 
-  <h2><span class="num">01 — FICHA</span>Especificaciones</h2>
-  <div class="scroll">
-  <table class="tbl">
-    <thead><tr><th>Bloque</th><th>Especificación</th></tr></thead>
-    <tbody>
-      <tr><td>Procesador</td><td class="m">Intel Pentium Gold 8505 (12ª gen, Alder Lake) · 5 núcleos (1P + 4E) / 6 hilos · hasta 4,40 GHz · gráfica integrada Intel UHD con Quick Sync</td></tr>
-      <tr><td>Memoria</td><td class="m">8 GB DDR5 SODIMM de serie · 2 zócalos · ampliable a 64 GB (32 GB por zócalo) · sin ECC</td></tr>
-      <tr><td>Bahías</td><td class="m">4 × SATA 6 Gbps · 3,5" y 2,5" · instalación sin herramientas para 3,5"</td></tr>
-      <tr><td>M.2</td><td class="m">2 × NVMe formato 2280 · el fabricante indica PCIe 4.0 ×4; en el lanzamiento no se especificaba la generación</td></tr>
-      <tr><td>Disco de sistema</td><td class="m">SSD interno de 128 GB preinstalado en las unidades de lanzamiento (separado del pool de datos)</td></tr>
-      <tr><td>Red</td><td class="m">1 × 10GbE RJ45 + 1 × 2,5GbE RJ45 (retrocompatibles) · hasta ~1.250 MB/s teóricos en el enlace de 10 Gb</td></tr>
-      <tr><td>USB</td><td class="m">1 × USB-C 3.2 Gen 2 (10 Gbps) · 1 × USB-A 3.2 Gen 2 (10 Gbps) · 1 × USB-A 3.2 Gen 1 (5 Gbps) · 2 × USB 2.0 (480 Mbps)</td></tr>
-      <tr><td>Otros puertos</td><td class="m">HDMI con salida 4K a 60 Hz · lector SD 3.0 hasta 104 MB/s · botón de reset · alimentación DC</td></tr>
-      <tr><td>Chasis</td><td class="m">Aluminio negro · 257,5 × 178 × 178 mm · filtro de polvo magnético trasero · modo silencioso 29–34 dB</td></tr>
-      <tr><td>Cabeceras internas</td><td class="m">Cabecera UART de 3 pines y cabecera JMCU1 de 4 pines bajo la tapa de RAM/M.2</td></tr>
-      <tr><td>Sistema</td><td class="m">UGOS Pro · Docker y máquinas virtuales · Btrfs / ext4 · Basic, JBOD, RAID 0/1/5/6/10</td></tr>
-    </tbody>
-  </table>
+<!-- ===== AJUSTES ===== -->
+<section id="ajustes" class="alt">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-gear"/></svg></div><h2>Vuestra seguridad, en cristiano</h2></div>
+    <p class="sub">Esto es lo que hay configurado ahora mismo, traducido. Verde = activado. Rojo = apagado. Naranja = hay que mirarlo.</p>
+
+    <div class="set">
+      <div class="set-h"><svg class="ic"><use href="#i-shield"/></svg>Seguridad general<span>Pestaña «Security»</span></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-check"/></svg></div><div class="opt-b">
+        <b>Cierre de sesión por inactividad</b>
+        <p>Si dejas la pantalla del NAS abierta y te vas, a la media hora se cierra sola. Sirve para cuando alguien se deja el portátil abierto en el salón.</p>
+        <span class="val">30 minutos</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-check"/></svg></div><div class="opt-b">
+        <b>Borrar sesiones al reiniciar</b>
+        <p>Cuando el aparato se apaga y enciende, todos tienen que volver a poner su contraseña. Evita que quede una sesión abierta de alguien.</p></div></div>
+
+      <div class="opt"><div class="st off"><svg class="ic"><use href="#i-cross"/></svg></div><div class="opt-b">
+        <b>Protección contra avalanchas de conexiones</b>
+        <p>Está apagada. Defiende de un ataque que consiste en inundar el aparato con miles de peticiones hasta que deja de responder. No os roba nada, pero os deja sin servicio. <strong>Merece la pena encenderla.</strong></p>
+        <span class="val">Apagado · única casilla en rojo</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-ban"/></svg></div><div class="opt-b">
+        <b>Bloqueo del sitio desde donde se falla</b>
+        <p>Si alguien prueba contraseñas desde un ordenador y falla 10 veces en 5 minutos, ese ordenador queda vetado. No puede volver a intentarlo.</p>
+        <span class="val">10 fallos en 5 minutos</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-check"/></svg></div><div class="opt-b">
+        <b>Protección contra webs tramposas (CSRF)</b>
+        <p>Impide que una página web maliciosa, abierta en otra pestaña, dé órdenes a vuestro NAS aprovechando que tenéis la sesión abierta.</p></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-check"/></svg></div><div class="opt-b">
+        <b>Bloqueo de código de fuera (CSP)</b>
+        <p>La pantalla del NAS solo ejecuta lo suyo. Si alguien consiguiera colar un trozo de código ajeno, el navegador se niega a ejecutarlo.</p></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-lock"/></svg></div><div class="opt-b">
+        <b>Conexión cifrada (TLS 1.2 o superior)</b>
+        <p>Todo lo que viaja entre vuestros aparatos y el NAS va en clave. Aunque alguien pinchara la red, vería ruido. Es el mismo candado que el del banco.</p>
+        <span class="val">Versión 1.2 o posterior — correcto</span></div></div>
+    </div>
+
+    <div class="set">
+      <div class="set-h"><svg class="ic"><use href="#i-user"/></svg>Seguridad de las cuentas<span>Pestaña «Account security»</span></div>
+
+      <div class="opt"><div class="st chk"><svg class="ic"><use href="#i-question"/></svg></div><div class="opt-b">
+        <b>Código de 6 cifras (2FA)</b>
+        <p>Además de la contraseña, pide un número que cambia cada 30 segundos y que solo está en el móvil. Es <strong>la protección más importante de todas</strong>: aunque alguien robe una contraseña, no entra. La captura no muestra si está activo. <strong>Hay que comprobarlo cuenta por cuenta</strong>, y sobre todo en Admin.</p>
+        <span class="val">Estado desconocido · comprobar en las 5 cuentas</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-eye"/></svg></div><div class="opt-b">
+        <b>Registro de conexiones</b>
+        <p>Guarda quién ha entrado, cuándo y desde dónde, de las cinco cuentas. Si un día algo huele raro, aquí se mira primero.</p></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-lock"/></svg></div><div class="opt-b">
+        <b>Bloqueo de la cuenta</b>
+        <p>Distinto del anterior: aquí lo que se congela es <em>la cuenta</em>. Si alguien falla 6 veces con la contraseña de Carmen en 5 minutos, la cuenta de Carmen queda bloqueada, venga de donde venga el intento.</p>
+        <span class="val">6 fallos en 5 minutos · activado</span></div></div>
+    </div>
+
+    <div class="set">
+      <div class="set-h"><svg class="ic"><use href="#i-wifi"/></svg>La red de casa<span>Pestaña «Network»</span></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-globe"/></svg></div><div class="opt-b">
+        <b>Puerta de salida a internet</b>
+        <p>El NAS sale a internet por vuestro router, que es el 192.168.1.1. Normal y correcto.</p>
+        <span class="val">192.168.1.1</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-search"/></svg></div><div class="opt-b">
+        <b>Guía telefónica de internet (DNS)</b>
+        <p>Es lo que traduce «google.com» a un número. Está en automático, o sea que usa la del router. Está bien así, salvo que queráis un filtro de publicidad para toda la casa.</p>
+        <span class="val">Automático, la del router</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-alert"/></svg></div><div class="opt-b">
+        <b>Aviso de dirección duplicada</b>
+        <p>Si otro aparato de casa coge por error la misma dirección que el NAS, os avisa en vez de dejar que dos cosas se peleen y nada funcione.</p>
+        <span class="val">Activado</span></div></div>
+
+      <div class="opt"><div class="st ok"><svg class="ic"><use href="#i-check"/></svg></div><div class="opt-b">
+        <b>Prioridad a las direcciones clásicas (IPv4)</b>
+        <p>Hay dos sistemas de direcciones en internet. Al preferir el antiguo evitáis problemas raros de conexión. Además tenéis el moderno (IPv6) apagado, que es una vía menos por la que os pueden llegar cosas.</p></div></div>
+    </div>
   </div>
-  <p style="font-size:13.5px;color:var(--steel);max-width:var(--measure)">La serie NASync se financió en Kickstarter con más de 13.000 mecenas y 6,6 M$ recaudados, el producto NAS más financiado de la plataforma.</p>
+</section>
 
-  <h2><span class="num">02 — TOPOLOGÍA</span>Arquitectura interna</h2>
-  <div class="dia">                      ┌──────────────────────────┐
-                      │  <b>Intel Pentium Gold 8505</b> │
-                      │  1P + 4E · 6 hilos       │
-                      │  iGPU UHD (Quick Sync)   │
-                      └────────────┬─────────────┘
-                                   │  PCIe / DMI
-        ┌──────────────┬───────────┼───────────┬──────────────┐
-        │              │           │           │              │
-  ┌─────┴─────┐  ┌─────┴─────┐ ┌───┴────┐ ┌────┴────┐  ┌──────┴──────┐
-  │ <b>4 × SATA</b>  │  │ <b>2 × M.2</b>   │ │ <b>10GbE</b>  │ │ <b>2.5GbE</b>  │  │ <b>HDMI 4K</b>    │
-  │ 6 Gbps    │  │ NVMe 2280 │ │  RJ45  │ │  RJ45   │  │ USB ×5      │
-  │ 3.5"/2.5" │  │ caché o   │ │        │ │         │  │ lector SD   │
-  │           │  │ volumen   │ │        │ │         │  │ UART (int.) │
-  └─────┬─────┘  └─────┬─────┘ └───┬────┘ └────┬────┘  └─────────────┘
-        │              │           │           │
-        └──────┬───────┘           └─────┬─────┘
-               │                         │
-        ┌──────┴────────┐        ┌───────┴────────┐
-        │ <b>Pool de datos</b> │        │ <b>Plano de red</b>   │
-        │ RAID software │        │ 10GbE = datos  │
-        │ Btrfs / ext4  │        │ 2.5GbE = mgmt  │
-        └───────────────┘        └────────────────┘
+<!-- ===== POR REVISAR ===== -->
+<section id="pendiente">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-question"/></svg></div><h2>Lo que falta por mirar</h2></div>
+    <p class="sub">Seis cosas, ordenadas por lo que más importa. Una tarde y quedan hechas.</p>
 
-        ┌───────────────────────────────────────────┐
-        │ <b>SSD interno 128 GB</b> — sistema UGOS Pro,     │
-        │ separado del pool de datos                │
-        └───────────────────────────────────────────┘</div>
-
-  <h2><span class="num">03 — ANÁLISIS</span>Implicaciones de seguridad del diseño</h2>
-
-  <h3>Doble NIC: la mejor baza del modelo</h3>
-  <p>Tener <strong>dos interfaces de red de velocidades distintas</strong> no es solo comodidad. Permite una separación de planos que muy pocos NAS de este precio ofrecen: <strong>10GbE para el tráfico de datos</strong> (SMB, NFS, edición de vídeo) en su propia VLAN, y <strong>2,5GbE para el plano de gestión</strong> (interfaz web, SSH si se activa) en una VLAN restringida a las estaciones de administración.</p>
-  <div class="note"><p><span class="t">Recomendación de despliegue</span>Configurar la interfaz de 2,5GbE como única vía de acceso a la interfaz de administración y aplicar en el cortafuegos una lista blanca de direcciones IP para ese plano. Es el control de mayor relación coste/beneficio disponible en este hardware, y anula por completo el vector que aprovecharon los fallos del DH2100+.</p></div>
-
-  <h3>SSD de sistema separado del pool</h3>
-  <p>Que UGOS Pro resida en un SSD interno independiente y no en los discos de datos tiene tres consecuencias prácticas: el pool puede reconstruirse sin tocar el sistema, el arranque no depende del estado del RAID, y una recuperación tras compromiso puede reinstalar el sistema conservando los datos. También significa que <strong>el cifrado de carpetas no protege la configuración ni los registros del sistema</strong>, que viven en ese SSD sin cifrar.</p>
-
-  <h3>Memoria DDR5 sin ECC</h3>
-  <p>Btrfs calcula sumas de verificación para detectar corrupción en disco, y suele venderse como garantía de integridad. Conviene matizarlo: <strong>esas sumas se calculan en RAM</strong>. Sin memoria ECC, un error de bit en memoria puede propagarse al disco con una suma de verificación perfectamente válida. Es una limitación compartida con casi todos los NAS de consumo, pero desmonta la idea de que Btrfs por sí solo garantiza integridad de extremo a extremo. Si el dato es crítico, la verificación debe hacerse contra la copia externa.</p>
-
-  <h3>Superficie física: lo que suele pasarse por alto</h3>
-  <ul>
-    <li><strong>Cabecera UART de 3 pines</strong> bajo la tapa de RAM y M.2. Una consola serie de depuración es una vía clásica de acceso a bajo nivel con acceso físico al equipo. No hay documentación pública de si está protegida o de qué expone.</li>
-    <li><strong>Botón de reset</strong> — restablece configuración; con acceso físico, un vector directo de denegación de servicio o de reconfiguración.</li>
-    <li><strong>Lector SD y cinco puertos USB</strong> — puntos de introducción de contenido no confiable y de extracción de datos. En entornos con requisitos, deshabilitar el automontaje y el arranque desde USB.</li>
-    <li><strong>HDMI</strong> — la salida local no requiere autenticación de red y, según el estado del sistema, puede exponer información en pantalla.</li>
-  </ul>
-  <p>Todo esto refuerza el mismo punto: <strong>el cifrado de carpetas, disponible desde 1.18.1.0098, es la contramedida adecuada frente al acceso físico</strong>, y en este modelo concreto tiene sentido activarlo aunque el equipo esté en una oficina cerrada.</p>
-
-  <h3>Quick Sync y contenedores</h3>
-  <p>La gráfica integrada del 8505 acelera la transcodificación de vídeo, lo que en la práctica significa que aplicaciones como Plex, Jellyfin o Emby se desplegarán en Docker con <strong>acceso al dispositivo <code>/dev/dri</code></strong>. Ese paso a través de hardware amplía los privilegios del contenedor más allá de lo habitual. Merece una revisión explícita: montar solo el dispositivo necesario, nunca ejecutar el contenedor en modo privilegiado, y mantener la imagen actualizada.</p>
-
-  <h3>Capacidad de virtualización</h3>
-  <p>Cinco núcleos y hasta 64 GB de RAM permiten alojar máquinas virtuales, cosa que la serie DH no puede. Es la mejor vía para aislar cargas de riesgo: un servicio expuesto puede vivir en una VM con su propia interfaz de red virtual en lugar de compartir el espacio del sistema anfitrión. Es también la razón principal para elegir DXP sobre DH cuando la seguridad es un criterio.</p>
-
-  <h2><span class="num">04 — ALTERNATIVA</span>DXP4800 Plus frente a DXP4800 GT</h2>
-  <div class="scroll">
-  <table class="tbl">
-    <thead><tr><th></th><th>DXP4800 Plus</th><th>DXP4800 GT</th></tr></thead>
-    <tbody>
-      <tr><td>Procesador</td><td class="m">Intel Pentium Gold 8505 · 5 núcleos / 6 hilos</td><td class="m">AMD Ryzen Embedded R2514 · 4 núcleos / 8 hilos</td></tr>
-      <tr><td>Red</td><td class="m">1 × 10GbE + 1 × 2,5GbE</td><td class="m">2 × 10GbE</td></tr>
-      <tr><td>Almacenamiento</td><td class="m">4 × SATA + 2 × M.2 NVMe</td><td class="m">4 × SATA + 2 × M.2 · U.2 NVMe opcional en bahías 1 y 2</td></tr>
-      <tr><td>Encaje</td><td class="m">Estación de trabajo a 10GbE, resto de la red a 2,5GbE · separación natural de planos</td><td class="m">Varios usuarios a 10GbE · almacenamiento all-flash de mayor velocidad</td></tr>
-    </tbody>
-  </table>
+    <div class="rows">
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-lock"/></svg></div><div><b>1. El código de 6 cifras, en las cinco cuentas</b><span>Empezad por Admin. Es lo único que os protege si una contraseña acaba filtrada en internet, que pasa más de lo que parece.</span></div></div>
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-copy"/></svg></div><div><b>2. El disco USB de las copias</b><span>Tenéis el espejo, pero no una copia de verdad. Un disco externo, una vez al mes, guardado en otro sitio. Es lo único que os salva de un borrado o un robo.</span></div></div>
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-shield"/></svg></div><div><b>3. Encender la protección contra avalanchas</b><span>Es la única casilla apagada de la pestaña de seguridad. Un clic.</span></div></div>
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-key"/></svg></div><div><b>4. Cifrar las cuatro carpetas privadas</b><span>Con hipotecas e informes médicos dentro, tiene sentido. Cada uno guarda su clave fuera del NAS.</span></div></div>
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-ban"/></svg></div><div><b>5. Mirar la pestaña del cortafuegos</b><span>No aparece en las capturas. Ahí se decide qué conexiones entran. Lo razonable es permitir solo las de vuestra red de casa.</span></div></div>
+      <div class="row"><div class="rm"><svg class="ic"><use href="#i-globe"/></svg></div><div><b>6. Reservar la dirección del NAS en el router</b><span>Para que no le cambie el número un día y dejéis de encontrarlo desde la tele o el portátil.</span></div></div>
+    </div>
   </div>
-  <p>Para un despliegue con criterio de seguridad, el <strong>Plus</strong> tiene una ventaja poco evidente: la asimetría de sus dos interfaces empuja de forma natural hacia la separación entre plano de datos y plano de gestión. En el GT, con dos puertos idénticos, la tentación de agregarlos en un único enlace es fuerte y sacrifica esa separación.</p>
+</section>
 
-  <h2><span class="num">05 — CIERRE</span>Veredicto sobre el modelo</h2>
-  <p>Es el modelo con mejor relación entre capacidad, red y precio de la familia, y el que mejor se presta a un despliegue endurecido gracias a sus dos interfaces de red y a su capacidad de virtualización. Las limitaciones que arrastra no son del hardware sino del software: sin protección antiransomware, sin instantáneas inmutables y sin cifrado de volumen completo, el DXP4800 Plus sigue necesitando una copia de seguridad externa que no dependa de él. Con esa pieza en su sitio, es una compra defendible; sin ella, no lo es en ningún escenario.</p>
+<!-- ===== DÍA A DÍA ===== -->
+<section id="dia" class="alt">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-search"/></svg></div><h2>Situaciones de cada semana</h2></div>
+    <p class="sub">Lo que va a pasar de verdad, y qué se hace.</p>
 
+    <div class="grid g2">
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-phone"/></svg></div><div><q>Se me ha llenado el móvil</q><p>Tus fotos ya están subidas a tu carpeta. Bórralas del teléfono sin miedo.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-trash"/></svg></div><div><q>He borrado una carpeta sin querer</q><p>Está en la papelera. Ojo: el disco espejo <em>no</em> la recupera, porque el borrado se copia a los dos.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-heart"/></svg></div><div><q>Me piden un informe médico en la consulta</q><p>Desde la app del móvil, entras con tu cuenta y lo buscas. Nadie más de casa puede verlo.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-euro"/></svg></div><div><q>El banco me pide la escritura</q><p>En tu carpeta de Dinero. Se envía desde el propio móvil sin pasar por el ordenador.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-share"/></svg></div><div><q>Quiero pasar las fotos del viaje a un amigo</q><p>Enlace compartido con fecha de caducidad. No hace falta que se instale nada ni que tenga cuenta.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-laptop"/></svg></div><div><q>Se me ha muerto el portátil</q><p>Se restaura desde la copia del domingo. Como mucho pierdes una semana de trabajo.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-alert"/></svg></div><div><q>Se ha puesto una luz naranja o roja</q><p>Es uno de los dos discos avisando. Mientras el otro aguante, no perdéis nada, pero <strong>quedáis sin red de seguridad</strong>. Cambiadlo esa misma semana.</p></div></div>
+      <div class="sit"><div class="si"><svg class="ic"><use href="#i-ban"/></svg></div><div><q>No me deja entrar en mi cuenta</q><p>Habrás fallado la contraseña 6 veces. Espera un rato o pídele a quien tenga Admin que te desbloquee.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== RUTINA ===== -->
+<section id="rutina">
+  <div class="wrap">
+    <div class="sec-h"><div class="badge"><svg class="ic"><use href="#i-calendar"/></svg></div><h2>La rutina de la casa</h2></div>
+    <p class="sub">Poco trabajo, pero constante. Que sea siempre la misma persona quien lo haga, o se acaba no haciendo.</p>
+
+    <div class="grid g3">
+      <div class="when">
+        <div class="wh"><svg class="ic"><use href="#i-clock"/></svg>Cada mes</div>
+        <ul>
+          <li><svg class="ic"><use href="#i-disk"/></svg>Enchufar el disco USB y dejar que se haga la copia.</li>
+          <li><svg class="ic"><use href="#i-refresh"/></svg>Aceptar las actualizaciones pendientes.</li>
+          <li><svg class="ic"><use href="#i-eye"/></svg>Echar un ojo al registro de conexiones.</li>
+        </ul>
+      </div>
+      <div class="when">
+        <div class="wh"><svg class="ic"><use href="#i-calendar"/></svg>Cada año</div>
+        <ul>
+          <li><svg class="ic"><use href="#i-download"/></svg>Recuperar un archivo cualquiera de la copia, a ver si funciona.</li>
+          <li><svg class="ic"><use href="#i-disk"/></svg>Mirar la salud de los dos discos.</li>
+          <li><svg class="ic"><use href="#i-key"/></svg>Cambiar la contraseña de Admin.</li>
+        </ul>
+      </div>
+      <div class="when">
+        <div class="wh"><svg class="ic"><use href="#i-shield"/></svg>Fijo, una vez</div>
+        <ul>
+          <li><svg class="ic"><use href="#i-lock"/></svg>Código de 6 cifras en las cinco cuentas.</li>
+          <li><svg class="ic"><use href="#i-cloud"/></svg>Para entrar desde fuera, la app oficial. Nunca abrir puertos en el router.</li>
+          <li><svg class="ic"><use href="#i-key"/></svg>Cifrar las cuatro carpetas privadas.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="shout" style="margin-top:20px">
+      <div class="si"><svg class="ic"><use href="#i-star"/></svg></div>
+      <div class="sc">
+        <h3>Si solo hacéis dos cosas</h3>
+        <p>El código de 6 cifras en las cinco cuentas, y el disco USB del cajón una vez al mes. Todo lo demás de esta guía es comodidad; estas dos son las que evitan el disgusto.</p>
+      </div>
+    </div>
+  </div>
 </section>
 
 </main>
 
 <footer>
-  <div class="wrap">
-    <p style="font-family:var(--mono);font-size:10.5px;letter-spacing:.15em;text-transform:uppercase;color:#e08a1e;margin:0 0 14px">Fuentes</p>
-    <p style="margin:0 0 16px">Documentación pública del fabricante (ai.ugreen.com, ai-es.ugreen.com, nas-eu.ugreen.com), bases de datos de vulnerabilidades (VulDB, SentinelOne, Feedly), foro DACH de UGREEN, y análisis independientes de RaidSize, NAS Compares, TechPowerUp, Android Central, Marius Hosting, Galaxus y Profesional Review.</p>
-    <p style="margin:0;color:#6b7280">Elaborado a 29 de agosto de 2026. Las versiones de firmware y el estado de las vulnerabilidades deben verificarse antes de cualquier decisión de despliegue.</p>
-  </div>
+  <div class="wrap"><p>Guía de uso doméstico · UGREEN NASync DXP4800 Plus · 2 discos de 16 TB en RAID 1 · 5 cuentas. Los nombres de las carpetas son una propuesta. Existe una versión técnica ampliada de este documento.</p></div>
 </footer>
-
-<script>
-(function(){
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('[role="tab"]'));
-  var panels = tabs.map(function(t){ return document.getElementById(t.getAttribute('aria-controls')); });
-
-  function select(i, focus){
-    tabs.forEach(function(t, n){
-      t.setAttribute('aria-selected', n === i ? 'true' : 'false');
-      t.setAttribute('tabindex', n === i ? '0' : '-1');
-      panels[n].classList.toggle('is-on', n === i);
-    });
-    if (focus) tabs[i].focus();
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }
-
-  tabs.forEach(function(t, i){
-    t.setAttribute('tabindex', i === 0 ? '0' : '-1');
-    t.addEventListener('click', function(){ select(i, false); });
-    t.addEventListener('keydown', function(e){
-      var next = null;
-      if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
-      if (e.key === 'ArrowLeft')  next = (i - 1 + tabs.length) % tabs.length;
-      if (e.key === 'Home') next = 0;
-      if (e.key === 'End')  next = tabs.length - 1;
-      if (next !== null){ e.preventDefault(); select(next, true); }
-    });
-  });
-})();
-</script>
 
 </body>
 </html>
