@@ -1,0 +1,964 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calendario de tareas.cron</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#E7EBEF; --surface:#FFFFFF; --surface-2:#F3F5F7; --ink:#17202A; --muted:#5A6672;
+  --line:#CBD3DB; --line-soft:#E4E8EC;
+  --accent:#2C52C4; --on-accent:#FFFFFF;
+  --conflict:#CF3426; --conflict-bg:rgba(207,52,38,.13);
+  --on-task:#FFFFFF;
+  --t0:#1C8676; --t1:#4A59D2; --t2:#B8730B; --t3:#9E4496; --t4:#2879B0; --t5:#5A861C; --t6:#BE4D37; --t7:#666B77;
+  --h1:#CFDAF3; --h2:#97AEE7; --h3:#5C7FD6; --h4:#2C52C4;
+  --sans:"Atkinson Hyperlegible","Segoe UI",system-ui,-apple-system,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"Cascadia Mono",Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#11161C; --surface:#1A2129; --surface-2:#212A33; --ink:#E5EAF0; --muted:#96A2AE;
+    --line:#33404C; --line-soft:#26303A;
+    --accent:#7F9DEB; --on-accent:#0F1520;
+    --conflict:#FF6B5C; --conflict-bg:rgba(255,107,92,.16);
+    --on-task:#0E141A;
+    --t0:#4CC7B2; --t1:#93A0FF; --t2:#F0B44A; --t3:#E08AD6; --t4:#6CB8EC; --t5:#A3D15E; --t6:#F28E76; --t7:#AEB3BE;
+    --h1:#22314E; --h2:#2E4A85; --h3:#4769C4; --h4:#86A3F0;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#11161C; --surface:#1A2129; --surface-2:#212A33; --ink:#E5EAF0; --muted:#96A2AE;
+  --line:#33404C; --line-soft:#26303A;
+  --accent:#7F9DEB; --on-accent:#0F1520;
+  --conflict:#FF6B5C; --conflict-bg:rgba(255,107,92,.16);
+  --on-task:#0E141A;
+  --t0:#4CC7B2; --t1:#93A0FF; --t2:#F0B44A; --t3:#E08AD6; --t4:#6CB8EC; --t5:#A3D15E; --t6:#F28E76; --t7:#AEB3BE;
+  --h1:#22314E; --h2:#2E4A85; --h3:#4769C4; --h4:#86A3F0;
+}
+*,*::before,*::after{box-sizing:inherit}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--sans);font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{padding:22px clamp(14px,3vw,32px) 6px;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}
+.top h1{font-size:1.55rem;line-height:1.2;margin:0;letter-spacing:-.01em}
+.top h1 code{font-family:var(--mono);font-size:.9em;font-weight:600}
+.top p{margin:0;color:var(--muted)}
+
+.app{display:grid;grid-template-columns:minmax(300px,370px) minmax(0,1fr);gap:18px;padding:12px clamp(14px,3vw,32px) 28px;align-items:start}
+@media (max-width:960px){.app{grid-template-columns:minmax(0,1fr)} .side{order:2}}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.panel h2{font-size:1rem;margin:0 0 10px}
+.panel h2 code{font-family:var(--mono);font-weight:600}
+.hint{color:var(--muted);font-size:.86rem;margin:8px 0 0}
+
+/* Editor */
+.editor{display:grid;grid-template-columns:auto minmax(0,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface-2)}
+.gutter{font:12.5px/1.6 var(--mono);color:var(--muted);text-align:right;padding:8px 6px 8px 8px;overflow:hidden;user-select:none;border-right:1px solid var(--line-soft);min-width:2.6em}
+.gutter span{display:block}
+.gutter span.err{color:var(--conflict);font-weight:600}
+.editor textarea{font:12.5px/1.6 var(--mono);border:0;background:transparent;resize:vertical;min-height:180px;padding:8px 10px;white-space:pre;overflow:auto;outline:none;tab-size:4}
+.editor:focus-within{border-color:var(--accent)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:7px;padding:6px 12px;cursor:pointer;font-size:.9rem}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.status{margin-top:10px;font-size:.88rem}
+.status ul{margin:0;padding:0;list-style:none}
+.status li button{all:unset;cursor:pointer;color:var(--conflict);text-decoration:underline;text-underline-offset:2px}
+.status li button:focus-visible{outline:2px solid var(--accent)}
+.ok{color:var(--muted)}
+
+/* Task list */
+.tasks{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.task{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:3px 10px;align-items:start}
+.task input[type=checkbox]{appearance:none;width:18px;height:18px;border-radius:5px;border:2px solid var(--c);margin:2px 0 0;cursor:pointer;background:transparent}
+.task input[type=checkbox]:checked{background:var(--c)}
+.task .nm{grid-column:2 / span 2;font-family:var(--mono);font-size:.82rem;font-weight:600;overflow-wrap:anywhere}
+.task .ds{color:var(--muted);font-size:.84rem;grid-column:2;grid-row:2}
+.task .tag{font-family:var(--sans);font-weight:400;font-size:.75rem;border:1px solid var(--line);border-radius:4px;padding:0 5px;margin-left:6px;color:var(--muted)}
+.task label.du{grid-row:2;grid-column:3;display:flex;align-items:center;gap:4px;font-size:.84rem;color:var(--muted)}
+.num{width:4.4em;border:1px solid var(--line);border-radius:6px;padding:3px 6px;background:var(--surface-2);text-align:right}
+.task.off .nm,.task.off .ds{opacity:.55}
+.empty{color:var(--muted);font-size:.9rem;margin:0}
+
+.field{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:8px 0;font-size:.9rem}
+.field select{border:1px solid var(--line);border-radius:6px;padding:4px 6px;background:var(--surface-2);max-width:60%}
+.check{display:flex;gap:8px;align-items:flex-start;font-size:.9rem;margin-top:8px;cursor:pointer}
+.check input{margin-top:3px}
+
+/* Finder */
+.slots{list-style:none;padding:0;margin:10px 0 0;display:grid;gap:8px}
+.slot{border:1px solid var(--line-soft);border-radius:8px;padding:8px 10px;background:var(--surface-2)}
+.slot .w{font-size:.88rem}
+.slot .w b{font-weight:700}
+.slot .w span{color:var(--muted)}
+.slot .c{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:4px}
+.slot code{font:12.5px var(--mono)}
+.slot .c div{display:flex;gap:6px}
+.slot .btn{padding:3px 9px;font-size:.8rem}
+
+/* Calendar */
+.cal{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.bar-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:12px 14px;border-bottom:1px solid var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:6px 13px;cursor:pointer;font-size:.92rem}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface);font-weight:700}
+.nav{display:inline-flex;gap:6px}
+.nav .btn{padding:5px 11px}
+.when{font-size:1.18rem;font-weight:700;margin:0;flex:1 1 220px}
+.summary{padding:9px 14px;font-size:.88rem;color:var(--muted);border-bottom:1px solid var(--line-soft)}
+.summary b{color:var(--ink);font-weight:700}
+.summary .bad{color:var(--conflict);font-weight:700}
+.legend[hidden]{display:none}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;padding:8px 14px;border-bottom:1px solid var(--line-soft);font-size:.82rem;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;background:var(--c)}
+.legend i.cf{background:var(--conflict-bg);border-left:3px solid var(--conflict);border-radius:0}
+.legend i.mg{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--muted) 55%,transparent) 0 3px,transparent 3px 6px)}
+.view{padding:0}
+
+/* Time grid (día y semana) */
+.tg{overflow:auto;max-height:min(74vh,940px);position:relative}
+.tg-in{min-width:var(--minw,0)}
+.tg-head,.tg-body{display:grid;grid-template-columns:54px repeat(var(--cols),minmax(0,1fr))}
+.tg-head{position:sticky;top:0;z-index:6;background:var(--surface);border-bottom:1px solid var(--line)}
+.tg-head > *{padding:7px 6px;border-left:1px solid var(--line-soft);font-size:.86rem;text-align:center;min-width:0}
+.tg-head > .corner{border-left:0}
+.tg-day{all:unset;cursor:pointer;display:block;text-align:center;padding:7px 4px;border-left:1px solid var(--line-soft)}
+.tg-day:hover .dn{text-decoration:underline}
+.tg-day .wd{color:var(--muted)}
+.tg-day .dn{font-weight:700;font-size:1.02rem;margin-left:3px}
+.tg-day.today .dn{background:var(--accent);color:var(--on-accent);border-radius:999px;padding:1px 7px}
+.tg-day:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.tg-task{display:flex;align-items:center;justify-content:center;gap:6px;overflow:hidden}
+.tg-task i{flex:none;width:10px;height:10px;border-radius:3px;background:var(--c)}
+.tg-task span{font-family:var(--mono);font-size:.76rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tg-body{height:calc(var(--hh) * 24)}
+.tg-body > *{grid-row:1;position:relative}
+.axis span{position:absolute;right:8px;transform:translateY(-50%);font-size:.75rem;color:var(--muted)}
+.axis span:first-child{transform:none}
+.col{border-left:1px solid var(--line-soft);background-image:repeating-linear-gradient(to bottom,var(--line-soft) 0 1px,transparent 1px var(--hh))}
+.col.today{background-color:color-mix(in srgb,var(--accent) 5%,transparent)}
+.blk{position:absolute;border-radius:5px;overflow:hidden;background:var(--c);color:var(--on-task);font-size:.74rem;line-height:1.25;box-shadow:0 0 0 1px var(--surface);z-index:2;cursor:default}
+.blk.worst{background:repeating-linear-gradient(135deg,color-mix(in srgb,var(--c) 50%,transparent) 0 4px,color-mix(in srgb,var(--c) 18%,transparent) 4px 8px)}
+.blk .sol{position:absolute;left:0;right:0;background:var(--c)}
+.blk .lb{position:relative;z-index:1;padding:2px 5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.blk .lb b{font-weight:700}
+.blk.worst .lb{color:var(--on-task)}
+.band{position:absolute;left:0;right:0;background:var(--conflict-bg);border-left:3px solid var(--conflict);z-index:1;pointer-events:none}
+.ov{grid-column:2 / -1;pointer-events:none;z-index:3}
+.ov .band{z-index:3;border-left:0;border-top:1px dashed var(--conflict);border-bottom:1px dashed var(--conflict);background:var(--conflict-bg)}
+.now{position:absolute;left:0;right:0;border-top:2px solid var(--ink);z-index:4;pointer-events:none}
+.now::before{content:"";position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:var(--ink)}
+
+.dayv{display:grid;grid-template-columns:minmax(0,1fr) 250px}
+.dayv .tg{border-right:1px solid var(--line)}
+.dayside{padding:14px 16px;font-size:.9rem}
+.dayside h3{font-size:.95rem;margin:0 0 8px}
+.dayside dl{display:grid;grid-template-columns:auto auto;justify-content:start;gap:3px 12px;margin:0 0 16px}
+.dayside dt{color:var(--muted)}
+.dayside dd{margin:0;font-weight:700}
+.dayside dd.bad{color:var(--conflict)}
+.freelist{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.freelist li{display:flex;justify-content:space-between;gap:8px;border-left:3px solid var(--line);padding-left:8px}
+.freelist li span{color:var(--muted)}
+@media (max-width:700px){.dayv{grid-template-columns:minmax(0,1fr)} .dayv .tg{border-right:0;border-bottom:1px solid var(--line)}}
+
+/* Mes */
+.mgrid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.mgrid .wh{padding:7px 8px;font-size:.82rem;color:var(--muted);border-bottom:1px solid var(--line)}
+.mc{all:unset;box-sizing:border-box;cursor:pointer;min-height:96px;padding:7px 8px 9px;border-bottom:1px solid var(--line-soft);border-left:1px solid var(--line-soft);display:flex;flex-direction:column;gap:6px;min-width:0}
+.mc:nth-child(7n+1){border-left:0}
+.mc:hover{background:var(--surface-2)}
+.mc:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.mc.out{opacity:.45}
+.mc .n{font-weight:700;font-size:.95rem;align-self:flex-start}
+.mc.today .n{background:var(--accent);color:var(--on-accent);border-radius:999px;padding:0 7px}
+.dbar{position:relative;height:12px;border-radius:3px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-soft);overflow:hidden}
+.dbar i{position:absolute;top:0;bottom:0;background:var(--c);min-width:2px}
+.dbar i.cf{top:auto;height:3px;bottom:0;background:var(--conflict)}
+.dbar::after{content:"";position:absolute;inset:0;background:linear-gradient(to right,transparent calc(25% - .5px),var(--line) calc(25% - .5px) calc(25% + .5px),transparent calc(25% + .5px) calc(50% - .5px),var(--line) calc(50% - .5px) calc(50% + .5px),transparent calc(50% + .5px) calc(75% - .5px),var(--line) calc(75% - .5px) calc(75% + .5px),transparent calc(75% + .5px));pointer-events:none;opacity:.7}
+.mc .t{font-size:.78rem;color:var(--muted);line-height:1.25}
+.mc .t.bad{color:var(--conflict);font-weight:700}
+@media (max-width:640px){.mc{min-height:70px;padding:5px} .mc .t{display:none} .mc .t.bad{display:block;font-size:.7rem}}
+
+/* Año */
+.ygrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:18px 22px;padding:16px}
+.ym h3{margin:0 0 6px;font-size:.95rem}
+.ym h3 button{all:unset;cursor:pointer}
+.ym h3 button:hover{text-decoration:underline}
+.ym h3 button:focus-visible{outline:2px solid var(--accent)}
+.yd-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.yd-grid .wi{font-size:.68rem;color:var(--muted);text-align:center}
+.yd{all:unset;box-sizing:border-box;cursor:pointer;aspect-ratio:1;border-radius:4px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-soft);font-size:.68rem;display:grid;place-items:center;color:var(--muted)}
+.yd.l1{background:var(--h1);color:var(--ink);box-shadow:none}
+.yd.l2{background:var(--h2);color:var(--ink);box-shadow:none}
+.yd.l3{background:var(--h3);color:#fff;box-shadow:none}
+.yd.l4{background:var(--h4);color:var(--on-accent);box-shadow:none}
+.yd.cf{box-shadow:inset 0 0 0 2px var(--conflict)}
+.yd.today{outline:2px solid var(--ink);outline-offset:1px}
+.yd:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.ylegend{display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;padding:0 16px 16px;font-size:.82rem;color:var(--muted)}
+.ylegend span{display:inline-flex;align-items:center;gap:5px}
+.ylegend i{width:13px;height:13px;border-radius:3px;display:inline-block;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-soft)}
+.ylegend i.l1{background:var(--h1);box-shadow:none}.ylegend i.l2{background:var(--h2);box-shadow:none}.ylegend i.l3{background:var(--h3);box-shadow:none}.ylegend i.l4{background:var(--h4);box-shadow:none}
+.ylegend i.cf{box-shadow:inset 0 0 0 2px var(--conflict)}
+
+.foot{color:var(--muted);font-size:.8rem;padding:0 clamp(14px,3vw,32px) 24px}
+.toast{position:fixed;left:50%;bottom:calc(18px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:8px;font-size:.88rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>Calendario de <code>tareas.cron</code></h1>
+  <p>Cuándo trabaja el contenedor automatismos y qué horas quedan libres.</p>
+</header>
+
+<div class="app">
+  <aside class="side">
+    <section class="panel" aria-labelledby="t-ed">
+      <h2 id="t-ed">Fichero <code>tareas.cron</code></h2>
+      <div class="editor">
+        <div class="gutter" id="gutter" aria-hidden="true"></div>
+        <textarea id="cron" spellcheck="false" wrap="off" autocapitalize="off" autocomplete="off" aria-label="Contenido de tareas.cron" rows="9"></textarea>
+      </div>
+      <div class="status" id="status" aria-live="polite"></div>
+      <div class="row">
+        <button class="btn" id="b-open" type="button">Abrir tareas.cron</button>
+        <button class="btn" id="b-save" type="button">Descargar</button>
+        <button class="btn" id="b-copy" type="button">Copiar</button>
+        <input type="file" id="file" accept=".cron,.txt,text/plain" hidden>
+      </div>
+      <p class="hint">Mismo formato que el runner: minuto, hora, día, mes, día de la semana y script. Las líneas comentadas con <code>#</code> aparecen como pausadas.</p>
+    </section>
+
+    <section class="panel" aria-labelledby="t-tk">
+      <h2 id="t-tk">Tareas y duración</h2>
+      <ul class="tasks" id="tasks"></ul>
+      <p class="hint">La duración es tu estimación de lo que tarda cada tarea; con ella se marcan las horas ocupadas. Ajústala con los tiempos que veas en <code>_logs</code>.</p>
+      <div class="field">
+        <label for="timeout">Límite por tarea (<code>TIMEOUT_MIN</code>)</label>
+        <span><input class="num" id="timeout" type="number" min="0" max="1440" step="5"> min</span>
+      </div>
+      <label class="check"><input type="checkbox" id="worst"> <span>Peor caso: dar por ocupado todo el tiempo hasta el límite</span></label>
+    </section>
+
+    <section class="panel" aria-labelledby="t-fd">
+      <h2 id="t-fd">Buscar hueco para una tarea nueva</h2>
+      <div class="field">
+        <label for="f-dur">Duración</label>
+        <span><input class="num" id="f-dur" type="number" min="1" max="1440" step="5"> min</span>
+      </div>
+      <div class="field">
+        <label for="f-dias">Días</label>
+        <select id="f-dias">
+          <option value="*">Todos los días</option>
+          <option value="1-5">De lunes a viernes</option>
+          <option value="1-6">De lunes a sábado</option>
+          <option value="0,6">Fines de semana</option>
+          <option value="1">Lunes</option>
+          <option value="2">Martes</option>
+          <option value="3">Miércoles</option>
+          <option value="4">Jueves</option>
+          <option value="5">Viernes</option>
+          <option value="6">Sábado</option>
+          <option value="0">Domingo</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-mar">Margen con otras tareas</label>
+        <select id="f-mar">
+          <option value="0">Ninguno</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="30">30 min</option>
+          <option value="60">1 hora</option>
+        </select>
+      </div>
+      <ul class="slots" id="slots"></ul>
+    </section>
+  </aside>
+
+  <main class="cal" aria-labelledby="when">
+    <div class="bar-top">
+      <div class="seg" role="group" aria-label="Vista">
+        <button type="button" data-view="dia">Día</button>
+        <button type="button" data-view="semana">Semana</button>
+        <button type="button" data-view="mes">Mes</button>
+        <button type="button" data-view="anio">Año</button>
+      </div>
+      <div class="nav">
+        <button class="btn" type="button" id="prev" aria-label="Anterior">‹</button>
+        <button class="btn" type="button" id="today">Hoy</button>
+        <button class="btn" type="button" id="next" aria-label="Siguiente">›</button>
+      </div>
+      <h2 class="when" id="when" aria-live="polite"></h2>
+    </div>
+    <div class="summary" id="summary"></div>
+    <div class="legend" id="legend"></div>
+    <div class="view" id="view"></div>
+  </main>
+</div>
+
+<p class="foot">Atajos: ← y → para moverte, H para hoy, D, S, M y A para cambiar de vista. Los cambios se guardan en este navegador; para llevarlos al NAS, descarga el fichero y sustituye <code>docker/automatismos/tareas.cron</code>.</p>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ───────── Datos iniciales ───────── */
+const DEFAULT_CRON =
+`# min  hora  día  mes  semana   script [argumentos]
+30  2  *  *  *      correo/correo_diario.py
+0   8  *  *  5      correo/correo_diario.py semanal
+0   9  *  *  1-6    boe/resumen_boe.py produccion
+`;
+const DEFAULT_DUR = {
+  'correo/correo_diario.py': 30,
+  'correo/correo_diario.py semanal': 50,
+  'boe/resumen_boe.py produccion': 90
+};
+const STORE = 'calendario-tareas-cron:v1';
+const NCOLORS = 8;
+const PLACEHOLDER = 'carpeta/nuevo_script.py';
+
+const S = {
+  text: DEFAULT_CRON, view: 'semana', cursor: sod(new Date()),
+  dur: {}, show: {}, timeout: 180, worst: false,
+  f: { dur: 30, dias: '*', margen: 15 }
+};
+
+/* ───────── Fechas ───────── */
+function sod(d){ const x = new Date(d); x.setHours(0,0,0,0); return x; }
+function addDays(d,n){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()+n); }
+function dkey(d){ return d.getFullYear()*10000 + (d.getMonth()+1)*100 + d.getDate(); }
+function fromKey(k){ k = +k; return new Date(Math.floor(k/10000), Math.floor(k/100)%100 - 1, k%100); }
+function weekStart(d){ return addDays(d, -((d.getDay()+6)%7)); }
+function sameDay(a,b){ return dkey(a) === dkey(b); }
+const DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const DIAS_PL = ['domingos','lunes','martes','miércoles','jueves','viernes','sábados'];
+const DIAS_C = ['dom','lun','mar','mié','jue','vie','sáb'];
+const DIAS_I = ['D','L','M','X','J','V','S'];
+const MESES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MESES_C = ['ene','feb','mar','abr','may','jun','jul','ago','sept','oct','nov','dic'];
+const pad = n => String(n).padStart(2,'0');
+function hm(m){ m = Math.round(m); if (m >= 1440) return '24:00'; return pad(Math.floor(m/60)) + ':' + pad(m%60); }
+function fdur(m){ m = Math.round(m); if (m < 60) return m + ' min'; const h = Math.floor(m/60), r = m%60; return r ? `${h} h ${r} min` : `${h} h`; }
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function listY(a){ return a.length <= 1 ? (a[0] || '') : a.slice(0,-1).join(', ') + ' y ' + a[a.length-1]; }
+
+/* ───────── Persistencia ───────── */
+function load(){
+  try {
+    const raw = localStorage.getItem(STORE); if (!raw) return;
+    const o = JSON.parse(raw);
+    if (typeof o.text === 'string') S.text = o.text;
+    if (['dia','semana','mes','anio'].includes(o.view)) S.view = o.view;
+    if (o.dur && typeof o.dur === 'object') S.dur = o.dur;
+    if (o.show && typeof o.show === 'object') S.show = o.show;
+    if (Number.isFinite(o.timeout)) S.timeout = o.timeout;
+    S.worst = !!o.worst;
+    if (o.f && typeof o.f === 'object') Object.assign(S.f, o.f);
+  } catch (_) {}
+}
+let saveT = 0;
+function save(){
+  clearTimeout(saveT);
+  saveT = setTimeout(() => {
+    try { localStorage.setItem(STORE, JSON.stringify({text:S.text, view:S.view, dur:S.dur, show:S.show, timeout:S.timeout, worst:S.worst, f:S.f})); } catch (_) {}
+  }, 300);
+}
+
+/* ───────── Cron ───────── */
+const MON_N = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+const DOW_N = {sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
+const SHORT = {'@yearly':'0 0 1 1 *','@annually':'0 0 1 1 *','@monthly':'0 0 1 * *','@weekly':'0 0 * * 0','@daily':'0 0 * * *','@midnight':'0 0 * * *','@hourly':'0 * * * *'};
+
+function parseField(str, lo, hi, names, label){
+  const s = str.toLowerCase(), set = new Set();
+  const bad = msg => { throw new Error(`el campo ${label} «${str}» ${msg}`); };
+  const num = x => {
+    if (names && Object.prototype.hasOwnProperty.call(names, x)) return names[x];
+    if (!/^\d+$/.test(x)) bad('no es válido');
+    const v = +x; if (v < lo || v > hi) bad(`se sale del rango ${lo}–${hi}`);
+    return v;
+  };
+  for (const part of s.split(',')) {
+    if (!part) bad('tiene una coma de más');
+    const bits = part.split('/');
+    if (bits.length > 2) bad('tiene dos barras');
+    let step = 1;
+    if (bits.length === 2) { if (!/^\d+$/.test(bits[1]) || +bits[1] === 0) bad('tiene un paso no válido'); step = +bits[1]; }
+    let a, b;
+    if (bits[0] === '*') { a = lo; b = hi; }
+    else {
+      const ab = bits[0].split('-'); if (ab.length > 2 || ab.some(x => x === '')) bad('no es válido');
+      a = num(ab[0]); b = ab.length === 2 ? num(ab[1]) : (bits.length === 2 ? hi : a);
+      if (a > b) bad('tiene un rango al revés');
+    }
+    for (let v = a; v <= b; v += step) set.add(v);
+  }
+  return { set, star: s.startsWith('*'), arr: [...set].sort((x,y) => x-y) };
+}
+
+function parseLine(line){
+  const toks = line.trim().split(/\s+/);
+  let fields, rest, expr;
+  if (toks[0].startsWith('@')) {
+    const t = toks[0].toLowerCase();
+    if (t === '@reboot') throw new Error('@reboot no tiene hora fija y no se puede dibujar');
+    if (!SHORT[t]) throw new Error(`no conozco el atajo «${toks[0]}»`);
+    fields = SHORT[t].split(' '); rest = toks.slice(1); expr = t;
+  } else {
+    if (toks.length < 5) throw new Error('faltan campos de fecha (hacen falta cinco)');
+    fields = toks.slice(0,5); rest = toks.slice(5); expr = fields.join(' ');
+  }
+  if (!rest.length) throw new Error('falta el script');
+  const spec = {
+    min:  parseField(fields[0], 0, 59, null, 'minuto'),
+    hour: parseField(fields[1], 0, 23, null, 'hora'),
+    dom:  parseField(fields[2], 1, 31, null, 'día'),
+    mon:  parseField(fields[3], 1, 12, MON_N, 'mes'),
+    dow:  parseField(fields[4], 0, 7, DOW_N, 'semana')
+  };
+  if (spec.dow.set.has(7)) { spec.dow.set.delete(7); spec.dow.set.add(0); spec.dow.arr = [...spec.dow.set].sort((a,b)=>a-b); }
+  return { spec, expr, script: rest[0], args: rest.slice(1).join(' ') };
+}
+
+// Igual que croniter/cron clásico: si día del mes y día de la semana están
+// restringidos los dos, basta con que coincida uno de ellos.
+function dayMatches(sp, d){
+  if (!sp.mon.set.has(d.getMonth()+1)) return false;
+  const a = sp.dom.set.has(d.getDate()), b = sp.dow.set.has(d.getDay());
+  return (sp.dom.star || sp.dow.star) ? (a && b) : (a || b);
+}
+
+/* Descripción en castellano */
+function stepOf(arr, lo, hi){
+  if (arr.length < 2 || arr[0] !== lo) return 0;
+  const k = arr[1] - arr[0];
+  for (let i = 2; i < arr.length; i++) if (arr[i] - arr[i-1] !== k) return 0;
+  return (hi - arr[arr.length-1] < k) ? k : 0;
+}
+function contiguous(arr){ for (let i = 1; i < arr.length; i++) if (arr[i] !== arr[i-1]+1) return false; return true; }
+function dowDesc(arr){
+  const order = [1,2,3,4,5,6,0], idx = order.filter(x => arr.includes(x));
+  if (idx.length === 7) return 'todos los días';
+  const pos = idx.map(x => order.indexOf(x));
+  if (idx.length >= 3 && contiguous(pos)) return `de ${DIAS[idx[0]]} a ${DIAS[idx[idx.length-1]]}`;
+  return 'los ' + listY(idx.map(x => DIAS_PL[x]));
+}
+function domDesc(arr){
+  if (arr.length === 1) return `el día ${arr[0]} de cada mes`;
+  if (arr.length <= 5) return `los días ${listY(arr.map(String))} de cada mes`;
+  return `${arr.length} días al mes`;
+}
+function dayDesc(sp){
+  const domR = sp.dom.arr.length < 31, dowR = sp.dow.arr.length < 7;
+  let d;
+  if (!domR && !dowR) d = 'todos los días';
+  else if (!domR) d = dowDesc(sp.dow.arr);
+  else if (!dowR) d = domDesc(sp.dom.arr);
+  else if (sp.dom.star || sp.dow.star) d = domDesc(sp.dom.arr) + ', si cae en ' + dowDesc(sp.dow.arr).replace(/^los /,'');
+  else d = domDesc(sp.dom.arr) + ' y además ' + dowDesc(sp.dow.arr);
+  if (sp.mon.arr.length < 12) d += ', en ' + listY(sp.mon.arr.map(m => MESES[m-1]));
+  return d;
+}
+function timeDesc(sp){
+  const H = sp.hour.arr, M = sp.min.arr, n = H.length * M.length;
+  if (n <= 4) { const t = []; for (const h of H) for (const m of M) t.push(pad(h)+':'+pad(m)); return (t.length === 1 && H[0] === 1 ? 'a la ' : 'a las ') + listY(t); }
+  const mk = stepOf(M, 0, 59), hk = stepOf(H, 0, 23), allH = H.length === 24;
+  if (allH && M.length === 60) return 'cada minuto';
+  if (allH && mk) return `cada ${mk} min`;
+  if (allH && M.length === 1) return M[0] === 0 ? 'cada hora en punto' : `cada hora, en el minuto ${M[0]}`;
+  if (hk && M.length === 1) return M[0] === 0 ? `cada ${hk} h en punto` : `cada ${hk} h, en el minuto ${M[0]}`;
+  if (mk && contiguous(H)) return `cada ${mk} min de ${pad(H[0])}:00 a ${pad(H[H.length-1])}:59`;
+  if (M.length === 1 && H.length <= 6) return 'a las ' + listY(H.map(h => pad(h)+':'+pad(M[0])));
+  return `${n} veces al día`;
+}
+const describe = sp => cap(dayDesc(sp)) + ', ' + timeDesc(sp);
+
+/* ───────── Tareas ───────── */
+let TASKS = [], ERRORS = [];
+function parseAll(text){
+  const map = new Map(), errors = [], colorOf = new Map();
+  text.split(/\r?\n/).forEach((raw, i) => {
+    const n = i + 1, t = raw.trim();
+    if (!t) return;
+    if (t.startsWith('#')) {
+      const body = t.replace(/^#+\s*/, '');
+      if (!body) return;
+      try { const e = parseLine(body); if (/[\/.]/.test(e.script)) add(e, n, true); } catch (_) {}
+      return;
+    }
+    try { add(parseLine(t), n, false); }
+    catch (err) { errors.push({ line: n, msg: err.message }); }
+  });
+  function add(e, n, paused){
+    const id = e.script + (e.args ? ' ' + e.args : '');
+    const key = (paused ? '#' : '') + id;
+    if (!colorOf.has(id)) colorOf.set(id, colorOf.size % NCOLORS);
+    let task = map.get(key);
+    if (!task) { task = { key, id, script: e.script, args: e.args, paused, crons: [], color: colorOf.get(id) }; map.set(key, task); }
+    task.crons.push({ spec: e.spec, expr: e.expr, line: n });
+  }
+  TASKS = [...map.values()];
+  ERRORS = errors;
+}
+const isShown = t => (t.key in S.show) ? !!S.show[t.key] : !t.paused;
+function durOf(t){
+  const v = (t.id in S.dur) ? +S.dur[t.id] : (DEFAULT_DUR[t.id] ?? 15);
+  return Math.min(1440, Math.max(1, Number.isFinite(v) && v > 0 ? v : 15));
+}
+function effDur(t){ const d = durOf(t); return S.worst && S.timeout > 0 ? Math.max(d, Math.min(1440, S.timeout)) : d; }
+function shortName(t){ const base = t.script.split('/').pop().replace(/\.py$/,''); return base + (t.args ? ' ' + t.args : ''); }
+const cvar = t => `var(--t${t.color})`;
+
+/* ───────── Cálculo por día ───────── */
+const CACHE = { vis: new Map(), all: new Map() };
+function clearCache(){ CACHE.vis.clear(); CACHE.all.clear(); }
+function startsOn(t, d){
+  const out = [];
+  for (const c of t.crons) {
+    if (!dayMatches(c.spec, d)) continue;
+    for (const h of c.spec.hour.arr) for (const m of c.spec.min.arr) out.push(h*60 + m);
+  }
+  if (t.crons.length > 1) return [...new Set(out)].sort((a,b) => a-b);
+  return out;
+}
+function pushSeg(list, a, b){
+  const last = list[list.length-1];
+  if (last && a <= last[1]) last[1] = Math.max(last[1], b); else list.push([a, b]);
+}
+function dayInfo(d, mode = 'vis'){
+  const k = dkey(d), C = CACHE[mode];
+  if (C.has(k)) return C.get(k);
+  const prev = addDays(d, -1), blocks = [];
+  let runs = 0;
+  const list = mode === 'vis' ? TASKS.filter(isShown) : TASKS.filter(t => !t.paused);
+  for (const t of list) {
+    const du = durOf(t), ef = effDur(t), raw = [];
+    for (const s of startsOn(t, prev)) if (s + ef > 1440) raw.push([s-1440, s-1440+ef, s-1440+du]);
+    const today = startsOn(t, d); runs += today.length;
+    for (const s of today) raw.push([s, s+ef, s+du]);
+    let cur = null;
+    for (const [s, e, se] of raw) {
+      if (cur && s <= cur.e) { cur.e = Math.max(cur.e, e); pushSeg(cur.solids, s, se); cur.n++; }
+      else { cur = { task: t, s, e, solids: [[s, se]], n: 1, first: s }; blocks.push(cur); }
+    }
+  }
+  const vis = [];
+  for (const b of blocks) {
+    b.cs = Math.max(0, b.s); b.ce = Math.min(1440, b.e);
+    b.solids = b.solids.map(([a,z]) => [Math.max(0,a), Math.min(1440,z)]).filter(([a,z]) => z > a);
+    if (b.ce > b.cs) vis.push(b);
+  }
+  const ev = [];
+  for (const b of vis) { ev.push([b.cs, 1]); ev.push([b.ce, -1]); }
+  ev.sort((x,y) => x[0]-y[0] || x[1]-y[1]);
+  const busy = [], conf = [];
+  let c = 0, p = 0;
+  for (const [pos, dl] of ev) {
+    if (pos > p) { if (c >= 1) pushSeg(busy, p, pos); if (c >= 2) pushSeg(conf, p, pos); }
+    c += dl; p = pos;
+  }
+  const sum = l => l.reduce((a,[x,y]) => a + y - x, 0);
+  const free = []; let q = 0;
+  for (const [a,b] of busy) { if (a > q) free.push([q, a]); q = b; }
+  if (q < 1440) free.push([q, 1440]);
+  const info = { blocks: vis, busy, conf, free, busyMin: sum(busy), confMin: sum(conf), runs };
+  C.set(k, info);
+  return info;
+}
+
+/* ───────── Vistas ───────── */
+const $ = id => document.getElementById(id);
+const viewEl = $('view');
+let lastSig = '', lastScroll = 0;
+
+function periodDays(){
+  const d = S.cursor;
+  if (S.view === 'dia') return [d];
+  if (S.view === 'semana') { const a = weekStart(d); return [...Array(7)].map((_,i) => addDays(a,i)); }
+  if (S.view === 'mes') { const n = new Date(d.getFullYear(), d.getMonth()+1, 0).getDate(); return [...Array(n)].map((_,i) => new Date(d.getFullYear(), d.getMonth(), i+1)); }
+  const out = []; for (let x = new Date(d.getFullYear(),0,1); x.getFullYear() === d.getFullYear(); x = addDays(x,1)) out.push(x);
+  return out;
+}
+function title(){
+  const d = S.cursor;
+  if (S.view === 'dia') return cap(`${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]} de ${d.getFullYear()}`);
+  if (S.view === 'semana') {
+    const a = weekStart(d), b = addDays(a,6);
+    return a.getMonth() === b.getMonth()
+      ? `${a.getDate()} – ${b.getDate()} de ${MESES[a.getMonth()]} de ${b.getFullYear()}`
+      : `${a.getDate()} ${MESES_C[a.getMonth()]}${a.getFullYear()!==b.getFullYear()?' '+a.getFullYear():''} – ${b.getDate()} ${MESES_C[b.getMonth()]} ${b.getFullYear()}`;
+  }
+  if (S.view === 'mes') return cap(`${MESES[d.getMonth()]} de ${d.getFullYear()}`);
+  return String(d.getFullYear());
+}
+
+function renderSummary(){
+  const days = periodDays();
+  let runs = 0, busy = 0, confDays = 0;
+  for (const d of days) { const i = dayInfo(d); runs += i.runs; busy += i.busyMin; if (i.confMin > 0) confDays++; }
+  const pct = busy / (days.length * 1440) * 100;
+  const pctS = pct === 0 ? '0' : pct < 1 ? '<1' : Math.round(pct);
+  const vis = TASKS.filter(isShown).length;
+  let s;
+  if (!vis) s = 'No hay tareas visibles. Marca alguna en la lista de tareas.';
+  else {
+    s = `<b>${runs}</b> ${runs === 1 ? 'ejecución' : 'ejecuciones'}, <b>${fdur(busy)}</b> ocupado (${pctS} % del tiempo). `;
+    s += confDays ? `<span class="bad">${confDays === 1 ? 'Hay 1 día' : 'Hay ' + confDays + ' días'} con tareas solapadas.</span>` : 'Ninguna tarea se solapa con otra.';
+  }
+  $('summary').innerHTML = s;
+  const items = TASKS.filter(isShown).map(t => `<span style="--c:${cvar(t)}"><i></i>${esc(shortName(t))}</span>`);
+  if (vis) items.push('<span><i class="cf"></i>solape</span>');
+  if (S.worst && vis) items.push('<span><i class="mg"></i>margen hasta el límite</span>');
+  $('legend').innerHTML = items.join('');
+  $('legend').hidden = !vis || S.view === 'anio';
+}
+
+function blockTitle(b){
+  const t = b.task, du = durOf(t);
+  const startTxt = b.s < 0 ? `empezó el día anterior a las ${hm(b.s + 1440)}` : (b.n > 1 ? `${b.n} ejecuciones desde las ${hm(b.s)}` : `empieza a las ${hm(b.s)}`);
+  return `${t.id}\n${startTxt}\nOcupa de ${hm(b.cs)} a ${hm(b.ce)}\nDuración estimada: ${fdur(du)}\n${t.crons.map(c => c.expr).join('  |  ')}`;
+}
+function blockHTML(b, style){
+  const t = b.task, span = b.ce - b.cs;
+  let inner = '';
+  if (S.worst) for (const [a,z] of b.solids) inner += `<i class="sol" style="top:${(a-b.cs)/span*100}%;height:${(z-a)/span*100}%"></i>`;
+  const label = `<span class="lb"><b>${esc(shortName(t))}</b> ${hm(b.s < 0 ? b.s + 1440 : b.s)}${b.n > 1 ? ' (×' + b.n + ')' : ''}</span>`;
+  return `<div class="blk${S.worst ? ' worst' : ''}" style="--c:${cvar(t)};${style}" title="${esc(blockTitle(b))}">${inner}${label}</div>`;
+}
+function vpos(a, b){ return `top:calc(${a/60} * var(--hh));height:max(3px, calc(${(b-a)/60} * var(--hh)))`; }
+function axisHTML(){
+  let h = '<div class="axis" style="grid-column:1">';
+  for (let i = 0; i < 24; i++) h += `<span style="top:calc(${i} * var(--hh))">${pad(i)}:00</span>`;
+  return h + '</div>';
+}
+function nowHTML(d){
+  const now = new Date(); if (!sameDay(now, d)) return '';
+  return `<div class="now" style="top:calc(${(now.getHours()*60 + now.getMinutes())/60} * var(--hh))" aria-hidden="true"></div>`;
+}
+function lanes(blocks){
+  const bs = [...blocks].sort((a,b) => a.cs - b.cs || b.ce - a.ce);
+  let cluster = [], end = -1, laneEnd = [];
+  const fin = () => cluster.forEach(b => b.lanes = laneEnd.length);
+  for (const b of bs) {
+    if (cluster.length && b.cs >= end) { fin(); cluster = []; laneEnd = []; }
+    let l = laneEnd.findIndex(e => e <= b.cs);
+    if (l < 0) { l = laneEnd.length; laneEnd.push(b.ce); } else laneEnd[l] = b.ce;
+    b.lane = l; cluster.push(b); end = Math.max(end, b.ce);
+  }
+  if (cluster.length) fin();
+}
+function firstHour(days){
+  let m = 1440;
+  for (const d of days) for (const b of dayInfo(d).blocks) m = Math.min(m, b.cs);
+  return m === 1440 ? 7 : Math.max(0, Math.floor(m/60) - 1);
+}
+
+function renderWeek(){
+  const a = weekStart(S.cursor), days = [...Array(7)].map((_,i) => addDays(a,i)), today = new Date();
+  let h = `<div class="tg" style="--cols:7;--hh:42px"><div class="tg-in" style="--minw:640px">`;
+  h += '<div class="tg-head"><div class="corner"></div>';
+  for (const d of days) h += `<button class="tg-day${sameDay(d,today)?' today':''}" data-goto="${dkey(d)}" aria-label="Ver el ${DIAS[d.getDay()]} ${d.getDate()} de ${MESES[d.getMonth()]}"><span class="wd">${DIAS_C[d.getDay()]}</span><span class="dn">${d.getDate()}</span></button>`;
+  h += '</div><div class="tg-body">' + axisHTML();
+  days.forEach((d, i) => {
+    const info = dayInfo(d); lanes(info.blocks);
+    h += `<div class="col${sameDay(d,today)?' today':''}" style="grid-column:${i+2}">`;
+    for (const [x,y] of info.conf) h += `<div class="band" style="${vpos(x,y)}" title="Solape de ${hm(x)} a ${hm(y)}"></div>`;
+    for (const b of info.blocks) h += blockHTML(b, `${vpos(b.cs,b.ce)};left:calc(${b.lane} * 100% / ${b.lanes} + 3px);width:calc(100% / ${b.lanes} - 6px)`);
+    h += nowHTML(d) + '</div>';
+  });
+  h += '</div></div></div>';
+  return { html: h, scrollTo: firstHour(days) * 42 };
+}
+
+function renderDay(){
+  const d = S.cursor, info = dayInfo(d), vis = TASKS.filter(isShown);
+  const cols = Math.max(1, vis.length);
+  let h = `<div class="dayv"><div class="tg" style="--cols:${cols};--hh:52px"><div class="tg-in" style="--minw:${Math.max(320, cols*120 + 54)}px">`;
+  h += '<div class="tg-head"><div class="corner"></div>';
+  if (!vis.length) h += '<div>Sin tareas visibles</div>';
+  for (const t of vis) h += `<div class="tg-task" style="--c:${cvar(t)}" title="${esc(t.id)}"><i></i><span>${esc(shortName(t))}</span></div>`;
+  h += '</div><div class="tg-body">' + axisHTML();
+  vis.forEach((t, i) => {
+    h += `<div class="col${sameDay(d,new Date())?' today':''}" style="grid-column:${i+2}">`;
+    for (const b of info.blocks) if (b.task === t) h += blockHTML(b, `${vpos(b.cs,b.ce)};left:4px;right:4px`);
+    h += '</div>';
+  });
+  if (!vis.length) h += '<div class="col" style="grid-column:2"></div>';
+  h += '<div class="ov">';
+  for (const [x,y] of info.conf) h += `<div class="band" style="${vpos(x,y)}"></div>`;
+  h += nowHTML(d) + '</div></div></div></div>';
+
+  h += '<aside class="dayside"><h3>Este día</h3><dl>';
+  h += `<dt>Ejecuciones</dt><dd>${info.runs}</dd>`;
+  h += `<dt>Ocupado</dt><dd>${fdur(info.busyMin)}</dd>`;
+  h += `<dt>Libre</dt><dd>${fdur(1440 - info.busyMin)}</dd>`;
+  h += `<dt>Solapes</dt><dd class="${info.confMin ? 'bad' : ''}">${info.confMin ? info.conf.map(([x,y]) => hm(x)+'–'+hm(y)).join(', ') : 'ninguno'}</dd>`;
+  h += '</dl><h3>Huecos libres</h3>';
+  const fr = info.free.filter(([a,b]) => b - a >= 10);
+  h += fr.length ? '<ul class="freelist">' + fr.map(([a,b]) => `<li>${hm(a)} – ${hm(b)}<span>${fdur(b-a)}</span></li>`).join('') + '</ul>' : '<p class="empty">No queda ningún hueco de 10 minutos o más.</p>';
+  h += '</aside></div>';
+  return { html: h, scrollTo: firstHour([d]) * 52 };
+}
+
+function dayBar(info){
+  let h = '<div class="dbar" aria-hidden="true">';
+  for (const b of info.blocks) h += `<i style="--c:${cvar(b.task)};left:${b.cs/14.4}%;width:${(b.ce-b.cs)/14.4}%"></i>`;
+  for (const [x,y] of info.conf) h += `<i class="cf" style="left:${x/14.4}%;width:${(y-x)/14.4}%"></i>`;
+  return h + '</div>';
+}
+function renderMonth(){
+  const d = S.cursor, y = d.getFullYear(), m = d.getMonth();
+  const first = new Date(y, m, 1), start = weekStart(first);
+  const n = new Date(y, m+1, 0).getDate(), weeks = Math.ceil(((first.getDay()+6)%7 + n) / 7);
+  const today = new Date();
+  let h = '<div class="mgrid">' + ['lunes','martes','miércoles','jueves','viernes','sábado','domingo'].map(w => `<div class="wh">${w}</div>`).join('');
+  for (let i = 0; i < weeks*7; i++) {
+    const x = addDays(start, i), info = dayInfo(x);
+    const cls = ['mc']; if (x.getMonth() !== m) cls.push('out'); if (sameDay(x,today)) cls.push('today');
+    const lbl = `${DIAS[x.getDay()]} ${x.getDate()} de ${MESES[x.getMonth()]}: ${info.runs} ejecuciones, ${fdur(info.busyMin)} ocupado${info.confMin ? ', con solapes' : ''}`;
+    h += `<button class="${cls.join(' ')}" data-goto="${dkey(x)}" title="${esc(lbl)}" aria-label="${esc(lbl)}"><span class="n">${x.getDate()}</span>${dayBar(info)}`;
+    h += info.runs || info.busyMin ? `<span class="t">${fdur(info.busyMin)} ocupado</span>` : `<span class="t">Libre todo el día</span>`;
+    if (info.confMin) h += `<span class="t bad">Solape ${info.conf.map(([a,b]) => hm(a)).join(', ')}</span>`;
+    h += '</button>';
+  }
+  return { html: h + '</div>' };
+}
+function level(min){ return min <= 0 ? '' : min < 60 ? 'l1' : min < 180 ? 'l2' : min < 360 ? 'l3' : 'l4'; }
+function renderYear(){
+  const y = S.cursor.getFullYear(), today = new Date();
+  let h = '<div class="ygrid">';
+  for (let m = 0; m < 12; m++) {
+    const first = new Date(y, m, 1), off = (first.getDay()+6)%7, n = new Date(y, m+1, 0).getDate();
+    h += `<section class="ym"><h3><button data-month="${y*100+m}">${cap(MESES[m])}</button></h3><div class="yd-grid">`;
+    h += ['L','M','X','J','V','S','D'].map(c => `<span class="wi" aria-hidden="true">${c}</span>`).join('');
+    for (let i = 0; i < off; i++) h += '<span aria-hidden="true"></span>';
+    for (let dd = 1; dd <= n; dd++) {
+      const x = new Date(y, m, dd), info = dayInfo(x);
+      const cls = ['yd', level(info.busyMin)]; if (info.confMin) cls.push('cf'); if (sameDay(x,today)) cls.push('today');
+      const lbl = `${DIAS[x.getDay()]} ${dd} de ${MESES[m]}: ${fdur(info.busyMin)} ocupado, ${info.runs} ejecuciones${info.confMin ? ', con solapes' : ''}`;
+      h += `<button class="${cls.filter(Boolean).join(' ')}" data-goto="${dkey(x)}" title="${esc(lbl)}" aria-label="${esc(lbl)}">${dd}</button>`;
+    }
+    h += '</div></section>';
+  }
+  h += '</div><div class="ylegend"><span><i></i>libre</span><span><i class="l1"></i>menos de 1 h</span><span><i class="l2"></i>1–3 h</span><span><i class="l3"></i>3–6 h</span><span><i class="l4"></i>6 h o más</span><span><i class="cf"></i>con solapes</span></div>';
+  return { html: h };
+}
+
+function renderCalendar(){
+  document.querySelectorAll('[data-view]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.view === S.view)));
+  $('when').textContent = title();
+  renderSummary();
+  const old = viewEl.querySelector('.tg');
+  if (old) lastScroll = old.scrollTop;
+  const sig = S.view + ':' + (S.view === 'semana' ? dkey(weekStart(S.cursor)) : dkey(S.cursor));
+  const r = S.view === 'dia' ? renderDay() : S.view === 'semana' ? renderWeek() : S.view === 'mes' ? renderMonth() : renderYear();
+  viewEl.innerHTML = r.html;
+  const tg = viewEl.querySelector('.tg');
+  if (tg) tg.scrollTop = sig === lastSig ? lastScroll : (r.scrollTo || 0);
+  lastSig = sig;
+}
+
+/* ───────── Panel lateral ───────── */
+const ta = $('cron'), gutter = $('gutter');
+function renderGutter(){
+  const n = S.text.split(/\r?\n/).length, errs = new Set(ERRORS.map(e => e.line));
+  let h = ''; for (let i = 1; i <= n; i++) h += `<span${errs.has(i) ? ' class="err"' : ''}>${i}</span>`;
+  gutter.innerHTML = h; gutter.scrollTop = ta.scrollTop;
+}
+function renderStatus(){
+  const act = TASKS.filter(t => !t.paused).length, pau = TASKS.filter(t => t.paused).length;
+  let h;
+  if (ERRORS.length) {
+    h = '<ul>' + ERRORS.map(e => `<li><button type="button" data-line="${e.line}">Línea ${e.line}</button>: ${esc(e.msg)}. El runner la ignorará.</li>`).join('') + '</ul>';
+  } else {
+    h = `<span class="ok">${act === 1 ? '1 tarea activa' : act + ' tareas activas'}${pau ? ', ' + pau + ' pausada' + (pau > 1 ? 's' : '') : ''}. Sin errores de formato.</span>`;
+  }
+  $('status').innerHTML = h;
+}
+function renderTasks(){
+  const ul = $('tasks');
+  if (!TASKS.length) { ul.innerHTML = '<li class="empty">No hay ninguna tarea programada en el fichero.</li>'; return; }
+  ul.innerHTML = TASKS.map(t => {
+    const on = isShown(t);
+    const ds = t.crons.map(c => esc(describe(c.spec))).join('<br>');
+    return `<li class="task${on ? '' : ' off'}" style="--c:${cvar(t)}">
+      <input type="checkbox" data-show="${esc(t.key)}" ${on ? 'checked' : ''} aria-label="Mostrar ${esc(t.id)} en el calendario">
+      <span class="nm">${esc(t.id)}${t.paused ? '<span class="tag">pausada</span>' : ''}</span>
+      <label class="du">dura <input class="num" type="number" min="1" max="1440" step="5" data-dur="${esc(t.id)}" value="${durOf(t)}" aria-label="Duración estimada de ${esc(t.id)} en minutos"> min</label>
+      <span class="ds">${ds}</span>
+    </li>`;
+  }).join('');
+}
+
+/* Buscar hueco */
+function renderSlots(){
+  const ul = $('slots');
+  const dur = Math.max(1, Math.min(1440, +S.f.dur || 30)), mar = +S.f.margen || 0;
+  let dows;
+  try { dows = parseField(S.f.dias, 0, 7, DOW_N, 'semana').set; } catch (_) { dows = new Set([0,1,2,3,4,5,6]); }
+  if (!TASKS.some(t => !t.paused)) { ul.innerHTML = '<li class="empty">Todo el día está libre: no hay tareas activas.</li>'; return; }
+  const busy = new Uint8Array(1440);
+  const t0 = sod(new Date());
+  for (let i = 0; i < 371; i++) {
+    const d = addDays(t0, i);
+    if (!dows.has(d.getDay())) continue;
+    for (const [a,b] of dayInfo(d, 'all').busy) busy.fill(1, Math.max(0, a - mar), Math.min(1440, b + mar));
+  }
+  const wins = [];
+  let a = -1;
+  for (let i = 0; i <= 1440; i++) {
+    const free = i < 1440 && !busy[i];
+    if (free && a < 0) a = i;
+    if (!free && a >= 0) { const st = Math.ceil(a/5)*5; if (i - st >= dur) wins.push([a, i, st]); a = -1; }
+  }
+  if (!wins.length) { ul.innerHTML = `<li class="empty">No hay ningún hueco de ${fdur(dur)} libre todos esos días durante el próximo año.</li>`; return; }
+  const top = wins.sort((x,y) => (y[1]-y[0]) - (x[1]-x[0])).slice(0, 5).sort((x,y) => x[0]-y[0]);
+  ul.innerHTML = top.map(([x,y,st]) => {
+    const line = `${st%60} ${Math.floor(st/60)} * * ${S.f.dias}`;
+    return `<li class="slot"><div class="w"><b>${hm(x)} – ${hm(y)}</b> <span>${fdur(y-x)} libres</span></div>
+      <div class="c"><code>${esc(line)}</code><div><button class="btn" type="button" data-copy="${esc(line + '    ' + PLACEHOLDER)}">Copiar</button><button class="btn" type="button" data-add="${esc(line)}">Añadir</button></div></div></li>`;
+  }).join('');
+}
+
+/* ───────── Acciones ───────── */
+function toast(msg){ const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 1800); }
+async function copy(text){
+  try { await navigator.clipboard.writeText(text); }
+  catch (_) { const x = document.createElement('textarea'); x.value = text; document.body.appendChild(x); x.select(); try { document.execCommand('copy'); } catch (__) {} x.remove(); }
+  toast('Copiado');
+}
+function recalc(){ clearCache(); renderCalendar(); renderSlots(); save(); }
+function reparse(){ parseAll(S.text); renderGutter(); renderStatus(); renderTasks(); recalc(); }
+function setText(v){ ta.value = v; S.text = v; reparse(); }
+
+let inT = 0;
+ta.addEventListener('input', () => { S.text = ta.value; renderGutter(); clearTimeout(inT); inT = setTimeout(reparse, 250); });
+ta.addEventListener('scroll', () => { gutter.scrollTop = ta.scrollTop; });
+ta.addEventListener('keydown', e => {
+  if (e.key === 'Tab' && !e.shiftKey && !e.ctrlKey && !e.altKey && !e.metaKey) {
+    e.preventDefault();
+    if (!document.execCommand('insertText', false, '    ')) ta.setRangeText('    ', ta.selectionStart, ta.selectionEnd, 'end');
+    ta.dispatchEvent(new Event('input'));
+  }
+});
+
+$('status').addEventListener('click', e => {
+  const b = e.target.closest('[data-line]'); if (!b) return;
+  const n = +b.dataset.line, lines = ta.value.split('\n');
+  let s = 0; for (let i = 0; i < n-1; i++) s += lines[i].length + 1;
+  ta.focus(); ta.setSelectionRange(s, s + (lines[n-1] || '').length);
+  ta.scrollTop = Math.max(0, (n - 3) * parseFloat(getComputedStyle(ta).lineHeight));
+});
+
+$('tasks').addEventListener('input', e => {
+  const t = e.target;
+  if (t.dataset.dur !== undefined) { const v = +t.value; if (v > 0) { S.dur[t.dataset.dur] = Math.min(1440, v); recalc(); } }
+});
+$('tasks').addEventListener('change', e => {
+  const t = e.target;
+  if (t.dataset.show !== undefined) { S.show[t.dataset.show] = t.checked; t.closest('.task').classList.toggle('off', !t.checked); recalc(); }
+});
+
+$('timeout').addEventListener('input', e => { const v = +e.target.value; if (v >= 0) { S.timeout = v; recalc(); } });
+$('worst').addEventListener('change', e => { S.worst = e.target.checked; recalc(); });
+$('f-dur').addEventListener('input', e => { const v = +e.target.value; if (v > 0) { S.f.dur = v; renderSlots(); save(); } });
+$('f-dias').addEventListener('change', e => { S.f.dias = e.target.value; renderSlots(); save(); });
+$('f-mar').addEventListener('change', e => { S.f.margen = +e.target.value; renderSlots(); save(); });
+
+$('slots').addEventListener('click', e => {
+  const c = e.target.closest('[data-copy]'); if (c) { copy(c.dataset.copy); return; }
+  const a = e.target.closest('[data-add]'); if (!a) return;
+  const cols = a.dataset.add;
+  let v = ta.value; if (v && !v.endsWith('\n')) v += '\n';
+  const start = v.length + cols.length + 4;
+  setText(v + cols + '    ' + PLACEHOLDER + '\n');
+  ta.focus(); ta.setSelectionRange(start, start + PLACEHOLDER.length);
+  ta.scrollTop = ta.scrollHeight;
+  toast('Añadida al final: escribe el nombre de tu script');
+});
+
+$('b-open').addEventListener('click', () => $('file').click());
+$('file').addEventListener('change', e => {
+  const f = e.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = () => { setText(String(r.result)); toast(`Cargado ${f.name}`); };
+  r.readAsText(f); e.target.value = '';
+});
+$('b-save').addEventListener('click', () => {
+  let txt = ta.value; if (!txt.endsWith('\n')) txt += '\n';
+  const url = URL.createObjectURL(new Blob([txt], { type: 'text/plain;charset=utf-8' }));
+  const a = document.createElement('a'); a.href = url; a.download = 'tareas.cron';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+$('b-copy').addEventListener('click', () => copy(ta.value));
+
+document.querySelectorAll('[data-view]').forEach(b => b.addEventListener('click', () => { S.view = b.dataset.view; renderCalendar(); save(); }));
+function move(dir){
+  const d = S.cursor;
+  if (S.view === 'dia') S.cursor = addDays(d, dir);
+  else if (S.view === 'semana') S.cursor = addDays(d, 7*dir);
+  else if (S.view === 'mes') S.cursor = new Date(d.getFullYear(), d.getMonth()+dir, 1);
+  else S.cursor = new Date(d.getFullYear()+dir, 0, 1);
+  renderCalendar();
+}
+$('prev').addEventListener('click', () => move(-1));
+$('next').addEventListener('click', () => move(1));
+$('today').addEventListener('click', () => { S.cursor = sod(new Date()); renderCalendar(); });
+viewEl.addEventListener('click', e => {
+  const g = e.target.closest('[data-goto]');
+  if (g) { S.cursor = fromKey(g.dataset.goto); S.view = 'dia'; renderCalendar(); save(); return; }
+  const m = e.target.closest('[data-month]');
+  if (m) { const v = +m.dataset.month; S.cursor = new Date(Math.floor(v/100), v%100, 1); S.view = 'mes'; renderCalendar(); save(); }
+});
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  if (['input','textarea','select'].includes(tag) || e.target.isContentEditable) return;
+  const k = e.key.toLowerCase();
+  if (e.key === 'ArrowLeft') move(-1);
+  else if (e.key === 'ArrowRight') move(1);
+  else if (k === 'h') { S.cursor = sod(new Date()); renderCalendar(); }
+  else if ({d:'dia', s:'semana', m:'mes', a:'anio'}[k]) { S.view = {d:'dia', s:'semana', m:'mes', a:'anio'}[k]; renderCalendar(); save(); }
+});
+
+setInterval(() => { if (S.view === 'dia' || S.view === 'semana') renderCalendar(); }, 60000);
+
+/* ───────── Arranque ───────── */
+load();
+ta.value = S.text;
+$('timeout').value = S.timeout;
+$('worst').checked = S.worst;
+$('f-dur').value = S.f.dur;
+$('f-dias').value = S.f.dias;
+$('f-mar').value = String(S.f.margen);
+reparse();
+})();
+</script>
+</body>
+</html>
